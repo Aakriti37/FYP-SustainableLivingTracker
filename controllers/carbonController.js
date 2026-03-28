@@ -43,7 +43,7 @@ exports.createCarbonLog = async (req, res) => {
         });
 
         if (existingLog) {
-            return res.status(400).json({ message: 'Carbon footprint already logged for today' });
+            return res.status(400).json({ message: 'You had already calculated your carbon footprint for today.' });
         }
 
         const totalCO2 = calculateFootprint(transport, publicTransport, energy, diet, cookingFuel);
