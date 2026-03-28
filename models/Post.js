@@ -1,73 +1,49 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema(
-  {
-    firstName: {
-      type: String,
-      required: true
+const postSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
-
-    lastName: {
-      type: String,
-      required: true
+    content: {
+        type: String,
+        trim: true,
+        maxlength: 1000
     },
-
-    email: {
-      type: String,
-      required: true,
-      unique: true
+    image: {
+        type: String,
+        default: null
     },
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    comments: [{
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        text: {
+            type: String,
+            required: true,
+            trim: true,
+            maxlength: 500
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
+    }]
+}, { timestamps: true });
 
-    password: {
-      type: String,
-      required: function () {
-        // Password is not required if user logs in with Google
-        return !this.googleId;
-      }
-    },
-
-    role: {
-      type: String,
-      enum: ["user", "admin"],
-      default: "user"
-    },
-
-    // Password Reset Fields
-    resetPasswordToken: {
-      type: String
-    },
-
-    resetPasswordExpire: {
-      type: Date
-    },
-
-    // Google OAuth Field
-    googleId: {
-      type: String
-    }
-
-  },
-  { timestamps: true }
-);
-
-// Hash password before saving
-// userSchema.pre("save", async function (next) {
-//   if (!this.isModified("password")) return next();
-
-//   this.password = await bcrypt.hash(this.password, 10);
-//   next();
-// });
-
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
+postSchema.virtual('likeCount').get(function () {
+    return this.likes.length;
 });
 
-module.exports = mongoose.model("User", userSchema);
+// Configure schema to include virtuals when converted to JSON
+postSchema.set('toJSON', { virtuals: true });
+postSchema.set('toObject', { virtuals: true });
 
-
-
-
-
+module.exports = mongoose.model('Post', postSchema);
