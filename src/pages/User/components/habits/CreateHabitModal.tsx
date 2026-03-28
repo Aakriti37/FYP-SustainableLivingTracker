@@ -1,5 +1,5 @@
-import { useState } from "react";
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import axios from "axios";
 import toast from "react-hot-toast";
 
 const API_URL = "http://localhost:5000/api";
@@ -10,33 +10,40 @@ interface CreateHabitModalProps {
 }
 
 const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
-    const [newHabit, setNewHabit] = useState({ name: "", description: "", frequency: "daily" });
+    const [newHabit, setNewHabit] = useState({ name: "", description: "", frequency: "daily", goalId: "" });
+    const [goals, setGoals] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchGoals = async () => {
+            try {
+                const res = await axios.get(`${API_URL}/goals`);
+                setGoals(res.data.filter((g: any) => g.status !== 'completed'));
+            } catch (err) {
+                console.error("Failed to load goals", err);
+            }
+        };
+        fetchGoals();
+    }, []);
 
     const handleCreateHabit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         try {
             await axios.post(`${API_URL}/habits`, newHabit);
             toast.success("Habit created successfully!");
             onSuccess();
-        }
-        catch(error: any) {
+        } catch (error: any) {
             toast.error(error.response?.data?.message || "Error creating habit");
         }
     };
 
-
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-
             <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl scale-100">
                 <h2 className="text-2xl font-bold text-gray-800 mb-6">Create New Habit</h2>
-
                 <form onSubmit={handleCreateHabit} className="space-y-5">
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">Habit Name</label>
-
-                        <input 
+                        <input
                             required
                             type="text"
                             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder-gray-400 bg-gray-50 focus:bg-white"
@@ -45,10 +52,8 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                             onChange={(e) => setNewHabit({ ...newHabit, name: e.target.value })}
                         />
                     </div>
-
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                        
                         <textarea
                             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder-gray-400 bg-gray-50 focus:bg-white resize-none h-24"
                             placeholder="Optional details..."
@@ -56,10 +61,8 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                             onChange={(e) => setNewHabit({ ...newHabit, description: e.target.value })}
                         />
                     </div>
-
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">Frequency</label>
-
                         <select
                             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all bg-gray-50 focus:bg-white text-gray-700"
                             value={newHabit.frequency}
@@ -68,6 +71,19 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                             <option value="daily">Daily</option>
                             <option value="weekly">Weekly</option>
                             <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Link to a Goal (Optional)</label>
+                        <select
+                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all bg-gray-50 focus:bg-white text-gray-700"
+                            value={newHabit.goalId}
+                            onChange={(e) => setNewHabit({ ...newHabit, goalId: e.target.value })}
+                        >
+                            <option value="">No Goal</option>
+                            {goals.map(g => (
+                                <option key={g._id} value={g._id}>{g.title}</option>
+                            ))}
                         </select>
                     </div>
 
@@ -79,7 +95,6 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                         >
                             Cancel
                         </button>
-
                         <button
                             type="submit"
                             className="flex-1 bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-3 rounded-xl shadow-md transition-all hover:shadow-lg"
@@ -87,15 +102,10 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                             Save Habit
                         </button>
                     </div>
-
                 </form>
-
             </div>
-
         </div>
     );
 };
 
 export default CreateHabitModal;
-
-
