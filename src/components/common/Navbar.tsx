@@ -1,4 +1,4 @@
-import { Menu, Bell, Home, Leaf, FileText, Target, Users, Settings, LogOut, ArrowLeft } from "lucide-react";
+import { Menu, Bell, Home, Leaf, FileText, Target, Users, Settings, LogOut, ArrowLeft, Sparkles } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/WhiteLogo.png";
 
@@ -19,6 +19,7 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
         { path: "/habits", icon: FileText, label: "Habits" },
         { path: "/goals", icon: Target, label: "Goals" },
         { path: "/community", icon: Users, label: "Community" },
+        { path: "/eco-suggestions", icon: Sparkles, label: "Eco AI" },
         { path: "/profile", icon: Settings, label: "Profile" },
     ];
 

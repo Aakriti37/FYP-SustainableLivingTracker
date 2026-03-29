@@ -15,6 +15,8 @@ import Community from './pages/User/Community';
 import BaseProfile from './pages/common/BaseProfile';
 import MainLayout from './components/layout/MainLayout';
 import { SocketProvider } from './context/SocketContext';
+import EcoSuggestions from './pages/User/EcoSuggestions';
+
 
 const App = () => {
   return (
@@ -43,6 +45,7 @@ const App = () => {
             <Route path="/goals" element={<Goals />} />
             <Route path="/community" element={<Community />} />
             <Route path="/profile" element={<BaseProfile role="user" />} />
+            <Route path="/eco-suggestions" element={<EcoSuggestions />} />
           </Route>
 
           {/* Admin Routes with MainLayout */}

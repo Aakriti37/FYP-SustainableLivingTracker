@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, Activity, MessageSquare, Leaf, Search, Bell, MessageCircle } from "lucide-react";
+import { Users, Activity, MessageSquare, Leaf, Search, Bell, MessageCircle, ArrowUp, ArrowDown } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import AdminCharts from "./components/AdminCharts";
@@ -80,7 +80,7 @@ const AdminDashboard = () => {
             </div>
             <div className="text-3xl font-black text-slate-800 pl-2 mb-2">{stats?.totalUsers || 0}</div>
             <p className="text-xs font-bold text-emerald-500 pl-2 flex items-center gap-1">
-              ↑ +12.5% <span className="text-slate-400 font-medium">Since last week</span>
+              <ArrowUp /> +12.5% <span className="text-slate-400 font-medium">Since last week</span>
             </p>
           </div>
 
@@ -94,7 +94,7 @@ const AdminDashboard = () => {
             </div>
             <div className="text-3xl font-black text-slate-800 pl-2 mb-2">{stats?.totalHabits || 0}</div>
             <p className="text-xs font-bold text-emerald-500 pl-2 flex items-center gap-1">
-              ↑ +8.2% <span className="text-slate-400 font-medium">Since last week</span>
+              <ArrowUp /> +8.2% <span className="text-slate-400 font-medium">Since last week</span>
             </p>
           </div>
 
@@ -108,7 +108,7 @@ const AdminDashboard = () => {
             </div>
             <div className="text-3xl font-black text-slate-800 pl-2 mb-2">{stats?.totalPosts || 0}</div>
             <p className="text-xs font-bold text-red-500 pl-2 flex items-center gap-1">
-              ↓ -2.4% <span className="text-slate-400 font-medium">Since last week</span>
+              <ArrowDown /> -2.4% <span className="text-slate-400 font-medium">Since last week</span>
             </p>
           </div>
 
@@ -122,7 +122,7 @@ const AdminDashboard = () => {
             </div>
             <div className="text-3xl font-black text-slate-800 pl-2 mb-2">{stats?.totalCO2Log || 0} <span className="text-sm text-slate-400">kg</span></div>
             <p className="text-xs font-bold text-emerald-500 pl-2 flex items-center gap-1">
-              ↑ +15.3% <span className="text-slate-400 font-medium">Since last week</span>
+              <ArrowUp /> +15.3% <span className="text-slate-400 font-medium">Since last week</span>
             </p>
           </div>
 
