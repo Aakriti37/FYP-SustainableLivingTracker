@@ -1,11 +1,10 @@
 // services/ecoSuggestionService.ts
-// FRONTEND ONLY — makes HTTP requests to YOUR backend using axios
-// Has nothing to do with Gemini directly — that's handled in the backend
+// FRONTEND ONLY — HTTP requests to your backend via axios
 
 import api from "./api";
 import type { Habit, Goal, CarbonLog, ActivityLog, EcoSuggestion } from "../types/ecoSuggestions.types";
 
-// ── Used by the page to show the user summary card & stats row ────────────────
+// ── Data fetchers (used for stats + summary card) ─────────────────────────────
 
 export const fetchHabits = async (): Promise<Habit[]> => {
   const response = await api.get("/habits");
@@ -23,21 +22,25 @@ export const fetchCarbonLogs = async (): Promise<CarbonLog[]> => {
 };
 
 export const fetchActivityLogs = async (): Promise<ActivityLog[]> => {
-  // Reuses your existing recent activities endpoint from habitController
   const response = await api.get("/habits/activities/recent");
   return response.data;
 };
 
-// ── Calls your backend POST /api/eco-suggestions/generate ─────────────────────
-// The backend handles fetching MongoDB data + calling GROQ internally
-// The GROQ API key never touches the frontend
-
-export const generateEcoSuggestions = async (): Promise<EcoSuggestion[]> => {
+// ── Generate suggestions via your backend → ML service ───────────────────────
+export const generateEcoSuggestions = async (): Promise<{
+  suggestions:    EcoSuggestion[];
+  emission_level: string;
+  confidence:     number;
+}> => {
   const response = await api.post("/eco-suggestions/generate");
 
   if (!response.data.success) {
     throw new Error(response.data.message || "Failed to generate suggestions");
   }
 
-  return response.data.suggestions;
+  return {
+    suggestions:    response.data.suggestions,
+    emission_level: response.data.emission_level,
+    confidence:     response.data.confidence,
+  };
 };

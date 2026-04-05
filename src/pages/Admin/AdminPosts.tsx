@@ -7,6 +7,7 @@ axios.defaults.withCredentials = true;
 const API_URL = "http://localhost:5000/api";
 
 type Post = {
+    image: any;
     _id: string;
     content: string;
     userId: { firstName: string; lastName: string; email: string };
@@ -45,9 +46,14 @@ const AdminPosts = () => {
         }
     };
 
+    // const filteredPosts = posts.filter((p) =>
+    //     p.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //     `${p.userId?.firstName} ${p.userId?.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
+
     const filteredPosts = posts.filter((p) =>
-        p.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        `${p.userId?.firstName} ${p.userId?.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+        (p.content?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+        (`${p.userId?.firstName || ""} ${p.userId?.lastName || ""}`).toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -93,11 +99,13 @@ const AdminPosts = () => {
                                 <thead>
                                     <tr className="bg-gray-50 text-gray-500 text-sm uppercase tracking-wider">
                                         <th className="p-4 font-semibold border-b border-gray-100 w-1/4">Author</th>
+                                        <th className="p-4 font-semibold border-b border-gray-100 w-1/6">Image</th>
                                         <th className="p-4 font-semibold border-b border-gray-100 w-1/2">Content</th>
                                         <th className="p-4 font-semibold border-b border-gray-100 w-1/6">Date</th>
                                         <th className="p-4 font-semibold border-b border-gray-100 text-right">Actions</th>
                                     </tr>
                                 </thead>
+
                                 <tbody className="divide-y divide-gray-100">
                                     {filteredPosts.map((post) => (
                                         <tr key={post._id} className="hover:bg-slate-50 transition-colors">
@@ -105,12 +113,27 @@ const AdminPosts = () => {
                                                 <p className="font-bold text-gray-800">{post.userId?.firstName} {post.userId?.lastName}</p>
                                                 <p className="text-xs text-gray-500">{post.userId?.email}</p>
                                             </td>
+
+                                            <td className="p-4">
+                                                {post.image ? (
+                                                    <img
+                                                    src={post.image}  // use `post.image` exactly
+                                                    alt="Post"
+                                                    className="w-20 h-20 object-cover rounded-lg"
+                                                    />
+                                                ) : (
+                                                    <span className="text-gray-400 text-sm">No Image</span>
+                                                )}
+                                            </td>
+
                                             <td className="p-4 text-gray-600">
                                                 <p className="line-clamp-2">{post.content}</p>
                                             </td>
+
                                             <td className="p-4 text-gray-500 text-sm">
                                                 {new Date(post.createdAt).toLocaleDateString()}
                                             </td>
+
                                             <td className="p-4 text-right">
                                                 <button
                                                     onClick={() => handleDeletePost(post._id)}
