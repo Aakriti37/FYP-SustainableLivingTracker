@@ -1,41 +1,36 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose")
 
-const carbonLogSchema = new mongoose.Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    date: {
-        type: Date,
-        default: Date.now
-    },
-    transport: {
-        type: Number, // km traveled via personal car/bike
-        default: 0
-    },
-    publicTransport: {
-        type: Number, // km traveled via bus/train
-        default: 0
-    },
-    energy: {
-        type: Number, // kWh used
-        default: 0
-    },
-    cookingFuel: {
-        type: String, // 'LPG', 'Wood', 'Electricity', 'Biogas'
-        enum: ['LPG', 'Wood', 'Electricity', 'Biogas', 'None'],
-        default: 'LPG'
-    },
-    diet: {
-        type: String, // 'vegan', 'vegetarian', 'meat-heavy', 'balanced'
-        enum: ['vegan', 'vegetarian', 'balanced', 'meat-heavy'],
-        default: 'balanced'
-    },
-    totalCO2: {
-        type: Number, // calculated footprint in kg CO2e
-        default: 0
-    }
+const carbonSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true },
+    period: { type: String, enum: ['daily', 'weekly', 'monthly'], default: 'daily' },
+    date: { type: Date, default: Date.now },
+
+    // Transport
+    privateTransportKm: { type: Number, defaule: 0 },
+    vehicleFuelType: { type: String, enum: ['petrol', 'diesel', 'hybrid', 'electric', 'motorcycle', 'none'], defaule: 'none' },
+    busKm: { type: Number, defaule: 0 },
+    trainKm: { type: Number, default: 0 },
+
+
+    // Energy
+    electricityKwh: { type: Number, default: 0 },
+
+    // Diet
+    diet: { type: String, enum: ['vegan', 'vegetarian', 'pescatarian', 'balanced', 'meat-heavy'], default: 'balanced' },
+
+
+    // Cooking
+    cookingFuel: { type: String, enum: ['LPG', 'Wood', 'Electricity', 'Biogas', 'None'], default: 'LPG' },
+    cookingHoursPerDay: { type: Number, default: 1},
+
+
+    // Breakdown
+    transportCO2: { type: Number, default: 0 },
+    energyCO2: { type: Number, default: 0 },
+    dietCO2: { type: Number, default: 0 },
+    cookingCO2: { type: Number, default: 0 },
+    totalCO2: { type: Number, default: 0 },
+
 }, { timestamps: true });
 
-module.exports = mongoose.model('CarbonLog', carbonLogSchema);
+module.exports = mongoose.model('Carbon', carbonSchema);

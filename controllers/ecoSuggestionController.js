@@ -3,7 +3,7 @@
 
 const Habit         = require("../models/Habit");
 const Goal          = require("../models/Goal");
-const CarbonLog     = require("../models/CarbonLog");
+const CarbonLog     = require("../models/Carbon");
 const ActivityLog   = require("../models/ActivityLog");
 const UserLifestyle = require("../models/UserLifestyle");
 

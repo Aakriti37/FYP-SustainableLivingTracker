@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const Habit = require('../models/Habit');
 const Post = require('../models/Post');
-const CarbonLog = require('../models/CarbonLog');
+const CarbonLog = require('../models/Carbon');
 
 exports.getStats = async (req, res) => {
     try {
