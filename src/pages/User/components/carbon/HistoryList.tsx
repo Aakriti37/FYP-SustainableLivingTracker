@@ -1,87 +1,220 @@
+// pages/User/components/Carbon/HistoryList.tsx
+
 import { useState, useMemo } from "react";
-import type { CarbonLog } from "../../CarbonCalculator";
-import { Filter } from "lucide-react";
+import { Pencil, Trash2, Car, Bus, Train, Zap, Utensils, Flame, Filter } from "lucide-react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import type { CarbonLog } from "../../../../types/carbon.types";
+import EditLogModal from "./EditLogModal";
+
+axios.defaults.withCredentials = true;
+const API_URL = "http://localhost:5000/api";
 
 interface HistoryListProps {
-    history: CarbonLog[];
-    loading: boolean;
+    history:   CarbonLog[];
+    loading:   boolean;
+    onRefresh: () => void;
 }
 
-const getCO2Color = (value: number) => {
-    if (value < 5) return "text-emerald-500";
-    if (value < 10) return "text-yellow-500";
-    if (value < 15) return "text-orange-500";
-    return "text-red-500";
+type FilterType = 'all' | 'week' | 'month';
+
+const getPeriodBadgeStyle = (period: string) => {
+    if (period === 'weekly')  return { background: 'rgba(85,152,7,0.15)',  color: '#559807' };
+    if (period === 'monthly') return { background: 'rgba(23,146,31,0.15)', color: '#17921f' };
+    return                           { background: 'rgba(92,189,54,0.15)', color: '#3a8a12' };
 };
 
-type FilterType = 'week' | 'month' | 'all';
+const getCO2Color = (co2: number) => {
+    if (co2 < 5)  return '#5cbd36';
+    if (co2 < 10) return '#559807';
+    if (co2 < 20) return '#f59e0b';
+    return '#ef4444';
+};
 
-const HistoryList = ({ history, loading }: HistoryListProps) => {
-    const [filter, setFilter] = useState<FilterType>('all');
+const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
+    const [filter,       setFilter]       = useState<FilterType>('all');
+    const [editLog,      setEditLog]      = useState<CarbonLog | null>(null);
+    const [deletingId,   setDeletingId]   = useState<string | null>(null);
 
     const filteredHistory = useMemo(() => {
         if (filter === 'all') return history;
-
-        const now = new Date();
+        const now  = new Date();
+        const days = filter === 'week' ? 7 : 30;
         return history.filter(log => {
-            const logDate = new Date(log.date);
-            const diffTime = Math.abs(now.getTime() - logDate.getTime());
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            if (filter === 'week') return diffDays <= 7;
-            if (filter === 'month') return diffDays <= 30;
-            return true;
+            const diff = (now.getTime() - new Date(log.date).getTime()) / (1000 * 60 * 60 * 24);
+            return diff <= days;
         });
     }, [history, filter]);
 
-    return (
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-[500px]">
-            <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
-                <h3 className="text-xl font-bold text-gray-800">Carbon History</h3>
+    const handleDelete = async (id: string) => {
+        if (!window.confirm('Are you sure you want to delete this carbon log?')) return;
+        setDeletingId(id);
+        try {
+            await axios.delete(`${API_URL}/carbon/${id}`);
+            toast.success("Carbon log deleted.");
+            onRefresh();
+        } catch {
+            toast.error("Failed to delete log.");
+        } finally {
+            setDeletingId(null);
+        }
+    };
 
-                <div className="relative">
-                    <select
-                        value={filter}
-                        onChange={(e) => setFilter(e.target.value as FilterType)}
-                        className="appearance-none bg-emerald-50 text-emerald-700 font-semibold px-4 py-2 pr-10 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer text-sm"
-                    >
-                        <option value="week">Past Week</option>
-                        <option value="month">Past Month</option>
-                        <option value="all">All Time</option>
-                    </select>
-                    <Filter size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-600 pointer-events-none" />
+    return (
+        <>
+            <div className="bg-white rounded-3xl shadow-sm border overflow-hidden" style={{ borderColor: '#c5e3a0' }}>
+
+                {/* Header */}
+                <div className="flex justify-between items-center px-6 py-4 border-b" style={{ borderColor: '#e8f5d0' }}>
+                    <h3 className="text-lg font-bold" style={{ color: '#022202' }}>Carbon History</h3>
+                    <div className="flex items-center gap-2">
+                        <Filter size={14} style={{ color: '#508C12' }} />
+                        <select
+                            value={filter}
+                            onChange={e => setFilter(e.target.value as FilterType)}
+                            className="text-sm font-semibold px-3 py-1.5 rounded-xl border outline-none"
+                            style={{ borderColor: '#c5e3a0', color: '#508C12', background: '#f0f7e6' }}
+                        >
+                            <option value="all">All Time</option>
+                            <option value="week">Past Week</option>
+                            <option value="month">Past Month</option>
+                        </select>
+                    </div>
+                </div>
+
+                {/* List */}
+                <div className="divide-y overflow-y-auto" style={{ maxHeight: '500px', divideColor: '#e8f5d0' }}>
+                    {loading ? (
+                        <div className="flex items-center justify-center py-16">
+                            <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin"
+                                style={{ borderColor: '#c5e3a0', borderTopColor: '#508C12' }} />
+                        </div>
+                    ) : filteredHistory.length === 0 ? (
+                        <div className="text-center py-16" style={{ color: '#4a7c2f' }}>
+                            <p className="font-medium">No logs found for this period.</p>
+                        </div>
+                    ) : (
+                        filteredHistory.map(log => (
+                            <div
+                                key={log._id}
+                                className="px-5 py-4 hover:bg-opacity-50 transition-colors"
+                                style={{ background: 'white' }}
+                                onMouseEnter={e => (e.currentTarget.style.background = '#f9fef5')}
+                                onMouseLeave={e => (e.currentTarget.style.background = 'white')}
+                            >
+                                <div className="flex items-start justify-between gap-3">
+
+                                    {/* Left — date + details */}
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-2 flex-wrap">
+                                            <p className="font-bold text-sm" style={{ color: '#022202' }}>
+                                                {new Date(log.date).toLocaleDateString(undefined, {
+                                                    weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
+                                                })}
+                                            </p>
+                                            <span
+                                                className="px-2 py-0.5 rounded-full text-xs font-bold capitalize"
+                                                style={getPeriodBadgeStyle(log.period)}
+                                            >
+                                                {log.period}
+                                            </span>
+                                        </div>
+
+                                        {/* Metrics row */}
+                                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs" style={{ color: '#4a7c2f' }}>
+                                            {log.privateTransportKm > 0 && (
+                                                <span className="flex items-center gap-1">
+                                                    <Car size={11} /> {log.privateTransportKm} km ({log.vehicleFuelType})
+                                                </span>
+                                            )}
+                                            {log.busKm > 0 && (
+                                                <span className="flex items-center gap-1">
+                                                    <Bus size={11} /> {log.busKm} km bus
+                                                </span>
+                                            )}
+                                            {log.trainKm > 0 && (
+                                                <span className="flex items-center gap-1">
+                                                    <Train size={11} /> {log.trainKm} km train
+                                                </span>
+                                            )}
+                                            {log.electricityKwh > 0 && (
+                                                <span className="flex items-center gap-1">
+                                                    <Zap size={11} /> {log.electricityKwh} kWh
+                                                </span>
+                                            )}
+                                            <span className="flex items-center gap-1">
+                                                <Utensils size={11} /> {log.diet}
+                                            </span>
+                                            {log.cookingFuel !== 'None' && (
+                                                <span className="flex items-center gap-1">
+                                                    <Flame size={11} /> {log.cookingFuel}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        {/* Breakdown */}
+                                        <div className="flex gap-3 mt-2 text-xs flex-wrap">
+                                            {[
+                                                { label: 'Transport', val: log.transportCO2 },
+                                                { label: 'Energy',    val: log.energyCO2    },
+                                                { label: 'Diet',      val: log.dietCO2      },
+                                                { label: 'Cooking',   val: log.cookingCO2   },
+                                            ].map(b => (
+                                                <span key={b.label} style={{ color: '#4a7c2f' }}>
+                                                    {b.label}: <strong>{b.val.toFixed(2)}</strong>
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Right — CO2 + actions */}
+                                    <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                                        <div className="text-right">
+                                            <p className="text-xl font-black" style={{ color: getCO2Color(log.totalCO2) }}>
+                                                {log.totalCO2.toFixed(1)}
+                                            </p>
+                                            <p className="text-xs font-semibold" style={{ color: '#4a7c2f' }}>kg CO₂e</p>
+                                        </div>
+                                        <div className="flex gap-1.5">
+                                            <button
+                                                onClick={() => setEditLog(log)}
+                                                className="p-1.5 rounded-lg transition-colors"
+                                                style={{ background: '#f0f7e6', color: '#508C12' }}
+                                                onMouseEnter={e => (e.currentTarget.style.background = '#d4edaa')}
+                                                onMouseLeave={e => (e.currentTarget.style.background = '#f0f7e6')}
+                                                title="Edit"
+                                            >
+                                                <Pencil size={14} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(log._id)}
+                                                disabled={deletingId === log._id}
+                                                className="p-1.5 rounded-lg transition-colors"
+                                                style={{ background: '#fef2f2', color: '#ef4444' }}
+                                                onMouseEnter={e => (e.currentTarget.style.background = '#fee2e2')}
+                                                onMouseLeave={e => (e.currentTarget.style.background = '#fef2f2')}
+                                                title="Delete"
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
-                {loading ? (
-                    <div className="flex items-center justify-center h-40">
-                        <div className="w-8 h-8 border-4 border-emerald-200 border-t-emerald-500 rounded-full animate-spin"></div>
-                    </div>
-                ) : filteredHistory.length === 0 ? (
-                    <div className="text-center py-12 text-gray-400">
-                        <p className="italic">No history data found for this period.</p>
-                    </div>
-                ) : (
-                    filteredHistory.map(log => (
-                        <div key={log._id} className="flex justify-between items-center p-4 bg-gray-50/80 rounded-2xl hover:bg-emerald-50/50 hover:border-emerald-100 border border-transparent transition-all">
-                            <div>
-                                <p className="font-bold text-gray-800 text-sm mb-1">{new Date(log.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</p>
-                                <div className="text-xs text-gray-500 flex gap-x-3 gap-y-1 flex-wrap">
-                                    <span className="flex items-center gap-1">🚗 {log.transport}km</span>
-                                    {log.publicTransport > 0 && <span className="flex items-center gap-1">🚌 {log.publicTransport}km</span>}
-                                    <span className="flex items-center gap-1">⚡ {log.energy}kWh</span>
-                                    <span className="flex items-center gap-1">🔥 {log.cookingFuel !== 'None' ? log.cookingFuel : 'N/A'}</span>
-                                </div>
-                            </div>
-                            <div className={`font-black text-xl text-right ${getCO2Color(log.totalCO2)}`}>
-                                {log.totalCO2.toFixed(1)} <span className="text-xs font-semibold uppercase block opacity-70">kg CO₂</span>
-                            </div>
-                        </div>
-                    ))
-                )}
-            </div>
-        </div>
+            {/* Edit Modal */}
+            {editLog && (
+                <EditLogModal
+                    log={editLog}
+                    onClose={() => setEditLog(null)}
+                    onSaved={onRefresh}
+                />
+            )}
+        </>
     );
 };
 

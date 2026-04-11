@@ -1,91 +1,203 @@
-import { Menu, Bell, Home, Leaf, FileText, Target, Users, Settings, LogOut, ArrowLeft, Sparkles } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+// components/common/Navbar.tsx
+// Top navbar for logged-in users
+// Includes landing page links (Home, Features, About, Contact) + app navigation
+
+import { Menu, Bell, LogOut } from "lucide-react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Home, Leaf, FileText, Target, Users, Settings, Sparkles, LayoutDashboard } from "lucide-react";
 import logo from "../../assets/WhiteLogo.png";
+import { useAuth } from "../../context/AuthContext";
 
 interface NavbarProps {
     toggleSidebar: () => void;
     isSidebarOpen: boolean;
-    role: "admin" | "user";
+    role:          "admin" | "user";
 }
+
+const userAppLinks = [
+    { path: "/dashboard",       icon: LayoutDashboard, label: "Dashboard"   },
+    { path: "/carbon",          icon: Leaf,            label: "Carbon"      },
+    { path: "/habits",          icon: FileText,        label: "Habits"      },
+    { path: "/goals",           icon: Target,          label: "Goals"       },
+    { path: "/community",       icon: Users,           label: "Community"   },
+    { path: "/eco-suggestions", icon: Sparkles,        label: "Eco AI"      },
+    { path: "/profile",         icon: Settings,        label: "Profile"     },
+];
+
+const landingLinks = [
+    { href: "#home",     label: "Home"     },
+    { href: "#features", label: "Features" },
+    { href: "#about",    label: "About"    },
+    { href: "#contact",  label: "Contact"  },
+];
 
 const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
     const location = useLocation();
-    const navigate = useNavigate();
+    const navigate  = useNavigate();
+    const { user, logout } = useAuth();
     const isUser = role === "user";
 
-    const userLinks = [
-        { path: "/dashboard", icon: Home, label: "Dashboard" },
-        { path: "/carbon", icon: Leaf, label: "Carbon" },
-        { path: "/habits", icon: FileText, label: "Habits" },
-        { path: "/goals", icon: Target, label: "Goals" },
-        { path: "/community", icon: Users, label: "Community" },
-        { path: "/eco-suggestions", icon: Sparkles, label: "Eco AI" },
-        { path: "/profile", icon: Settings, label: "Profile" },
-    ];
-
     const handleLogout = () => {
+        logout();
         navigate("/login");
     };
 
     return (
-        <header className={`${isUser ? 'bg-linear-to-r from-emerald-800 to-teal-800 text-white' : 'bg-white border-b border-gray-100 text-gray-600'} h-16 flex items-center justify-between px-6 sticky top-0 z-20 shadow-sm transition-colors`}>
-            <div className="flex items-center gap-4">
-                {!isUser ? (
+        <header
+            className="h-16 flex items-center justify-between px-4 sticky top-0 z-20 shadow-sm"
+            style={{
+                background: isUser
+                    ? 'linear-gradient(to right, #022202, #17921f)'
+                    : 'white',
+                borderBottom: isUser ? 'none' : '1px solid #e5e7eb',
+            }}
+        >
+            {/* ── Left side ── */}
+            <div className="flex items-center gap-3 overflow-x-auto">
+
+                {/* Admin — hamburger menu */}
+                {!isUser && (
                     <button
                         onClick={toggleSidebar}
-                        className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                        aria-label="Toggle Sidebar"
+                        className="p-2 rounded-lg transition-colors shrink-0"
+                        style={{ color: '#508C12' }}
+                        onMouseEnter={e => (e.currentTarget.style.background = '#f0f7e6')}
+                        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                     >
                         <Menu size={24} />
                     </button>
-                ) : (
-                    <div className="flex items-center gap-6">
-                        <Link to="/" className="flex items-center group cursor-pointer" title="Go to Landing Page">
-                            <img src={logo} alt="Logo" className="h-12 md:h-14 w-auto opacity-90 group-hover:opacity-100 transition-opacity object-contain" />
+                )}
+
+                {/* User — Logo + landing links + app nav */}
+                {isUser && (
+                    <div className="flex items-center gap-2 shrink-0">
+                        {/* Logo → landing page */}
+                        <Link to="/" className="flex items-center group shrink-0">
+                            <img
+                                src={logo}
+                                alt="SLT Logo"
+                                className="h-10 w-auto object-contain opacity-90 group-hover:opacity-100 transition-opacity"
+                            />
                         </Link>
-                        <div className="h-6 w-px bg-emerald-700/50 mx-2 hidden sm:block"></div>
-                        <Link to="/" className="flex items-center gap-2 text-emerald-100 hover:text-white transition-colors group px-2 py-1 rounded-lg hover:bg-white/10">
-                            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-                            <span className="font-semibold text-sm hidden sm:inline">Landing Page</span>
-                        </Link>
-                        <div className="h-6 w-px bg-emerald-700/50 mx-2 hidden sm:block"></div>
-                        <nav className="flex space-x-1">
-                            {userLinks.map((link) => {
-                                const Icon = link.icon;
+
+                        {/* Divider */}
+                        <div className="h-6 w-px mx-1 hidden lg:block" style={{ background: 'rgba(255,255,255,0.2)' }} />
+
+                        {/* Landing page section links */}
+                        <div className="hidden lg:flex items-center gap-1">
+                            {landingLinks.map(link => (
+                                <a
+                                    key={link.href}
+                                    href={`/${link.href}`}
+                                    className="px-2 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                                    style={{ color: 'rgba(212,237,170,0.8)' }}
+                                    onMouseEnter={e => {
+                                        (e.currentTarget as HTMLElement).style.color = 'white';
+                                        (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.1)';
+                                    }}
+                                    onMouseLeave={e => {
+                                        (e.currentTarget as HTMLElement).style.color = 'rgba(212,237,170,0.8)';
+                                        (e.currentTarget as HTMLElement).style.background = 'transparent';
+                                    }}
+                                >
+                                    {link.label}
+                                </a>
+                            ))}
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-6 w-px mx-1 hidden xl:block" style={{ background: 'rgba(255,255,255,0.2)' }} />
+
+                        {/* App navigation links */}
+                        <nav className="hidden xl:flex items-center gap-0.5">
+                            {userAppLinks.map(link => {
+                                const Icon     = link.icon;
                                 const isActive = location.pathname.startsWith(link.path);
                                 return (
-                                    <Link
+                                    <NavLink
                                         key={link.path}
                                         to={link.path}
-                                        className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all text-sm font-medium ${isActive
-                                            ? "bg-white/20 text-white shadow-inner"
-                                            : "hover:bg-white/10 text-emerald-100"
-                                            }`}
+                                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all"
+                                        style={{
+                                            background: isActive ? 'rgba(255,255,255,0.2)' : 'transparent',
+                                            color:      isActive ? 'white' : 'rgba(212,237,170,0.85)',
+                                        }}
+                                        onMouseEnter={e => {
+                                            if (!isActive) {
+                                                (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.1)';
+                                                (e.currentTarget as HTMLElement).style.color = 'white';
+                                            }
+                                        }}
+                                        onMouseLeave={e => {
+                                            if (!isActive) {
+                                                (e.currentTarget as HTMLElement).style.background = 'transparent';
+                                                (e.currentTarget as HTMLElement).style.color = 'rgba(212,237,170,0.85)';
+                                            }
+                                        }}
                                     >
-                                        <Icon size={16} />
+                                        <Icon size={14} />
                                         <span>{link.label}</span>
-                                    </Link>
+                                    </NavLink>
                                 );
                             })}
                         </nav>
                     </div>
                 )}
+
+                {/* Admin — show app name */}
+                {!isUser && (
+                    <span className="font-bold text-lg" style={{ color: '#022202' }}>
+                        Admin Panel
+                    </span>
+                )}
             </div>
 
-            <div className="flex items-center gap-4">
-                <button className={`p-2 rounded-full transition-colors relative focus:outline-none focus:ring-2 focus:ring-emerald-500 ${isUser ? 'hover:bg-white/10 text-emerald-100' : 'hover:bg-gray-100 text-gray-600'}`}>
-                    <Bell size={22} />
-                    <span className="absolute top-1 right-1.5 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white"></span>
-                </button>
-                {isUser && (
-                    <button
-                        onClick={handleLogout}
-                        className="p-2 rounded-full hover:bg-red-500/20 text-emerald-100 hover:text-red-300 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 ml-2"
-                        title="Logout"
+            {/* ── Right side ── */}
+            <div className="flex items-center gap-2 shrink-0">
+
+                {/* User greeting */}
+                {user && (
+                    <span
+                        className="text-xs font-semibold hidden sm:block"
+                        style={{ color: isUser ? 'rgba(212,237,170,0.9)' : '#4a7c2f' }}
                     >
-                        <LogOut size={20} />
-                    </button>
+                        {user.firstName || user.email.split("@")[0]}
+                    </span>
                 )}
+
+                {/* Notification bell */}
+                <button
+                    className="p-2 rounded-full transition-colors relative"
+                    style={{ color: isUser ? 'rgba(212,237,170,0.85)' : '#508C12' }}
+                    onMouseEnter={e => (e.currentTarget.style.background = isUser ? 'rgba(255,255,255,0.1)' : '#f0f7e6')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                >
+                    <Bell size={20} />
+                    <span
+                        className="absolute top-1 right-1 w-2 h-2 rounded-full border-2 border-white"
+                        style={{ background: '#ef4444' }}
+                    />
+                </button>
+
+                {/* Logout */}
+                <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all"
+                    style={{
+                        background: isUser ? 'rgba(239,68,68,0.15)' : '#fef2f2',
+                        color:      isUser ? '#fca5a5'              : '#ef4444',
+                    }}
+                    onMouseEnter={e => {
+                        (e.currentTarget as HTMLElement).style.background = isUser ? 'rgba(239,68,68,0.25)' : '#fee2e2';
+                    }}
+                    onMouseLeave={e => {
+                        (e.currentTarget as HTMLElement).style.background = isUser ? 'rgba(239,68,68,0.15)' : '#fef2f2';
+                    }}
+                    title="Logout"
+                >
+                    <LogOut size={14} />
+                    <span className="hidden sm:inline">Logout</span>
+                </button>
             </div>
         </header>
     );

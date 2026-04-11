@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import toast from "react-hot-toast";
+import { useAuth } from "../../context/AuthContext";
+
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -9,6 +12,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { refreshUser } = useAuth();
 
   // Handle normal login
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,6 +31,8 @@ const Login = () => {
       // Save token
       localStorage.setItem("token", token);
 
+      refreshUser();
+
       toast.success("Login successful!");
 
       // Navigate based on role
@@ -40,11 +46,6 @@ const Login = () => {
       setError(err.response?.data?.message || "Login failed");
     }
   };
-
-  // Handle Google login redirect
-  // const handleGoogleLogin = () => {
-  //   window.location.href = "http://localhost:5000/api/auth/google"; // backend route
-  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-green-50">

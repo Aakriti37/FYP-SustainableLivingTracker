@@ -1,70 +1,87 @@
+// pages/User/CarbonCalculator.tsx
+
 import { useState, useEffect } from "react";
-import { Leaf } from "lucide-react";
+import { Leaf, RefreshCw } from "lucide-react";
 import axios from "axios";
+import toast from "react-hot-toast";
+
 import CalculatorForm from "./components/carbon/CalculatorForm";
-import TodayResultWidget from "./components/carbon/TodayResultWidget";
+import ResultWidget from "./components/carbon/ResultWidget";
 import HistoryList from "./components/carbon/HistoryList";
+
+import type { CarbonLog, CarbonStats } from "../../types/carbon.types";
+
+axios.defaults.withCredentials = true;
 const API_URL = "http://localhost:5000/api";
 
-export type CarbonLog = {
-    _id: string;
-    date: string;
-    transport: number;
-    publicTransport: number;
-    energy: number;
-    cookingFuel: string;
-    diet: string;
-    totalCO2: number;
-};
-
 const CarbonCalculator = () => {
+    const [latestLog, setLatestLog] = useState<CarbonLog | null>(null);
+    const [history,   setHistory]   = useState<CarbonLog[]>([]);
+    const [stats,     setStats]     = useState<CarbonStats | null>(null);
+    const [loading,   setLoading]   = useState(true);
 
-    const [todayLog, setTodayLog] = useState<CarbonLog | null>(null);
-    const [history, setHistory] = useState<CarbonLog[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    const fetchCarbonData = async () => {
+    const fetchAllData = async () => {
+        setLoading(true);
         try {
-            const [todayRes, historyRes] = await Promise.all([
+            const [todayRes, historyRes, statsRes] = await Promise.all([
                 axios.get(`${API_URL}/carbon/today`),
-                axios.get(`${API_URL}/carbon/history`)
+                axios.get(`${API_URL}/carbon/history`),
+                axios.get(`${API_URL}/carbon/stats`),
             ]);
-            setTodayLog(todayRes.data);
+            setLatestLog(todayRes.data);
             setHistory(historyRes.data);
+            setStats(statsRes.data);
         } catch (error) {
             console.error(error);
+            toast.error("Failed to load carbon data.");
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchCarbonData();
+        fetchAllData();
     }, []);
 
-
     return (
-        <div className="p-8">
-            <div className="max-w-5xl mx-auto space-y-8">
+        <div className="p-8 pb-20 min-h-screen" style={{ background: '#f0f7e6' }}>
+            <div className="max-w-6xl mx-auto">
 
-                {/* Header */}
-                <header className="mb-8 border-b pb-4 border-gray-200">
-                    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500 pb-2 flex items-center gap-3">
-                        <Leaf className="text-green-500" size={36} /> Carbon Calculator
-                    </h1>
-                    <p className="text-gray-500 font-medium text-lg">Calculate and monitor your daily CO2 footprint.</p>
+                {/* ── Header ── */}
+                <header className="flex justify-between items-end mb-8 pb-4 border-b" style={{ borderColor: '#c5e3a0' }}>
+                    <div>
+                        <h1
+                            className="text-4xl font-extrabold pb-1 flex items-center gap-3"
+                            style={{ color: '#022202' }}
+                        >
+                            <Leaf size={36} style={{ color: '#508C12' }} />
+                            Carbon Calculator
+                        </h1>
+                        <p className="font-medium" style={{ color: '#4a7c2f' }}>
+                            Track and calculate your carbon footprint using real emission factors.
+                        </p>
+                    </div>
+                    {loading && <RefreshCw size={22} className="animate-spin" style={{ color: '#508C12' }} />}
                 </header>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Calculator Card */}
-                    <CalculatorForm todayLog={todayLog} onSuccess={fetchCarbonData} />
+                {/* ── Main grid ── */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                    {/* Results & History Card */}
+                    {/* Left — Form */}
+                    <div className="bg-white rounded-3xl p-6 shadow-sm border" style={{ borderColor: '#c5e3a0' }}>
+                        <h2 className="text-xl font-bold mb-5" style={{ color: '#022202' }}>
+                            Log Your Carbon Footprint
+                        </h2>
+                        <CalculatorForm onSuccess={fetchAllData} />
+                    </div>
+
+                    {/* Right — Results + History */}
                     <div className="space-y-6">
-                        <TodayResultWidget todayLog={todayLog} />
-                        <HistoryList history={history} loading={loading} />
+                        <ResultWidget todayLog={latestLog} stats={stats} />
+                        <HistoryList history={history} loading={loading} onRefresh={fetchAllData} />
                     </div>
                 </div>
+
             </div>
         </div>
     );

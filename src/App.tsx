@@ -20,10 +20,11 @@ import AdminProfile from './pages/Admin/AdminProfile';
 import ForgotPassword from './pages/Authentication/ForgotPassword';
 import ResetPassword from './pages/Authentication/ResetPassword';
 
+import { AuthProvider } from './context/AuthContext';
 
 const App = () => {
   return (
-    <>
+    <AuthProvider>
       <Toaster position='top-right' />
 
       <SocketProvider>
@@ -70,7 +71,7 @@ const App = () => {
         </Routes>
       </BrowserRouter>
       </SocketProvider>
-    </>
+    </AuthProvider>
   )
 }
 
