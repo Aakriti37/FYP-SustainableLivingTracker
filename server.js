@@ -7,8 +7,6 @@ dotenv.config();
 const cors = require("cors");
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
-const passport = require("passport");
 
 
 const authRoutes = require("./routes/authRoutes");
@@ -51,18 +49,12 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(session({
-  secret: process.env.JWT_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false }
-}));
-
-
-// Passport config
-require("./config/passport");
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(session({
+//   secret: process.env.JWT_SECRET,
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: { secure: false }
+// }));
 
 
 app.use("/api/upload", require("./routes/uploadRoutes"));

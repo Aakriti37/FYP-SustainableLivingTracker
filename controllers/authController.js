@@ -66,7 +66,7 @@ exports.login = async (req, res) => {
             maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000,
         });
 
-        req.session.user = { id: user._id, email: user.email, role: user.role };
+        // req.session.user = { id: user._id, email: user.email, role: user.role };
 
         res.json({
             message: "Login successful",
@@ -140,42 +140,6 @@ exports.forgotPassword = async (req, res) => {
     }
 };
 
-// exports.resetPassword = async (req, res) => {
-//     const { token } = req.params;
-//     const { password } = req.body;
-
-//     try {
-//         const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-
-//         const user = await User.findOne({
-//             resetPasswordToken: hashedToken,
-//             resetPasswordExpire: { $gt: Date.now() },
-//         });
-
-//         if (!user) {
-//             return res.status(400).json({ message: "Invalid or expired token" });
-//         }
-
-//         // Hash the new password before saving
-//         const salt = await bcrypt.genSalt(10);
-//         const hashedPassword = await bcrypt.hash(password, salt);
-
-//         await User.updateOne(
-//             { _id: user._id },
-//             {
-//                 password: hashedPassword,        // ← use the already hashed value
-//                 resetPasswordToken: null,        // ← use null instead of undefined
-//                 resetPasswordExpire: null        // ← updateOne doesn't understand undefined
-//             }
-//         );
-
-//         res.status(200).json({ message: "Password reset successful" });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ message: "Server error" });
-//     }
-// };
-
 
 exports.resetPassword = async (req, res) => {
     const { token } = req.params;
@@ -222,24 +186,6 @@ exports.resetPassword = async (req, res) => {
 };
 
 
-
-exports.googleCallback = (req, res) => {
-    const user = req.user;
-
-    const token = jwt.sign(
-        { id: user._id, email: user.email, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
-    );
-
-    res.cookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    res.redirect(`http://localhost:5173/dashboard?token=${token}`);
-};
 
 
 

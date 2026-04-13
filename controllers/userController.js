@@ -1,12 +1,5 @@
 const User = require("../models/User");
 
-exports.getDashboard = (req, res) => {
-    if (req.user.role !== "user") {
-        return res.status(403).json({ message: "Access denied: Users only" });
-    }
-    res.json({ message: `Welcome ${req.user.email}` });
-};
-
 exports.getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select("-password");

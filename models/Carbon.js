@@ -6,9 +6,9 @@ const carbonSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
 
     // Transport
-    privateTransportKm: { type: Number, defaule: 0 },
-    vehicleFuelType: { type: String, enum: ['petrol', 'diesel', 'hybrid', 'electric', 'motorcycle', 'none'], defaule: 'none' },
-    busKm: { type: Number, defaule: 0 },
+    privateTransportKm: { type: Number, default: 0 },
+    vehicleFuelType: { type: String, enum: ['petrol', 'diesel', 'hybrid', 'electric', 'motorcycle', 'none'], default: 'none' },
+    busKm: { type: Number, default: 0 },
     trainKm: { type: Number, default: 0 },
 
 
