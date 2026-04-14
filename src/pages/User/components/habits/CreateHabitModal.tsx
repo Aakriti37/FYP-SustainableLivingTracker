@@ -1,84 +1,128 @@
+// pages/User/components/habits/CreateHabitModal.tsx
+
 import { useState, useEffect } from "react";
+import { X, Loader2 } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
+axios.defaults.withCredentials = true;
 const API_URL = "http://localhost:5000/api";
 
 interface CreateHabitModalProps {
-    onClose: () => void;
+    onClose:   () => void;
     onSuccess: () => void;
 }
 
+const inputClass = "w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all bg-white";
+
 const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
-    const [newHabit, setNewHabit] = useState({ name: "", description: "", frequency: "daily", goalId: "" });
-    const [goals, setGoals] = useState<any[]>([]);
+    const [form,    setForm]    = useState({ name: '', description: '', frequency: 'daily', goalId: '' });
+    const [goals,   setGoals]   = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const fetchGoals = async () => {
-            try {
-                const res = await axios.get(`${API_URL}/goals`);
-                setGoals(res.data.filter((g: any) => g.status !== 'completed'));
-            } catch (err) {
-                console.error("Failed to load goals", err);
-            }
-        };
-        fetchGoals();
+        axios.get(`${API_URL}/goals`)
+            .then(res => setGoals(res.data.filter((g: any) => g.status !== 'completed')))
+            .catch(() => {});
     }, []);
 
-    const handleCreateHabit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
         try {
-            await axios.post(`${API_URL}/habits`, newHabit);
-            toast.success("Habit created successfully!");
+            await axios.post(`${API_URL}/habits`, form);
+            toast.success("Habit created!");
             onSuccess();
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Error creating habit");
+        } catch (error: unknown) {
+            const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+            toast.error(msg || "Error creating habit");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-            <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl scale-100">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">Create New Habit</h2>
-                <form onSubmit={handleCreateHabit} className="space-y-5">
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style={{ background: 'rgba(2,34,2,0.5)', backdropFilter: 'blur(4px)' }}
+            onClick={e => { if (e.target === e.currentTarget) onClose(); }}
+        >
+            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
+
+                {/* Header */}
+                <div
+                    className="px-6 py-5 flex items-center justify-between"
+                    style={{ background: 'linear-gradient(135deg, #022202, #2d6a10)' }}
+                >
+                    <h2 className="font-bold text-white text-lg">Create New Habit</h2>
+                    <button
+                        onClick={onClose}
+                        className="text-white/70 hover:text-white p-1.5 rounded-lg transition-colors"
+                    >
+                        <X size={18} />
+                    </button>
+                </div>
+
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="p-6 space-y-4">
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Habit Name</label>
+                        <label className="block text-sm font-semibold mb-1.5" style={{ color: '#022202' }}>
+                            Habit Name
+                        </label>
                         <input
                             required
                             type="text"
-                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder-gray-400 bg-gray-50 focus:bg-white"
                             placeholder="e.g. Use a reusable water bottle"
-                            value={newHabit.name}
-                            onChange={(e) => setNewHabit({ ...newHabit, name: e.target.value })}
+                            value={form.name}
+                            onChange={e => setForm({ ...form, name: e.target.value })}
+                            className={inputClass}
+                            style={{ borderColor: '#c5e3a0' }}
+                            onFocus={e  => (e.target.style.borderColor = '#508C12')}
+                            onBlur={e   => (e.target.style.borderColor = '#c5e3a0')}
                         />
                     </div>
+
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                        <label className="block text-sm font-semibold mb-1.5" style={{ color: '#022202' }}>
+                            Description <span style={{ color: '#4a7c2f', fontWeight: 400 }}>(optional)</span>
+                        </label>
                         <textarea
-                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder-gray-400 bg-gray-50 focus:bg-white resize-none h-24"
-                            placeholder="Optional details..."
-                            value={newHabit.description}
-                            onChange={(e) => setNewHabit({ ...newHabit, description: e.target.value })}
+                            rows={3}
+                            placeholder="Optional details about this habit..."
+                            value={form.description}
+                            onChange={e => setForm({ ...form, description: e.target.value })}
+                            className={`${inputClass} resize-none`}
+                            style={{ borderColor: '#c5e3a0' }}
+                            onFocus={e  => (e.target.style.borderColor = '#508C12')}
+                            onBlur={e   => (e.target.style.borderColor = '#c5e3a0')}
                         />
                     </div>
+
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Frequency</label>
+                        <label className="block text-sm font-semibold mb-1.5" style={{ color: '#022202' }}>
+                            Frequency
+                        </label>
                         <select
-                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all bg-gray-50 focus:bg-white text-gray-700"
-                            value={newHabit.frequency}
-                            onChange={(e) => setNewHabit({ ...newHabit, frequency: e.target.value })}
+                            value={form.frequency}
+                            onChange={e => setForm({ ...form, frequency: e.target.value })}
+                            className={inputClass}
+                            style={{ borderColor: '#c5e3a0', color: '#022202' }}
                         >
                             <option value="daily">Daily</option>
                             <option value="weekly">Weekly</option>
                             <option value="monthly">Monthly</option>
                         </select>
                     </div>
+
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Link to a Goal (Optional)</label>
+                        <label className="block text-sm font-semibold mb-1.5" style={{ color: '#022202' }}>
+                            Link to Goal <span style={{ color: '#4a7c2f', fontWeight: 400 }}>(optional)</span>
+                        </label>
                         <select
-                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all bg-gray-50 focus:bg-white text-gray-700"
-                            value={newHabit.goalId}
-                            onChange={(e) => setNewHabit({ ...newHabit, goalId: e.target.value })}
+                            value={form.goalId}
+                            onChange={e => setForm({ ...form, goalId: e.target.value })}
+                            className={inputClass}
+                            style={{ borderColor: '#c5e3a0', color: '#022202' }}
                         >
                             <option value="">No Goal</option>
                             {goals.map(g => (
@@ -87,19 +131,24 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                         </select>
                     </div>
 
-                    <div className="pt-4 flex gap-3">
+                    <div className="flex gap-3 pt-2">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-3 text-gray-600 font-semibold hover:bg-gray-100 rounded-xl transition-colors"
+                            className="flex-1 py-3 rounded-xl text-sm font-semibold border transition-colors"
+                            style={{ borderColor: '#c5e3a0', color: '#4a7c2f' }}
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="flex-1 bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-3 rounded-xl shadow-md transition-all hover:shadow-lg"
+                            disabled={loading}
+                            className="flex-1 py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-60 transition-all"
+                            style={{ background: '#508C12' }}
+                            onMouseEnter={e => !loading && (e.currentTarget.style.background = '#3f7708')}
+                            onMouseLeave={e => (e.currentTarget.style.background = '#508C12')}
                         >
-                            Save Habit
+                            {loading ? <><Loader2 size={16} className="animate-spin" /> Saving…</> : 'Save Habit'}
                         </button>
                     </div>
                 </form>

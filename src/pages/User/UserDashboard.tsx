@@ -6,9 +6,9 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 
-import KPICards       from "./components/KPICards";
-import DashboardCharts from "./components/DashboardCharts";
-import GoalsSection   from "./components/GoalsSection";
+import KPICards       from "./components/dashboard/KPICards";
+import DashboardCharts from "./components/dashboard/DashboardCharts";
+import GoalsSection   from "./components/dashboard/GoalsSection";
 
 axios.defaults.withCredentials = true;
 const API_URL = "http://localhost:5000/api";

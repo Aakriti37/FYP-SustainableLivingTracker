@@ -1,110 +1,151 @@
-import { Check, Trash2, TrendingUp, Zap, Target, RefreshCw, ArrowRight } from "lucide-react";
+// pages/User/components/habits/HabitList.tsx
+
+import { Check, Trash2, TrendingUp, Zap, Target, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export type Habit = {
-    _id: string;
-    name: string;
-    description: string;
-    frequency: string;
-    streak: number;
+    _id:                 string;
+    name:                string;
+    description:         string;
+    frequency:           string;
+    streak:              number;
     pointsPerCompletion: number;
-    completedToday?: boolean;
+    completedToday?:     boolean;
 };
 
 interface HabitListProps {
-    habits: Habit[];
-    loading: boolean;
-    onLogActivity: (id: string) => void;
-    onDeleteHabit: (id: string) => void;
-    onOpenModal: () => void;
+    habits:          Habit[];
+    loading:         boolean;
+    onLogActivity:   (id: string) => void;
+    onDeleteHabit:   (id: string) => void;
+    onOpenModal:     () => void;
 }
 
 const HabitList = ({ habits, loading, onLogActivity, onDeleteHabit, onOpenModal }: HabitListProps) => {
     return (
-        <div className="lg:col-span-2 space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                <Target className="text-emerald-500" /> Daily Habits Checklist
+        <div className="lg:col-span-2 space-y-4">
+            <h2 className="text-xl font-bold flex items-center gap-2" style={{ color: '#022202' }}>
+                <Target size={20} style={{ color: '#508C12' }} />
+                Daily Habits Checklist
             </h2>
 
-            {/* Connection Banner */}
-            <div className="bg-linear-to-r from-teal-50 to-emerald-50 border border-emerald-100 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-sm">
+            {/* Banner */}
+            <div className="rounded-2xl p-4 border flex flex-col sm:flex-row justify-between items-center gap-3" style={{ background: 'white', borderColor: '#c5e3a0' }}>
                 <div>
-                    <h3 className="text-emerald-900 font-bold text-md mb-1 flex items-center gap-2">
-                        <Zap size={18} className="text-yellow-500" /> Habits Fuel Goals
-                    </h3>
-                    <p className="text-emerald-700 text-sm">Every habit you check off contributes to your larger eco-goals!</p>
+                    <p className="font-bold text-sm flex items-center gap-1.5" style={{ color: '#022202' }}>
+                        <Zap size={15} style={{ color: '#508C12' }} /> Habits Fuel Goals
+                    </p>
+                    <p className="text-xs mt-0.5" style={{ color: '#4a7c2f' }}>
+                        Every habit you complete contributes to your eco goals progress!
+                    </p>
                 </div>
-                <Link to="/goals" className="flex items-center gap-1 text-emerald-600 bg-white px-3 py-1.5 rounded-lg border border-emerald-200 hover:bg-emerald-50 text-sm font-semibold transition-colors">
-                    View Goals <ArrowRight size={14} />
+                <Link
+                    to="/goals"
+                    className="flex items-center gap-1 text-sm font-bold px-3 py-1.5 rounded-xl border transition-all shrink-0"
+                    style={{ color: '#508C12', borderColor: '#c5e3a0', background: '#f0f7e6' }}
+                >
+                    View Goals <ArrowRight size={13} />
                 </Link>
             </div>
 
+            {/* Loading */}
             {loading ? (
                 <div className="flex justify-center py-10">
-                    <RefreshCw className="animate-spin text-emerald-500" size={32} />
+                    <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#c5e3a0', borderTopColor: '#508C12' }} />
                 </div>
             ) : habits.length === 0 ? (
-                <div className="bg-white rounded-3xl p-10 text-center shadow-sm border border-gray-100">
-                    <div className="bg-emerald-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Zap className="text-emerald-400" size={32} />
+                <div className="bg-white rounded-3xl p-10 text-center border" style={{ borderColor: '#c5e3a0' }}>
+                    <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: '#f0f7e6' }}>
+                        <Zap size={28} style={{ color: '#508C12' }} />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-700 mb-2">No habits yet</h3>
-                    <p className="text-gray-500 mb-6">Start building your eco-friendly lifestyle today.</p>
-                    <button onClick={onOpenModal} className="text-emerald-600 font-semibold hover:underline">
+                    <h3 className="text-lg font-bold mb-2" style={{ color: '#022202' }}>No habits yet</h3>
+                    <p className="text-sm mb-4" style={{ color: '#4a7c2f' }}>Start building your eco-friendly lifestyle today.</p>
+                    <button
+                        onClick={onOpenModal}
+                        className="font-bold underline"
+                        style={{ color: '#508C12' }}
+                    >
                         Create your first habit
                     </button>
                 </div>
             ) : (
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden divide-y divide-gray-100">
-                    {habits.map((habit) => (
-                        <div key={habit._id} className="group p-5 hover:bg-gray-50 transition-all flex items-center justify-between gap-4">
-
-                            {/* Left: Info */}
-                            <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-1">
-                                    <h3 className="text-lg font-bold text-gray-800 group-hover:text-emerald-700 transition-colors">{habit.name}</h3>
-                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-gray-100 text-gray-600 uppercase tracking-widest">
+                <div className="bg-white rounded-3xl border overflow-hidden divide-y" style={{ borderColor: '#c5e3a0', divideColor: '#e8f5d0' }}>
+                    {habits.map(habit => (
+                        <div
+                            key={habit._id}
+                            className="group p-4 flex items-center justify-between gap-4 transition-colors"
+                            onMouseEnter={e => (e.currentTarget.style.background = '#f9fef5')}
+                            onMouseLeave={e => (e.currentTarget.style.background = 'white')}
+                        >
+                            {/* Info */}
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                                    <h3 className="font-bold text-base" style={{ color: '#022202' }}>
+                                        {habit.name}
+                                    </h3>
+                                    <span
+                                        className="text-xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wide"
+                                        style={{ background: '#f0f7e6', color: '#4a7c2f' }}
+                                    >
                                         {habit.frequency}
                                     </span>
                                 </div>
-                                <p className="text-gray-500 text-sm line-clamp-1 group-hover:line-clamp-none transition-all">{habit.description || "No description."}</p>
+                                <p className="text-sm truncate" style={{ color: '#4a7c2f' }}>
+                                    {habit.description || "No description."}
+                                </p>
                             </div>
 
-                            {/* Middle: Stats */}
-                            <div className="hidden sm:flex items-center gap-4 text-xs font-semibold">
-                                <div className="flex items-center gap-1 text-orange-500 bg-orange-50 px-2 py-1.5 rounded-md" title="Current Streak">
-                                    <Zap size={14} /> {habit.streak}
+                            {/* Stats */}
+                            <div className="hidden sm:flex items-center gap-2 text-xs font-semibold">
+                                <div
+                                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg"
+                                    style={{ background: '#fff7ed', color: '#ea580c' }}
+                                >
+                                    <Zap size={12} /> {habit.streak}
                                 </div>
-                                <div className="flex items-center gap-1 text-blue-500 bg-blue-50 px-2 py-1.5 rounded-md" title="Points per completion">
-                                    <TrendingUp size={14} /> +{habit.pointsPerCompletion}
+                                <div
+                                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg"
+                                    style={{ background: '#f0f7e6', color: '#508C12' }}
+                                >
+                                    <TrendingUp size={12} /> +{habit.pointsPerCompletion}
                                 </div>
                             </div>
 
-                            {/* Right: Actions */}
-                            <div className="flex items-center gap-2 border-l border-gray-100 pl-4">
+                            {/* Actions */}
+                            <div className="flex items-center gap-2 pl-3 border-l shrink-0" style={{ borderColor: '#e8f5d0' }}>
                                 {habit.completedToday ? (
                                     <button
                                         disabled
-                                        className="flex items-center justify-center gap-1.5 bg-gray-200 text-gray-500 px-4 py-2 rounded-xl font-bold shadow-sm cursor-not-allowed"
-                                        title="Already completed today"
+                                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold cursor-not-allowed"
+                                        style={{ background: '#f0f7e6', color: '#4a7c2f' }}
                                     >
-                                        <Check size={18} /> <span>Completed</span>
+                                        <Check size={15} /> Done
                                     </button>
                                 ) : (
                                     <button
                                         onClick={() => onLogActivity(habit._id)}
-                                        className="flex items-center justify-center gap-1.5 bg-emerald-100 text-emerald-700 hover:bg-emerald-500 hover:text-white px-4 py-2 rounded-xl font-bold transition-all duration-300 shadow-sm"
-                                        title="Log Activity"
+                                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold transition-all"
+                                        style={{ background: '#f0f7e6', color: '#508C12' }}
+                                        onMouseEnter={e => {
+                                            (e.currentTarget as HTMLElement).style.background = '#508C12';
+                                            (e.currentTarget as HTMLElement).style.color = 'white';
+                                        }}
+                                        onMouseLeave={e => {
+                                            (e.currentTarget as HTMLElement).style.background = '#f0f7e6';
+                                            (e.currentTarget as HTMLElement).style.color = '#508C12';
+                                        }}
                                     >
-                                        <Check size={18} /> <span>Done</span>
+                                        <Check size={15} /> Mark Done
                                     </button>
                                 )}
                                 <button
                                     onClick={() => onDeleteHabit(habit._id)}
-                                    className="text-red-500 hover:text-white bg-red-50 hover:bg-red-500 transition-colors p-2 rounded-lg"
-                                    title="Delete Habit"
+                                    className="p-2 rounded-lg transition-colors"
+                                    style={{ background: '#fef2f2', color: '#ef4444' }}
+                                    onMouseEnter={e => (e.currentTarget.style.background = '#fee2e2')}
+                                    onMouseLeave={e => (e.currentTarget.style.background = '#fef2f2')}
                                 >
-                                    <Trash2 size={18} />
+                                    <Trash2 size={15} />
                                 </button>
                             </div>
                         </div>

@@ -13,7 +13,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 const API_URL = "http://localhost:5000/api";
 
-// ── Color palette ─────────────────────────────────────────────────────────────
+// Color palette 
 const GREEN_COLORS = ['#17921f', '#508C12', '#5cbd36', '#a8d080', '#d4edaa'];
 
 const chartCardStyle = {
@@ -31,7 +31,7 @@ const tooltipStyle = {
     fontSize: '12px',
 };
 
-// ── Skeleton loader ───────────────────────────────────────────────────────────
+// Skeleton loader 
 const ChartSkeleton = () => (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-pulse">
         {[1, 2, 3, 4].map(i => (
@@ -57,7 +57,7 @@ const DashboardCharts = () => {
                     axios.get(`${API_URL}/habits/activities/recent`),
                 ]);
 
-                // ── 1. Carbon footprint trend (last 7 logs) ───────────────────
+                // 1. Carbon footprint trend (last 7 logs) 
                 const trend = carbonRes.data
                     .slice(0, 7)
                     .reverse()
@@ -67,7 +67,7 @@ const DashboardCharts = () => {
                     }));
                 setCarbonTrend(trend);
 
-                // ── 2. CO2 breakdown (avg across all logs) ────────────────────
+                // 2. CO2 breakdown (avg across all logs) 
                 const logs = carbonRes.data;
                 if (logs.length > 0) {
                     const avg = (key: string) =>
@@ -81,7 +81,7 @@ const DashboardCharts = () => {
                     ]);
                 }
 
-                // ── 3. Habit completion rate ───────────────────────────────────
+                // 3. Habit completion rate 
                 const habits = habitsRes.data;
                 const completedToday = habits.filter((h: any) => h.completedToday).length;
                 const notCompleted   = habits.length - completedToday;

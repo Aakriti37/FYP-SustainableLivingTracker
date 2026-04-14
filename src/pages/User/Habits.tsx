@@ -1,46 +1,51 @@
+// pages/User/Habits.tsx
+
 import { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Zap, RefreshCw } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
-import HabitList from "./components/habits/HabitList";
-import type { Habit } from "./components/habits/HabitList";
-import RecentActivity from "./components/habits/RecentActivity";
-import type { Activity } from "./components/habits/RecentActivity";
+import HabitList        from "./components/habits/HabitList";
+import RecentActivity   from "./components/habits/RecentActivity";
 import CreateHabitModal from "./components/habits/CreateHabitModal";
+import type { Habit }    from "./components/habits/HabitList";
+import type { Activity } from "./components/habits/RecentActivity";
+
+axios.defaults.withCredentials = true;
 const API_URL = "http://localhost:5000/api";
 
 const Habits = () => {
-    const [habits, setHabits] = useState<Habit[]>([]);
-    const [activities, setActivities] = useState<Activity[]>([]);
+    const [habits,      setHabits]      = useState<Habit[]>([]);
+    const [activities,  setActivities]  = useState<Activity[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading,     setLoading]     = useState(true);
 
-    const fetchHabitsAndActivities = async () => {
+    const fetchAll = async () => {
         try {
             const [habitsRes, activitiesRes] = await Promise.all([
                 axios.get(`${API_URL}/habits`),
-                axios.get(`${API_URL}/habits/activities/recent`)
+                axios.get(`${API_URL}/habits/activities/recent`),
             ]);
             setHabits(habitsRes.data);
             setActivities(activitiesRes.data);
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to load data");
+        } catch {
+            toast.error("Failed to load habits");
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchHabitsAndActivities();
+        fetchAll();
+        // Generate reminders on page load
+        axios.post(`${API_URL}/notifications/generate-reminders`).catch(() => {});
     }, []);
-
 
     const handleDeleteHabit = async (id: string) => {
         try {
             await axios.delete(`${API_URL}/habits/${id}`);
             toast.success("Habit deleted");
-            fetchHabitsAndActivities();
-        } catch (error: any) {
+            fetchAll();
+        } catch {
             toast.error("Error deleting habit");
         }
     };
@@ -49,40 +54,48 @@ const Habits = () => {
         try {
             const res = await axios.post(`${API_URL}/habits/${id}/log`);
             toast.success(`Logged! +${res.data.activity.pointsEarned} Points`);
-            
-            // Optimistic UI Update immediately flips the button to 'Completed'
-            setHabits(prev => 
+            // Optimistic update
+            setHabits(prev =>
                 prev.map(h => h._id === id ? { ...h, completedToday: true, streak: h.streak + 1 } : h)
             );
-            
-            fetchHabitsAndActivities();
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Error logging activity");
+            fetchAll();
+        } catch (error: unknown) {
+            const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+            toast.error(msg || "Error logging activity");
         }
     };
 
     return (
-        <div className="p-8">
-            <div className="max-w-6xl mx-auto space-y-8">
+        <div className="p-6 pb-20 min-h-screen" style={{ background: '#f0f7e6' }}>
+            <div className="max-w-6xl mx-auto space-y-6">
 
                 {/* Header */}
-                <header className="flex justify-between items-end mb-8 border-b pb-4 border-gray-200">
+                <header className="flex justify-between items-end pb-4 border-b" style={{ borderColor: '#c5e3a0' }}>
                     <div>
-                        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500 pb-2">
-                            HabitTracker
+                        <h1 className="text-4xl font-extrabold pb-1 flex items-center gap-3" style={{ color: '#022202' }}>
+                            <Zap size={34} style={{ color: '#508C12' }} />
+                            Habit Tracker
                         </h1>
-                        <p className="text-gray-500 font-medium text-lg">Build eco-friendly habits, one day at a time.</p>
+                        <p className="font-medium" style={{ color: '#4a7c2f' }}>
+                            Build eco-friendly habits, one day at a time.
+                        </p>
                     </div>
-                    <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-5 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
-                    >
-                        <Plus size={20} />
-                        New Habit
-                    </button>
+                    <div className="flex items-center gap-3">
+                        {loading && <RefreshCw size={18} className="animate-spin" style={{ color: '#508C12' }} />}
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-white text-sm transition-all"
+                            style={{ background: '#508C12' }}
+                            onMouseEnter={e => (e.currentTarget.style.background = '#3f7708')}
+                            onMouseLeave={e => (e.currentTarget.style.background = '#508C12')}
+                        >
+                            <Plus size={18} /> New Habit
+                        </button>
+                    </div>
                 </header>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Content grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <HabitList
                         habits={habits}
                         loading={loading}
@@ -90,19 +103,14 @@ const Habits = () => {
                         onDeleteHabit={handleDeleteHabit}
                         onOpenModal={() => setIsModalOpen(true)}
                     />
-
                     <RecentActivity activities={activities} />
                 </div>
             </div>
 
-            {/* Modal */}
             {isModalOpen && (
                 <CreateHabitModal
                     onClose={() => setIsModalOpen(false)}
-                    onSuccess={() => {
-                        setIsModalOpen(false);
-                        fetchHabitsAndActivities();
-                    }}
+                    onSuccess={() => { setIsModalOpen(false); fetchAll(); }}
                 />
             )}
         </div>
