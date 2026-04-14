@@ -31,7 +31,7 @@ const landingLinks = [
     { href: "#home",     label: "Home"     },
     { href: "#features", label: "Features" },
     { href: "#about",    label: "About"    },
-    { href: "#contact",  label: "Contact"  },
+    // { href: "#contact",  label: "Contact"  },
 ];
 
 const Sidebar = ({ isOpen = true }: SidebarProps) => {
@@ -45,7 +45,7 @@ const Sidebar = ({ isOpen = true }: SidebarProps) => {
 
     return (
         <aside
-            className="w-64 min-h-screen fixed left-0 top-0 z-30 flex flex-col transition-transform duration-300 ease-in-out"
+            className="w-64 h-screen fixed left-0 top-0 z-30 flex flex-col transition-transform duration-300 ease-in-out"
             style={{
                 background:  'linear-gradient(180deg, #022202 0%, #0d3d0a 50%, #17921f 100%)',
                 transform:   isOpen ? 'translateX(0)' : 'translateX(-100%)',
@@ -54,7 +54,8 @@ const Sidebar = ({ isOpen = true }: SidebarProps) => {
             {/* ── Logo ── */}
             <div className="p-6 flex justify-center border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
                 <Link to="/">
-                    <img src={logo} alt="SLT Logo" className="w-36 object-contain" />
+                    {/* <img src={logo} alt="SLT Logo" className="w-36 object-contain" /> */}
+                    <p className="text-sm text-white text-center font-bold">Sustainable Living<br />Tracker</p>
                 </Link>
             </div>
 
@@ -132,7 +133,7 @@ const Sidebar = ({ isOpen = true }: SidebarProps) => {
                         Landing Page
                     </p>
 
-                    <Link
+                    {/* <Link
                         to="/"
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold mb-1 transition-all"
                         style={{ color: 'rgba(212,237,170,0.85)' }}
@@ -141,7 +142,7 @@ const Sidebar = ({ isOpen = true }: SidebarProps) => {
                     >
                         <Home size={18} />
                         Landing Page
-                    </Link>
+                    </Link> */}
 
                     {landingLinks.map(link => (
                         <a

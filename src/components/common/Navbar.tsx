@@ -5,7 +5,7 @@
 import { Menu, Bell, LogOut } from "lucide-react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Home, Leaf, FileText, Target, Users, Settings, Sparkles, LayoutDashboard } from "lucide-react";
-import logo from "../../assets/WhiteLogo.png";
+// import logo from "../../assets/WhiteLogo.png";
 import { useAuth } from "../../context/AuthContext";
 
 interface NavbarProps {
@@ -28,7 +28,7 @@ const landingLinks = [
     { href: "#home",     label: "Home"     },
     { href: "#features", label: "Features" },
     { href: "#about",    label: "About"    },
-    { href: "#contact",  label: "Contact"  },
+    // { href: "#contact",  label: "Contact"  },
 ];
 
 const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
@@ -73,11 +73,13 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
                     <div className="flex items-center gap-2 shrink-0">
                         {/* Logo → landing page */}
                         <Link to="/" className="flex items-center group shrink-0">
-                            <img
+                            {/* <img
                                 src={logo}
                                 alt="SLT Logo"
                                 className="h-10 w-auto object-contain opacity-90 group-hover:opacity-100 transition-opacity"
-                            />
+                            /> */}
+
+                            <p className="text-white text-center text-sm font-bold">Sustainable Living<br />Tracker</p>
                         </Link>
 
                         {/* Divider */}

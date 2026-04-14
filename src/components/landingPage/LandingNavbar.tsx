@@ -25,7 +25,7 @@ const LandingNavbar = () => {
         { href: "#home",     label: "Home"     },
         { href: "#features", label: "Features" },
         { href: "#about",    label: "About"    },
-        { href: "#contact",  label: "Contact"  },
+        // { href: "#contact",  label: "Contact"  },
     ];
 
     return (
@@ -34,7 +34,8 @@ const LandingNavbar = () => {
 
                 {/* Logo */}
                 <NavLink to="/" className="flex items-center">
-                    <img src={logo} alt="SLT Logo" className="h-14 w-auto object-contain" />
+                    {/* <img src={logo} alt="SLT Logo" className="h-14 w-auto object-contain" /> */}
+                    <p className="text-sm text-[#3f7708] font-bold text-center">Sustainable Living <br /> Tracker</p>
                 </NavLink>
 
                 {/* Desktop nav links */}
