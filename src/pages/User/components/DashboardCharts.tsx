@@ -1,122 +1,287 @@
+// pages/User/components/DashboardCharts.tsx
+// All charts use real backend data — no mock data
+
 import { useState, useEffect } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from "recharts";
+import {
+    AreaChart, Area,
+    BarChart, Bar,
+    PieChart, Pie, Cell, Tooltip as PieTooltip, Legend as PieLegend,
+    XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+} from "recharts";
 import axios from "axios";
 
+axios.defaults.withCredentials = true;
 const API_URL = "http://localhost:5000/api";
 
+// ── Color palette ─────────────────────────────────────────────────────────────
+const GREEN_COLORS = ['#17921f', '#508C12', '#5cbd36', '#a8d080', '#d4edaa'];
+
+const chartCardStyle = {
+    background: 'white',
+    borderRadius: '1.5rem',
+    padding: '1.5rem',
+    border: '1px solid #c5e3a0',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+};
+
+const tooltipStyle = {
+    borderRadius: '12px',
+    border: 'none',
+    boxShadow: '0 4px 12px rgba(2,34,2,0.15)',
+    fontSize: '12px',
+};
+
+// ── Skeleton loader ───────────────────────────────────────────────────────────
+const ChartSkeleton = () => (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-pulse">
+        {[1, 2, 3, 4].map(i => (
+            <div key={i} className="rounded-3xl h-72 border" style={{ background: '#f0f7e6', borderColor: '#c5e3a0' }} />
+        ))}
+    </div>
+);
+
 const DashboardCharts = () => {
-    const [carbonData, setCarbonData] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [carbonTrend,   setCarbonTrend]   = useState<any[]>([]);
+    const [activityData,  setActivityData]  = useState<any[]>([]);
+    const [goalsData,     setGoalsData]     = useState<any[]>([]);
+    const [breakdownData, setBreakdownData] = useState<any[]>([]);
+    const [loading,       setLoading]       = useState(true);
 
     useEffect(() => {
-        const fetchHistory = async () => {
+        const fetchAll = async () => {
             try {
-                // Fetch full history to show trends
-                const res = await axios.get(`${API_URL}/carbon/history`);
-                // Format data for Recharts (Show last 7 entries)
-                const formatted = res.data
+                const [carbonRes, habitsRes, goalsRes, activityRes] = await Promise.all([
+                    axios.get(`${API_URL}/carbon/history`),
+                    axios.get(`${API_URL}/habits`),
+                    axios.get(`${API_URL}/goals`),
+                    axios.get(`${API_URL}/habits/activities/recent`),
+                ]);
+
+                // ── 1. Carbon footprint trend (last 7 logs) ───────────────────
+                const trend = carbonRes.data
+                    .slice(0, 7)
+                    .reverse()
                     .map((item: any) => ({
                         date: new Date(item.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-                        co2: item.totalCO2,
-                    }))
-                    .reverse() // ensure chronological order
-                    .slice(-7); // take last 7
+                        co2:  parseFloat(item.totalCO2.toFixed(1)),
+                    }));
+                setCarbonTrend(trend);
 
-                setCarbonData(formatted);
+                // ── 2. CO2 breakdown (avg across all logs) ────────────────────
+                const logs = carbonRes.data;
+                if (logs.length > 0) {
+                    const avg = (key: string) =>
+                        parseFloat((logs.reduce((s: number, l: any) => s + (l[key] || 0), 0) / logs.length).toFixed(2));
+
+                    setBreakdownData([
+                        { name: 'Transport', value: avg('transportCO2'), color: '#17921f' },
+                        { name: 'Diet',      value: avg('dietCO2'),      color: '#508C12' },
+                        { name: 'Cooking',   value: avg('cookingCO2'),   color: '#5cbd36' },
+                        { name: 'Energy',    value: avg('energyCO2'),    color: '#a8d080' },
+                    ]);
+                }
+
+                // ── 3. Habit completion rate ───────────────────────────────────
+                const habits = habitsRes.data;
+                const completedToday = habits.filter((h: any) => h.completedToday).length;
+                const notCompleted   = habits.length - completedToday;
+
+                // Activity logs → group by date for weekly bar chart
+                const last7Days = Array.from({ length: 7 }, (_, i) => {
+                    const d = new Date();
+                    d.setDate(d.getDate() - (6 - i));
+                    return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+                });
+
+                const activityByDay: Record<string, number> = {};
+                activityRes.data.forEach((log: any) => {
+                    const day = new Date(log.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+                    activityByDay[day] = (activityByDay[day] || 0) + 1;
+                });
+
+                setActivityData(last7Days.map(day => ({
+                    day:     day.split(',')[0], // just weekday
+                    habits:  activityByDay[day] || 0,
+                    points:  (activityByDay[day] || 0) * 10,
+                })));
+
+                // ── 4. Goals progress ─────────────────────────────────────────
+                const goals = goalsRes.data;
+                setGoalsData([
+                    { name: 'Completed',   value: goals.filter((g: any) => g.status === 'completed').length,   color: '#17921f' },
+                    { name: 'In Progress', value: goals.filter((g: any) => g.status === 'in-progress').length, color: '#508C12' },
+                    { name: 'Failed',      value: goals.filter((g: any) => g.status === 'failed').length,      color: '#c5e3a0' },
+                ]);
+
             } catch (error) {
-                console.error("Failed to fetch history for charts", error);
+                console.error("Failed to fetch dashboard chart data", error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchHistory();
+        fetchAll();
     }, []);
 
-    if (loading) {
-        return (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-pulse">
-                <div className="bg-white p-6 rounded-3xl h-80 border border-gray-100"></div>
-                <div className="bg-white p-6 rounded-3xl h-80 border border-gray-100"></div>
-            </div>
-        );
-    }
+    if (loading) return <ChartSkeleton />;
 
-    // Mock engagement data for the second chart 
-    // Usually this would come from the backend counting daily habit logs
-    const engagementData = [
-        { day: 'Mon', habits: 3, points: 15 },
-        { day: 'Tue', habits: 4, points: 20 },
-        { day: 'Wed', habits: 2, points: 10 },
-        { day: 'Thu', habits: 5, points: 25 },
-        { day: 'Fri', habits: 4, points: 20 },
-        { day: 'Sat', habits: 6, points: 30 },
-        { day: 'Sun', habits: 7, points: 35 },
-    ];
+    const EmptyState = ({ message }: { message: string }) => (
+        <div
+            className="h-56 flex items-center justify-center rounded-2xl border border-dashed"
+            style={{ background: '#f0f7e6', borderColor: '#c5e3a0', color: '#4a7c2f' }}
+        >
+            <p className="text-sm font-medium">{message}</p>
+        </div>
+    );
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            {/* Carbon Trend Chart */}
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 transition-shadow hover:shadow-md">
-                <div className="mb-6">
-                    <h3 className="text-xl font-bold text-gray-800">Carbon Footprint Trend</h3>
-                    <p className="text-sm text-gray-500">Your daily CO2 emissions over the past week (kg)</p>
+            {/* ── 1. Carbon Footprint Trend ── */}
+            <div style={chartCardStyle}>
+                <div className="mb-5">
+                    <h3 className="text-lg font-bold" style={{ color: '#022202' }}>Carbon Footprint Trend</h3>
+                    <p className="text-sm" style={{ color: '#4a7c2f' }}>Your CO₂ emissions from recent logs (kg)</p>
                 </div>
-
-                {carbonData.length > 0 ? (
-                    <div className="h-64">
+                {carbonTrend.length > 0 ? (
+                    <div className="h-56">
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={carbonData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                            <AreaChart data={carbonTrend} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
                                 <defs>
-                                    <linearGradient id="colorCo2" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                                    <linearGradient id="co2Gradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%"  stopColor="#17921f" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#17921f" stopOpacity={0}   />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} dy={10} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
-                                <Tooltip
-                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                                    itemStyle={{ color: '#047857', fontWeight: 'bold' }}
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e8f5d0" />
+                                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#4a7c2f' }} dy={8} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#4a7c2f' }} />
+                                <Tooltip contentStyle={tooltipStyle} itemStyle={{ color: '#17921f', fontWeight: 'bold' }} />
+                                <Area
+                                    type="monotone"
+                                    dataKey="co2"
+                                    name="CO₂ (kg)"
+                                    stroke="#17921f"
+                                    strokeWidth={3}
+                                    fillOpacity={1}
+                                    fill="url(#co2Gradient)"
+                                    dot={{ fill: '#17921f', strokeWidth: 2, r: 4 }}
+                                    activeDot={{ r: 6, fill: '#022202' }}
                                 />
-                                <Area type="monotone" dataKey="co2" name="CO2 (kg)" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorCo2)" />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 ) : (
-                    <div className="h-64 flex items-center justify-center text-gray-400 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                        <p>No carbon data recorded yet</p>
-                    </div>
+                    <EmptyState message="No carbon data recorded yet. Start logging!" />
                 )}
             </div>
 
-            {/* Engagement Chart */}
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 transition-shadow hover:shadow-md">
-                <div className="mb-6">
-                    <h3 className="text-xl font-bold text-gray-800">Habit Engagement</h3>
-                    <p className="text-sm text-gray-500">Your weekly habit activity and points earned</p>
+            {/* ── 2. CO2 Breakdown Pie Chart ── */}
+            <div style={chartCardStyle}>
+                <div className="mb-5">
+                    <h3 className="text-lg font-bold" style={{ color: '#022202' }}>CO₂ Breakdown</h3>
+                    <p className="text-sm" style={{ color: '#4a7c2f' }}>Average CO₂ by category (kg per log)</p>
                 </div>
-                <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={engagementData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                            <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} dy={10} />
-                            <YAxis yAxisId="left" orientation="left" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
-                            <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
-                            <Tooltip
-                                cursor={{ fill: '#f3f4f6' }}
-                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                            />
-                            <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
-                            <Bar yAxisId="left" dataKey="habits" name="Habits Logged" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={40} />
-                            <Bar yAxisId="right" dataKey="points" name="Points Earned" fill="#f59e0b" radius={[4, 4, 0, 0]} maxBarSize={40} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
+                {breakdownData.length > 0 && breakdownData.some(d => d.value > 0) ? (
+                    <div className="h-56">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={breakdownData}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={55}
+                                    outerRadius={85}
+                                    paddingAngle={3}
+                                    dataKey="value"
+                                >
+                                    {breakdownData.map((entry, index) => (
+                                        <Cell key={index} fill={entry.color} />
+                                    ))}
+                                </Pie>
+                                <PieTooltip
+                                    contentStyle={tooltipStyle}
+                                    formatter={(value) => [`${value} kg`, '']}
+                                />
+                                <PieLegend
+                                    iconType="circle"
+                                    iconSize={10}
+                                    wrapperStyle={{ fontSize: '12px', color: '#4a7c2f' }}
+                                />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
+                ) : (
+                    <EmptyState message="No carbon breakdown data yet." />
+                )}
             </div>
 
+            {/* ── 3. Habit Activity (last 7 days — real data) ── */}
+            <div style={chartCardStyle}>
+                <div className="mb-5">
+                    <h3 className="text-lg font-bold" style={{ color: '#022202' }}>Habit Activity</h3>
+                    <p className="text-sm" style={{ color: '#4a7c2f' }}>Habits logged and points earned this week</p>
+                </div>
+                {activityData.some(d => d.habits > 0) ? (
+                    <div className="h-56">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={activityData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e8f5d0" />
+                                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#4a7c2f' }} dy={8} />
+                                <YAxis yAxisId="left"  orientation="left"  axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#4a7c2f' }} />
+                                <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#4a7c2f' }} />
+                                <Tooltip
+                                    cursor={{ fill: '#f0f7e6' }}
+                                    contentStyle={tooltipStyle}
+                                />
+                                <PieLegend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '12px', color: '#4a7c2f' }} />
+                                <Bar yAxisId="left"  dataKey="habits" name="Habits Logged" fill="#17921f" radius={[4, 4, 0, 0]} maxBarSize={36} />
+                                <Bar yAxisId="right" dataKey="points" name="Points Earned" fill="#5cbd36" radius={[4, 4, 0, 0]} maxBarSize={36} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                ) : (
+                    <EmptyState message="No habit activity this week. Start logging habits!" />
+                )}
+            </div>
+
+            {/* ── 4. Goals Progress ── */}
+            <div style={chartCardStyle}>
+                <div className="mb-5">
+                    <h3 className="text-lg font-bold" style={{ color: '#022202' }}>Goals Progress</h3>
+                    <p className="text-sm" style={{ color: '#4a7c2f' }}>Overview of your eco goals status</p>
+                </div>
+                {goalsData.some(d => d.value > 0) ? (
+                    <div className="h-56">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={goalsData.filter(d => d.value > 0)}
+                                    cx="50%"
+                                    cy="50%"
+                                    outerRadius={85}
+                                    paddingAngle={3}
+                                    dataKey="value"
+                                    label={({ name, value }) => `${name}: ${value}`}
+                                    labelLine={false}
+                                >
+                                    {goalsData.filter(d => d.value > 0).map((entry, index) => (
+                                        <Cell key={index} fill={entry.color} />
+                                    ))}
+                                </Pie>
+                                <PieTooltip contentStyle={tooltipStyle} />
+                                <PieLegend
+                                    iconType="circle"
+                                    iconSize={10}
+                                    wrapperStyle={{ fontSize: '12px', color: '#4a7c2f' }}
+                                />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
+                ) : (
+                    <EmptyState message="No goals set yet. Create your first eco goal!" />
+                )}
+            </div>
         </div>
     );
 };

@@ -1,27 +1,31 @@
+// pages/User/components/GoalsSection.tsx
+
 import { useState } from "react";
-import { CheckCircle2, Clock, Plus, Target as TargetIcon } from "lucide-react";
+import { CheckCircle2, Clock, Plus, Target as TargetIcon, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 
+axios.defaults.withCredentials = true;
 const API_URL = "http://localhost:5000/api";
 
 export type Goal = {
-    _id: string;
-    title: string;
+    _id:        string;
+    title:      string;
     targetDate: string;
-    status: "in-progress" | "completed" | "failed";
+    status:     "in-progress" | "completed" | "failed";
+    progress?:  number;
 };
 
 interface GoalsSectionProps {
-    goals: Goal[];
-    loading: boolean;
+    goals:        Goal[];
+    loading:      boolean;
     onGoalChange: () => void;
 }
 
 const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
     const [newGoalTitle, setNewGoalTitle] = useState("");
-    const [newGoalDate, setNewGoalDate] = useState("");
-    const [isAddingGoal, setIsAddingGoal] = useState(false);
+    const [newGoalDate,  setNewGoalDate]  = useState("");
+    const [isAdding,     setIsAdding]     = useState(false);
 
     const handleAddGoal = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -31,111 +35,198 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
             toast.success("Goal added!");
             setNewGoalTitle("");
             setNewGoalDate("");
-            setIsAddingGoal(false);
+            setIsAdding(false);
             onGoalChange();
-        } catch (error) {
+        } catch {
             toast.error("Failed to add goal");
         }
     };
 
-    const handletoggleGoalStatus = async (id: string, currentStatus: string) => {
+    const handleToggleStatus = async (id: string, currentStatus: string) => {
         const newStatus = currentStatus === "completed" ? "in-progress" : "completed";
         try {
             await axios.patch(`${API_URL}/goals/${id}/status`, { status: newStatus });
             toast.success(`Goal marked as ${newStatus}`);
             onGoalChange();
-        } catch (error) {
+        } catch {
             toast.error("Failed to update goal");
         }
     };
 
-    const handleDeleteGoal = async (id: string) => {
+    const handleDelete = async (id: string) => {
         try {
             await axios.delete(`${API_URL}/goals/${id}`);
             toast.success("Goal deleted");
             onGoalChange();
-        } catch (error) {
+        } catch {
             toast.error("Failed to delete goal");
         }
     };
 
     return (
-        <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mt-8">
-            <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
-                <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    <TargetIcon className="text-blue-500" /> Eco-Goals
+        <div className="bg-white rounded-3xl p-6 shadow-sm border mt-6" style={{ borderColor: '#c5e3a0' }}>
+
+            {/* Header */}
+            <div className="flex justify-between items-center mb-5 pb-4 border-b" style={{ borderColor: '#e8f5d0' }}>
+                <h2 className="text-xl font-bold flex items-center gap-2" style={{ color: '#022202' }}>
+                    <TargetIcon size={20} style={{ color: '#508C12' }} />
+                    Eco Goals
                 </h2>
                 <button
-                    onClick={() => setIsAddingGoal(!isAddingGoal)}
-                    className="bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-xl font-bold transition-colors flex items-center gap-2"
+                    onClick={() => setIsAdding(!isAdding)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all"
+                    style={{ background: '#508C12' }}
+                    onMouseEnter={e => (e.currentTarget.style.background = '#3f7708')}
+                    onMouseLeave={e => (e.currentTarget.style.background = '#508C12')}
                 >
-                    <Plus size={18} /> New Goal
+                    <Plus size={16} /> New Goal
                 </button>
             </div>
 
-            {isAddingGoal && (
-                <form onSubmit={handleAddGoal} className="bg-gray-50 p-6 rounded-2xl mb-6 shadow-inner border border-gray-200 animate-in fade-in slide-in-from-top-4">
+            {/* Add goal form */}
+            {isAdding && (
+                <div className="rounded-2xl p-5 mb-5 border" style={{ background: '#f0f7e6', borderColor: '#c5e3a0' }}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Target</label>
+                            <label className="block text-sm font-semibold mb-1.5" style={{ color: '#022202' }}>
+                                Goal Title
+                            </label>
                             <input
                                 required
                                 type="text"
-                                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all bg-white"
+                                style={{ borderColor: '#c5e3a0' }}
                                 placeholder="e.g. Reduce meat consumption to 1x/week"
                                 value={newGoalTitle}
                                 onChange={e => setNewGoalTitle(e.target.value)}
+                                onFocus={e  => (e.target.style.borderColor = '#508C12')}
+                                onBlur={e   => (e.target.style.borderColor = '#c5e3a0')}
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Target Date</label>
+                            <label className="block text-sm font-semibold mb-1.5" style={{ color: '#022202' }}>
+                                Target Date
+                            </label>
                             <input
                                 required
                                 type="date"
-                                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-700"
+                                className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all bg-white"
+                                style={{ borderColor: '#c5e3a0', color: '#022202' }}
                                 value={newGoalDate}
                                 onChange={e => setNewGoalDate(e.target.value)}
+                                onFocus={e  => (e.target.style.borderColor = '#508C12')}
+                                onBlur={e   => (e.target.style.borderColor = '#c5e3a0')}
                             />
                         </div>
                     </div>
                     <div className="flex justify-end gap-3">
-                        <button type="button" onClick={() => setIsAddingGoal(false)} className="px-4 py-2 text-gray-500 font-semibold hover:bg-gray-200 rounded-lg">Cancel</button>
-                        <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold shadow-md">Save Goal</button>
+                        <button
+                            type="button"
+                            onClick={() => setIsAdding(false)}
+                            className="px-4 py-2 text-sm font-semibold rounded-xl border transition-colors"
+                            style={{ borderColor: '#c5e3a0', color: '#4a7c2f' }}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handleAddGoal}
+                            className="px-5 py-2 text-sm font-bold text-white rounded-xl transition-all"
+                            style={{ background: '#508C12' }}
+                            onMouseEnter={e => (e.currentTarget.style.background = '#3f7708')}
+                            onMouseLeave={e => (e.currentTarget.style.background = '#508C12')}
+                        >
+                            Save Goal
+                        </button>
                     </div>
-                </form>
+                </div>
             )}
 
+            {/* Goals list */}
             <div className="space-y-3">
                 {goals.length === 0 && !loading && (
-                    <div className="text-center py-10 text-gray-400">
-                        <TargetIcon size={48} className="mx-auto text-gray-200 mb-3" />
-                        <p>You haven't set any goals yet.</p>
+                    <div className="text-center py-10" style={{ color: '#4a7c2f' }}>
+                        <TargetIcon size={44} className="mx-auto mb-3 opacity-30" style={{ color: '#508C12' }} />
+                        <p className="font-medium">No goals set yet.</p>
+                        <p className="text-sm mt-1 opacity-70">Click New Goal to get started!</p>
                     </div>
                 )}
+
                 {goals.map(goal => {
                     const isCompleted = goal.status === 'completed';
                     return (
-                        <div key={goal._id} className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${isCompleted ? 'bg-emerald-50 border-emerald-100' : 'bg-white border-gray-100 hover:border-blue-200 hover:shadow-sm'}`}>
-                            <div className="flex items-center gap-4">
+                        <div
+                            key={goal._id}
+                            className="flex items-center justify-between p-4 rounded-2xl border transition-all"
+                            style={{
+                                background:   isCompleted ? '#f0f7e6' : 'white',
+                                borderColor:  isCompleted ? '#c5e3a0' : '#e8f5d0',
+                            }}
+                        >
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
                                 <button
-                                    onClick={() => handletoggleGoalStatus(goal._id, goal.status)}
-                                    className={`p-1 rounded-full transition-colors ${isCompleted ? 'text-emerald-500 hover:text-emerald-600' : 'text-gray-300 hover:text-blue-500'}`}
+                                    onClick={() => handleToggleStatus(goal._id, goal.status)}
+                                    className="transition-colors flex-shrink-0"
+                                    style={{ color: isCompleted ? '#17921f' : '#c5e3a0' }}
+                                    onMouseEnter={e => (e.currentTarget.style.color = '#508C12')}
+                                    onMouseLeave={e => (e.currentTarget.style.color = isCompleted ? '#17921f' : '#c5e3a0')}
                                 >
-                                    <CheckCircle2 size={28} className={isCompleted ? 'fill-emerald-100' : ''} />
+                                    <CheckCircle2 size={26} />
                                 </button>
-                                <div>
-                                    <h3 className={`font-bold text-lg ${isCompleted ? 'text-emerald-800 line-through opacity-70' : 'text-gray-800'}`}>{goal.title}</h3>
-                                    <p className={`text-sm flex items-center gap-1 ${isCompleted ? 'text-emerald-600/70' : 'text-gray-500'}`}>
-                                        <Clock size={14} /> target: {new Date(goal.targetDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                                <div className="min-w-0">
+                                    <h3
+                                        className="font-bold text-base truncate"
+                                        style={{
+                                            color:          isCompleted ? '#2d6a10' : '#022202',
+                                            textDecoration: isCompleted ? 'line-through' : 'none',
+                                            opacity:        isCompleted ? 0.7 : 1,
+                                        }}
+                                    >
+                                        {goal.title}
+                                    </h3>
+                                    <p className="text-xs flex items-center gap-1 mt-0.5" style={{ color: '#4a7c2f' }}>
+                                        <Clock size={12} />
+                                        Target: {new Date(goal.targetDate).toLocaleDateString(undefined, {
+                                            year: 'numeric', month: 'short', day: 'numeric'
+                                        })}
                                     </p>
+                                    {/* Progress bar */}
+                                    {goal.progress !== undefined && !isCompleted && (
+                                        <div className="mt-2 flex items-center gap-2">
+                                            <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: '#e8f5d0' }}>
+                                                <div
+                                                    className="h-full rounded-full transition-all"
+                                                    style={{ width: `${goal.progress}%`, background: '#508C12' }}
+                                                />
+                                            </div>
+                                            <span className="text-xs font-semibold" style={{ color: '#4a7c2f' }}>
+                                                {goal.progress}%
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                            <button
-                                onClick={() => handleDeleteGoal(goal._id)}
-                                className="text-gray-400 hover:text-red-500 p-2 opacity-50 hover:opacity-100 transition-opacity"
-                            >
-                                Delete
-                            </button>
+
+                            {/* Status badge + delete */}
+                            <div className="flex items-center gap-2 flex-shrink-0 ml-3">
+                                <span
+                                    className="text-xs font-bold px-2.5 py-1 rounded-full capitalize hidden sm:block"
+                                    style={{
+                                        background: isCompleted ? 'rgba(23,146,31,0.15)' : 'rgba(80,140,18,0.1)',
+                                        color:      isCompleted ? '#17921f'               : '#508C12',
+                                    }}
+                                >
+                                    {goal.status.replace('-', ' ')}
+                                </span>
+                                <button
+                                    onClick={() => handleDelete(goal._id)}
+                                    className="p-1.5 rounded-lg transition-colors"
+                                    style={{ color: '#c5e3a0' }}
+                                    onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+                                    onMouseLeave={e => (e.currentTarget.style.color = '#c5e3a0')}
+                                >
+                                    <Trash2 size={15} />
+                                </button>
+                            </div>
                         </div>
                     );
                 })}
