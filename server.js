@@ -17,6 +17,8 @@ const carbonRoutes = require("./routes/carbonRoutes");
 const goalRoutes = require("./routes/goalRoutes");
 const communityRoutes = require("./routes/communityRoutes");
 const ecoSuggestionRoutes = require("./routes/ecoSuggestionRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
+
 
 // Connect MongoDB Atlas
 connectDB();
@@ -66,6 +68,7 @@ app.use("/api/carbon", carbonRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/community", communityRoutes);
 app.use("/api/eco-suggestions", ecoSuggestionRoutes);
+app.use("/api/notification", notificationRoutes);
 
 // Test route
 app.get("/", (req, res) => {
