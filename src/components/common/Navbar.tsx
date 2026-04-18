@@ -7,6 +7,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Home, Leaf, FileText, Target, Users, Settings, Sparkles, LayoutDashboard } from "lucide-react";
 // import logo from "../../assets/WhiteLogo.png";
 import { useAuth } from "../../context/AuthContext";
+import NotificationBell from "../../pages/User/components/common/NotificationBell";
 
 interface NavbarProps {
     toggleSidebar: () => void;
@@ -168,7 +169,10 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
                 )}
 
                 {/* Notification bell */}
-                <button
+                <NotificationBell isUser={isUser} />
+
+
+                {/* <button
                     className="p-2 rounded-full transition-colors relative"
                     style={{ color: isUser ? 'rgba(212,237,170,0.85)' : '#508C12' }}
                     onMouseEnter={e => (e.currentTarget.style.background = isUser ? 'rgba(255,255,255,0.1)' : '#f0f7e6')}
@@ -179,7 +183,7 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
                         className="absolute top-1 right-1 w-2 h-2 rounded-full border-2 border-white"
                         style={{ background: '#ef4444' }}
                     />
-                </button>
+                </button> */}
 
                 {/* Logout */}
                 <button
