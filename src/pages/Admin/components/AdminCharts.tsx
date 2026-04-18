@@ -1,134 +1,150 @@
-import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+// pages/Admin/components/AdminCharts.tsx
 
-interface AdminChartsProps {
-    stats: {
-        totalUsers: number;
-        totalHabits: number;
-        totalPosts: number;
-        totalCO2Log: number;
-    } | null;
-}
+import { useEffect, useState } from "react";
+import {
+    AreaChart, Area,
+    BarChart, Bar,
+    PieChart, Pie, Cell,
+    XAxis, YAxis, CartesianGrid,
+    Tooltip, ResponsiveContainer, Legend,
+} from "recharts";
+import axios from "axios";
 
-const AdminCharts = ({ stats }: AdminChartsProps) => {
-    // Mock Data for the Line Chart (Platform Analytics)
-    const lineData = [
-        { name: "Jan", users: 4000, activity: 2400 },
-        { name: "Feb", users: 3000, activity: 1398 },
-        { name: "Mar", users: 2000, activity: 9800 },
-        { name: "Apr", users: 2780, activity: 3908 },
-        { name: "May", users: 1890, activity: 4800 },
-        { name: "Jun", users: 2390, activity: 3800 },
-        { name: "Jul", users: 3490, activity: 4300 },
-    ];
+axios.defaults.withCredentials = true;
+const API_URL = "http://localhost:5000/api";
 
-    // Data for the Donut Chart (Activity Distribution)
-    const donutData = [
-        { name: "Active Habits", value: stats?.totalHabits || 500, color: "#3b82f6" },
-        { name: "Community Posts", value: stats?.totalPosts || 300, color: "#10b981" },
-        { name: "Eco-Goals", value: Math.floor((stats?.totalHabits || 500) * 0.4), color: "#8b5cf6" },
-    ];
+const tooltipStyle = {
+    borderRadius: '12px',
+    border:       'none',
+    boxShadow:    '0 4px 12px rgba(0,0,0,0.1)',
+    fontSize:     '12px',
+};
+
+const AdminCharts = () => {
+    const [analytics, setAnalytics] = useState<any>(null);
+    const [loading,   setLoading]   = useState(true);
+
+    useEffect(() => {
+        axios.get(`${API_URL}/admin/analytics`)
+            .then(res => setAnalytics(res.data))
+            .catch(err => console.error('Analytics error:', err))
+            .finally(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-pulse">
+                {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="bg-gray-50 rounded-2xl h-64 border border-gray-100" />
+                ))}
+            </div>
+        );
+    }
+
+    const EmptyState = ({ msg }: { msg: string }) => (
+        <div className="h-48 flex items-center justify-center text-gray-400 text-sm bg-gray-50 rounded-xl border border-dashed border-gray-200">
+            {msg}
+        </div>
+    );
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            {/* Donut Chart: Platform Activity */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-1">
-                <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-bold text-slate-800">Activity Split</h3>
-                    <span className="text-xl text-slate-300">...</span>
-                </div>
-                <div className="h-64 relative flex items-center justify-center">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                            <Pie
-                                data={donutData}
-                                innerRadius={70}
-                                outerRadius={100}
-                                paddingAngle={5}
-                                dataKey="value"
-                                stroke="none"
-                            >
-                                {donutData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
-                            </Pie>
-                            <Tooltip
-                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                            />
-                        </PieChart>
-                    </ResponsiveContainer>
-                    {/* Centered Total */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span className="text-3xl font-black text-slate-800">
-                            {(stats?.totalHabits || 0) + (stats?.totalPosts || 0)}
-                        </span>
-                        <span className="text-sm font-semibold text-slate-400">Total Actions</span>
+            {/* ── 1. User Growth ── */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <h3 className="font-bold text-gray-800 mb-1">User Growth</h3>
+                <p className="text-xs text-gray-400 mb-4">New registrations per month</p>
+                {analytics?.userGrowth?.length > 0 ? (
+                    <div className="h-52">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={analytics.userGrowth} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                                <defs>
+                                    <linearGradient id="userGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%"  stopColor="#3b82f6" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}   />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#94a3b8' }} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#94a3b8' }} />
+                                <Tooltip contentStyle={tooltipStyle} />
+                                <Area type="monotone" dataKey="users" name="New Users" stroke="#3b82f6" strokeWidth={3}
+                                    fillOpacity={1} fill="url(#userGrad)"
+                                    dot={{ fill: '#3b82f6', r: 4 }} activeDot={{ r: 6 }} />
+                            </AreaChart>
+                        </ResponsiveContainer>
                     </div>
-                </div>
-                {/* Custom Legend */}
-                <div className="flex flex-wrap justify-center gap-4 mt-2">
-                    {donutData.map(item => (
-                        <div key={item.name} className="flex items-center gap-2 text-sm font-medium text-slate-600">
-                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-                            {item.name} <span className="text-slate-400 ml-1">{item.value}</span>
-                        </div>
-                    ))}
-                </div>
+                ) : <EmptyState msg="No user growth data yet" />}
             </div>
 
-            {/* Line Chart: Platform Analytics */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-2">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-bold text-slate-800">Platform Analytics</h3>
-                    <div className="flex gap-4">
-                        <div className="flex items-center gap-2 text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg">
-                            <div className="w-2 h-2 rounded-full bg-blue-600"></div> User Growth
-                        </div>
-                        <div className="flex items-center gap-2 text-sm font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg">
-                            <div className="w-2 h-2 rounded-full bg-emerald-600"></div> Activity
-                        </div>
+            {/* ── 2. CO2 Trend ── */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <h3 className="font-bold text-gray-800 mb-1">Platform CO₂ Trend</h3>
+                <p className="text-xs text-gray-400 mb-4">Average CO₂ across all users (kg)</p>
+                {analytics?.co2Trend?.length > 0 ? (
+                    <div className="h-52">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={analytics.co2Trend} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                                <defs>
+                                    <linearGradient id="co2Grad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%"  stopColor="#17921f" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#17921f" stopOpacity={0}   />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#94a3b8' }} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#94a3b8' }} />
+                                <Tooltip contentStyle={tooltipStyle} />
+                                <Area type="monotone" dataKey="avgCO2" name="Avg CO₂ (kg)" stroke="#17921f" strokeWidth={3}
+                                    fillOpacity={1} fill="url(#co2Grad)"
+                                    dot={{ fill: '#17921f', r: 4 }} activeDot={{ r: 6 }} />
+                            </AreaChart>
+                        </ResponsiveContainer>
                     </div>
-                </div>
-                <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={lineData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                            <XAxis
-                                dataKey="name"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fill: "#94a3b8", fontSize: 12 }}
-                                dy={10}
-                            />
-                            <YAxis
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fill: "#94a3b8", fontSize: 12 }}
-                            />
-                            <Tooltip
-                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                            />
-                            <Line
-                                type="monotone"
-                                dataKey="users"
-                                stroke="#3b82f6"
-                                strokeWidth={3}
-                                dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
-                                activeDot={{ r: 6, fill: "#3b82f6" }}
-                            />
-                            <Line
-                                type="monotone"
-                                dataKey="activity"
-                                stroke="#10b981"
-                                strokeWidth={3}
-                                dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
-                                activeDot={{ r: 6, fill: "#10b981" }}
-                            />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
+                ) : <EmptyState msg="No carbon data logged yet" />}
             </div>
 
+            {/* ── 3. Activity Split ── */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <h3 className="font-bold text-gray-800 mb-1">Platform Activity</h3>
+                <p className="text-xs text-gray-400 mb-4">Distribution of user activities</p>
+                {analytics?.activitySplit?.some((d: any) => d.value > 0) ? (
+                    <div className="h-52">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie data={analytics.activitySplit} cx="50%" cy="50%"
+                                    innerRadius={55} outerRadius={80} paddingAngle={3} dataKey="value">
+                                    {analytics.activitySplit.map((entry: any, i: number) => (
+                                        <Cell key={i} fill={entry.color} />
+                                    ))}
+                                </Pie>
+                                <Tooltip contentStyle={tooltipStyle} />
+                                <Legend iconType="circle" iconSize={10} wrapperStyle={{ fontSize: '12px' }} />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
+                ) : <EmptyState msg="No activity data yet" />}
+            </div>
+
+            {/* ── 4. Top Habits ── */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <h3 className="font-bold text-gray-800 mb-1">Most Popular Habits</h3>
+                <p className="text-xs text-gray-400 mb-4">Habits tracked by most users</p>
+                {analytics?.topHabits?.length > 0 ? (
+                    <div className="h-52">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={analytics.topHabits} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
+                                <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#94a3b8' }} />
+                                <YAxis type="category" dataKey="name" axisLine={false} tickLine={false}
+                                    tick={{ fontSize: 11, fill: '#64748b' }} width={100} />
+                                <Tooltip contentStyle={tooltipStyle} />
+                                <Bar dataKey="count" name="Users" fill="#508C12" radius={[0, 4, 4, 0]} maxBarSize={24} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                ) : <EmptyState msg="No habit data yet" />}
+            </div>
         </div>
     );
 };
