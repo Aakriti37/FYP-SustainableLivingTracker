@@ -62,8 +62,10 @@ exports.getAnalytics = async (req, res) => {
             .limit(30)
             .lean();
 
+            
         // Group by date
-        const co2ByDate: Record<string, number[]> = {};
+        // const co2ByDate: Record<string, number[]> = {};
+        const co2ByDate = {};
         recentLogs.forEach(log => {
             const day = new Date(log.date).toLocaleDateString('en', { month: 'short', day: 'numeric' });
             if (!co2ByDate[day]) co2ByDate[day] = [];
