@@ -21,6 +21,7 @@ import ForgotPassword from './pages/Authentication/ForgotPassword';
 import ResetPassword from './pages/Authentication/ResetPassword';
 
 import { AuthProvider } from './context/AuthContext';
+import AdminCarbonLogs from './pages/Admin/AdminCarbonLogs';
 
 const App = () => {
   return (
@@ -65,6 +66,7 @@ const App = () => {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/posts" element={<AdminPosts />} />
+            <Route path="/admin/carbon-logs" element={<AdminCarbonLogs />} />
             <Route path="/admin/profile" element={<AdminProfile />} />
           </Route>
 

@@ -14,7 +14,7 @@ const GenerateButton = ({ onClick, loading, hasGenerated }: GenerateButtonProps)
       <button
         onClick={onClick}
         disabled={loading}
-        className="flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-base text-white shadow-md transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-emerald-500 to-teal-600"
+        className="flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-base text-white shadow-md transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] bg-linear-to-r from-emerald-500 to-teal-600"
       >
         {loading ? (
           <>

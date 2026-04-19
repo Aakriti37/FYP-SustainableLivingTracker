@@ -9,7 +9,7 @@ import type { CarbonFormData } from "../../../../types/carbon.types";
 axios.defaults.withCredentials = true;
 const API_URL = "http://localhost:5000/api";
 
-// ── Styling helpers ───────────────────────────────────────────────────────────
+// Styling helpers 
 const inputClass = `
     w-full px-4 py-3 rounded-xl border text-sm font-medium outline-none transition-all
     bg-white
@@ -102,7 +102,7 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
 
-            {/* ── Period selector ── */}
+            {/* Period selector */}
             <div className={sectionClass} style={{ borderColor: '#c5e3a0' }}>
                 <label className={labelClass} style={{ color: '#022202' }}>
                     <CalendarDays size={16} className="inline mr-2" style={{ color: '#508C12' }} />
@@ -128,7 +128,7 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                 </div>
             </div>
 
-            {/* ── Transport ── */}
+            {/* Transport */}
             <div className={sectionClass} style={{ borderColor: '#c5e3a0' }}>
                 <h3 className="font-bold text-base mb-4 flex items-center gap-2" style={{ color: '#022202' }}>
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#d4edaa' }}>
@@ -188,21 +188,8 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                                 style={{ borderColor: '#c5e3a0' }}
                             />
                         </div>
-                        <div>
-                            <label className={labelClass} style={{ color: '#2d6a10' }}>
-                                <Train size={13} className="inline mr-1" /> Train Distance (km)
-                            </label>
-                            <input
-                                type="number"
-                                min="0"
-                                placeholder="e.g. 5"
-                                value={form.trainKm || ''}
-                                onChange={e => update('trainKm', Number(e.target.value))}
-                                className={inputClass}
-                                style={{ borderColor: '#c5e3a0' }}
-                            />
-                        </div>
                     </div>
+
                     <p className="text-xs" style={{ color: '#4a7c2f' }}>
                         Enter total km for your selected period ({form.period})
                     </p>
@@ -263,9 +250,9 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                         </button>
                     ))}
                 </div>
-                <p className="text-xs mt-2" style={{ color: '#4a7c2f' }}>
+                {/* <p className="text-xs mt-2" style={{ color: '#4a7c2f' }}>
                     Source: Oxford University / Scarborough et al. (2014)
-                </p>
+                </p> */}
             </div>
 
             {/* ── Cooking Fuel ── */}
@@ -309,7 +296,7 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                     </div>
                 </div>
                 <p className="text-xs mt-1.5" style={{ color: '#4a7c2f' }}>
-                    Source: Springer Nature 2025 — LPG: 1.492 kg CO₂e/kg, Wood: 1.83 kg CO₂e/kg
+                    LPG: 1.492 kg CO₂e/kg, Wood: 1.83 kg CO₂e/kg
                 </p>
             </div>
 

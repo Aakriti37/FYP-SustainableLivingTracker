@@ -64,7 +64,7 @@ const SuggestionCard = ({ suggestion, index }: SuggestionCardProps) => {
     >
       {/* Icon circle — shows the suggestion's emoji from Gemini */}
       <div
-        className={`flex-shrink-0 w-12 h-12 rounded-xl border flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300 ${iconBg}`}
+        className={`shrink-0 w-12 h-12 rounded-xl border flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300 ${iconBg}`}
       >
         {suggestion.icon}
       </div>

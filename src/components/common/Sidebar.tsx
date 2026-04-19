@@ -11,8 +11,9 @@ import {
     MessageCircle,
     LayoutDashboard,
     ChevronRight,
+    Leaf,
 } from "lucide-react";
-import logo from "../../assets/WhiteLogo.png";
+// import logo from "../../assets/WhiteLogo.png";
 import { useAuth } from "../../context/AuthContext";
 
 interface SidebarProps {
@@ -24,6 +25,7 @@ const adminLinks = [
     { path: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { path: "/admin/users",     icon: Users,           label: "Users"     },
     { path: "/admin/posts",     icon: MessageCircle,   label: "Posts"     },
+    { path: "/admin/carbon-logs", icon: Leaf, label: "Carbon Logs" },
     { path: "/admin/profile",   icon: Settings,        label: "Profile"   },
 ];
 
@@ -40,7 +42,7 @@ const Sidebar = ({ isOpen = true }: SidebarProps) => {
 
     const handleLogout = () => {
         logout();
-        navigate("/login");
+        navigate("/");
     };
 
     return (

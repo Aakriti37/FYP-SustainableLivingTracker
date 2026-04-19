@@ -80,7 +80,7 @@ const EcoChatbot = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center"
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-linear-to-br from-emerald-500 to-teal-600 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center"
           title="Ask EcoBot"
         >
           <MessageCircle size={24} />
@@ -93,7 +93,7 @@ const EcoChatbot = () => {
           style={{ height: "520px" }}>
 
           {/* Header */}
-          <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-3 flex items-center justify-between flex-shrink-0">
+          <div className="bg-linear-to-r from-emerald-500 to-teal-600 px-4 py-3 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2 text-white">
               <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                 <Leaf size={16} />
@@ -119,7 +119,7 @@ const EcoChatbot = () => {
                 className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 {msg.role === "assistant" && (
-                  <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-1 mr-2">
+                  <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-1 mr-2">
                     <Leaf size={12} className="text-emerald-600" />
                   </div>
                 )}
@@ -138,7 +138,7 @@ const EcoChatbot = () => {
             {/* Loading indicator */}
             {loading && (
               <div className="flex justify-start">
-                <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-1 mr-2">
+                <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-1 mr-2">
                   <Leaf size={12} className="text-emerald-600" />
                 </div>
                 <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-sm shadow-sm border border-gray-100">
@@ -151,7 +151,7 @@ const EcoChatbot = () => {
 
           {/* Suggested questions (show only at start) */}
           {messages.length <= 1 && (
-            <div className="bg-white px-3 py-2 border-t border-gray-100 flex flex-wrap gap-1.5 flex-shrink-0">
+            <div className="bg-white px-3 py-2 border-t border-gray-100 flex flex-wrap gap-1.5 shrink-0">
               {SUGGESTED_QUESTIONS.map((q, i) => (
                 <button
                   key={i}
@@ -165,7 +165,7 @@ const EcoChatbot = () => {
           )}
 
           {/* Input */}
-          <div className="bg-white border-t border-gray-100 px-3 py-3 flex gap-2 flex-shrink-0">
+          <div className="bg-white border-t border-gray-100 px-3 py-3 flex gap-2 shrink-0">
             <input
               type="text"
               value={input}
@@ -178,7 +178,7 @@ const EcoChatbot = () => {
             <button
               onClick={() => sendMessage(input)}
               disabled={loading || !input.trim()}
-              className="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center hover:bg-emerald-600 disabled:opacity-40 transition-colors flex-shrink-0"
+              className="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center hover:bg-emerald-600 disabled:opacity-40 transition-colors shrink-0"
             >
               <Send size={15} />
             </button>

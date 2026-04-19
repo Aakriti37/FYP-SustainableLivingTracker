@@ -60,7 +60,7 @@ const ResultWidget = ({ todayLog, stats }: ResultWidgetProps) => {
                         </div>
 
                         {/* Breakdown */}
-                        <div className="grid grid-cols-2 gap-2">
+                        {/* <div className="grid grid-cols-2 gap-2">
                             {[
                                 { label: 'Transport', value: todayLog.transportCO2 },
                                 { label: 'Energy',    value: todayLog.energyCO2    },
@@ -76,7 +76,7 @@ const ResultWidget = ({ todayLog, stats }: ResultWidgetProps) => {
                                     <p className="font-bold text-sm text-white">{item.value.toFixed(2)} kg</p>
                                 </div>
                             ))}
-                        </div>
+                        </div> */}
                     </>
                 ) : (
                     <div className="py-4">
@@ -92,11 +92,11 @@ const ResultWidget = ({ todayLog, stats }: ResultWidgetProps) => {
 
             {/* ── Total stats row ── */}
             {stats && (
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                     {[
                         { label: 'Total CO₂',  value: `${stats.totalCO2.toFixed(1)} kg`, icon: <TrendingUp size={16} /> },
                         { label: 'Total Logs', value: stats.totalLogs,                    icon: <BarChart3   size={16} /> },
-                        { label: 'Avg CO₂',    value: `${stats.avgCO2.toFixed(1)} kg`,    icon: <Leaf        size={16} /> },
+                        
                     ].map(stat => (
                         <div
                             key={stat.label}

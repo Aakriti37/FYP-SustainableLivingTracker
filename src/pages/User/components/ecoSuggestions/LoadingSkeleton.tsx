@@ -9,7 +9,7 @@ const LoadingSkeleton = () => {
           className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-start gap-4"
         >
           {/* Icon placeholder */}
-          <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-50" />
+          <div className="shrink-0 w-12 h-12 rounded-xl bg-emerald-50" />
 
           {/* Text placeholders */}
           <div className="flex-1 space-y-2 pt-1">

@@ -40,7 +40,7 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
 
     const handleLogout = () => {
         logout();
-        navigate("/login");
+        navigate("/");
     };
 
     return (

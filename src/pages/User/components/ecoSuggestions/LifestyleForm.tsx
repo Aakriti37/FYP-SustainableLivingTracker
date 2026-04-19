@@ -158,7 +158,7 @@ const LifestyleForm = ({ onComplete }: LifestyleFormProps) => {
     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-6 text-white">
+      <div className="bg-linear-to-r from-emerald-500 to-teal-600 px-8 py-6 text-white">
         <h2 className="text-2xl font-extrabold mb-1">Complete Your Lifestyle Profile</h2>
         <p className="text-emerald-100 text-sm">
           Fill this once so our AI can generate accurate, personalised eco suggestions for you.
@@ -168,7 +168,7 @@ const LifestyleForm = ({ onComplete }: LifestyleFormProps) => {
       {/* Step indicators */}
       <div className="flex items-center px-8 py-4 border-b border-gray-100 gap-2 overflow-x-auto">
         {steps.map((s, i) => (
-          <div key={i} className="flex items-center gap-2 flex-shrink-0">
+          <div key={i} className="flex items-center gap-2 shrink-0">
             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
               step === i + 1
                 ? "bg-emerald-500 text-white"
@@ -355,7 +355,7 @@ const LifestyleForm = ({ onComplete }: LifestyleFormProps) => {
           <button
             type="button"
             onClick={() => setStep(s => s + 1)}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-sm hover:shadow-md transition-all"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-linear-to-r from-emerald-500 to-teal-600 shadow-sm hover:shadow-md transition-all"
           >
             Next <ChevronRight size={16} />
           </button>
@@ -364,7 +364,7 @@ const LifestyleForm = ({ onComplete }: LifestyleFormProps) => {
             type="button"
             onClick={handleSubmit}
             disabled={loading}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-sm hover:shadow-md disabled:opacity-60 transition-all"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-linear-to-r from-emerald-500 to-teal-600 shadow-sm hover:shadow-md disabled:opacity-60 transition-all"
           >
             {loading ? (
               <><Loader2 size={16} className="animate-spin" /> Saving…</>
