@@ -10,7 +10,7 @@ import ProfileDetails   from "../common/ProfileComponents/ProfileDetails";
 import EditProfileModal from "../common/ProfileComponents/EditProfileModal";
 
 axios.defaults.withCredentials = true;
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const AdminProfile = () => {
   const [profile, setProfile] = useState({

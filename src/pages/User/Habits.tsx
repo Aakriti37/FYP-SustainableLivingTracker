@@ -11,7 +11,7 @@ import type { Habit }    from "./components/habits/HabitList";
 import type { Activity } from "./components/habits/RecentActivity";
 
 axios.defaults.withCredentials = true;
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Habits = () => {
     const [habits,      setHabits]      = useState<Habit[]>([]);

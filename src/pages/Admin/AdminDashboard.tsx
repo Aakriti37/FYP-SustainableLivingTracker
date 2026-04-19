@@ -10,7 +10,7 @@ import RecentUsersTable from "./components/RecentUsersTable";
 import { useAuth } from "../../context/AuthContext";
 
 axios.defaults.withCredentials = true;
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 type Stats = {
     totalUsers:  number;

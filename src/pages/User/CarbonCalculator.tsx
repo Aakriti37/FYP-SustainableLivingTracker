@@ -12,7 +12,7 @@ import HistoryList from "./components/carbon/HistoryList";
 import type { CarbonLog, CarbonStats } from "../../types/carbon.types";
 
 axios.defaults.withCredentials = true;
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const CarbonCalculator = () => {
     const [latestLog, setLatestLog] = useState<CarbonLog | null>(null);

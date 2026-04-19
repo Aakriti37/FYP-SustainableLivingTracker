@@ -11,7 +11,7 @@ import DashboardCharts from "./components/dashboard/DashboardCharts";
 import GoalsSection   from "./components/dashboard/GoalsSection";
 
 axios.defaults.withCredentials = true;
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const UserDashboard = () => {
     const { user }   = useAuth();

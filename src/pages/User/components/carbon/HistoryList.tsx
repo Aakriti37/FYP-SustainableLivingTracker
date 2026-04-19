@@ -8,7 +8,7 @@ import type { CarbonLog } from "../../../../types/carbon.types";
 import EditLogModal from "./EditLogModal";
 
 axios.defaults.withCredentials = true;
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface HistoryListProps {
     history:   CarbonLog[];

@@ -9,7 +9,7 @@ import GoalForm     from "./components/goals/GoalForm";
 import BadgeDisplay from "./components/goals/BadgeDisplay";
 
 axios.defaults.withCredentials = true;
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 type Goal = {
     _id:        string;
