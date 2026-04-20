@@ -62,7 +62,7 @@ const Goals = () => {
     const handleToggleStatus = async (_id: string, currentStatus: string) => {
         const newStatus = currentStatus === 'completed' ? 'in-progress' : 'completed';
         try {
-            await api.patch("/goals/${id}/status", { status: newStatus });
+            await api.patch(`/goals/${_id}/status`, { status: newStatus });
             if (newStatus === 'completed') toast.success("Goal completed! Check your badges!");
             else toast.success(`Goal marked as in-progress`);
             fetchGoals();
@@ -73,7 +73,7 @@ const Goals = () => {
 
     const handleDelete = async (_id: string) => {
         try {
-            await api.delete("/goals/${id}");
+            await api.delete(`/goals/${_id}`);
             toast.success("Goal deleted");
             fetchGoals();
         } catch {

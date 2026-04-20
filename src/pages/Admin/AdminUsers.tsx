@@ -36,7 +36,7 @@ const AdminUsers = () => {
     const handleDeleteUser = async (_id: string) => {
         if (!window.confirm("Are you sure you want to delete this user and all their data?")) return;
         try {
-            await api.delete("/admin/users/${id}");
+            await api.delete(`/admin/users/${_id}`);
             toast.success("User deleted successfully");
             fetchUsers();
         } catch (error) {

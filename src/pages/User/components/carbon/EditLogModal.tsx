@@ -36,7 +36,7 @@ const EditLogModal = ({ log, onClose, onSaved }: EditLogModalProps) => {
     const handleSave = async () => {
         setLoading(true);
         try {
-            await api.put("/carbon/${log._id}", form);
+            await api.put(`/carbon/${log._id}`, form);
             toast.success("Carbon log updated!");
             onSaved();
             onClose();

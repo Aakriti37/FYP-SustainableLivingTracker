@@ -36,7 +36,7 @@ const AdminPosts = () => {
     const handleDeletePost = async (_id: string) => {
         if (!window.confirm("Delete this post permanently?")) return;
         try {
-            await api.delete("/admin/posts/${id}");
+            await api.delete(`/admin/posts/${_id}`);
             toast.success("Post deleted");
             fetchPosts();
         } catch (error) {
@@ -44,10 +44,6 @@ const AdminPosts = () => {
         }
     };
 
-    // const filteredPosts = posts.filter((p) =>
-    //     p.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //     `${p.userId?.firstName} ${p.userId?.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
-    // );
 
     const filteredPosts = posts.filter((p) =>
         (p.content?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||

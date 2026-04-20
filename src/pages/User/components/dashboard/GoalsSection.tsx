@@ -43,7 +43,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
     const handleToggleStatus = async (_id: string, currentStatus: string) => {
         const newStatus = currentStatus === "completed" ? "in-progress" : "completed";
         try {
-            await api.patch("/goals/${id}/status", { status: newStatus });
+            await api.patch(`/goals/${_id}/status`, { status: newStatus });
             toast.success(`Goal marked as ${newStatus}`);
             onGoalChange();
         } catch {
@@ -53,7 +53,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
 
     const handleDelete = async (_id: string) => {
         try {
-            await api.delete("/goals/${id}");
+            await api.delete(`/goals/${_id}`);
             toast.success("Goal deleted");
             onGoalChange();
         } catch {

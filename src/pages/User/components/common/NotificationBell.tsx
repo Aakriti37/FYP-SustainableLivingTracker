@@ -92,7 +92,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
     const handleDelete = async (id: string, e: React.MouseEvent) => {
         e.stopPropagation();
         try {
-            await api.delete("/notifications/${id}");
+            await api.delete(`/notifications/${id}`);
             setNotifications(prev => prev.filter(n => n._id !== id));
             setUnreadCount(prev => {
                 const wasUnread = notifications.find(n => n._id === id && !n.isRead);
@@ -106,7 +106,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
     const handleNotificationClick = async (notif: Notification) => {
         if (!notif.isRead) {
             try {
-                await api.patch("/notifications/${notif._id}/read");
+                await api.patch(`/notifications/${notif._id}/read`);
                 setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
                 setUnreadCount(prev => Math.max(0, prev - 1));
             } catch { /* silent */ }

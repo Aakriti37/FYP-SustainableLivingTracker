@@ -48,7 +48,7 @@ const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
         if (!window.confirm('Are you sure you want to delete this carbon log?')) return;
         setDeletingId(id);
         try {
-            await api.delete("/carbon/${id}");
+            await api.delete(`/carbon/${id}`);
             toast.success("Carbon log deleted.");
             onRefresh();
         } catch {
