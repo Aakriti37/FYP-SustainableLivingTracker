@@ -8,10 +8,8 @@ import {
     PieChart, Pie, Cell, Tooltip as PieTooltip, Legend as PieLegend,
     XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
-import axios from "axios";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
+import api from "../../../../services/api";
 
 // Color palette 
 // const GREEN_COLORS = ['#17921f', '#508C12', '#5cbd36', '#a8d080', '#d4edaa'];
@@ -51,10 +49,10 @@ const DashboardCharts = () => {
         const fetchAll = async () => {
             try {
                 const [carbonRes, goalsRes, activityRes] = await Promise.all([
-                    axios.get(`${API_URL}/carbon/history`),
+                    api.get("/carbon/history"),
                     // axios.get(`${API_URL}/habits`),
-                    axios.get(`${API_URL}/goals`),
-                    axios.get(`${API_URL}/habits/activities/recent`),
+                    api.get("/goals"),
+                    api.get("/habits/activities/recent"),
                 ]);
 
                 // 1. Carbon footprint trend (last 7 logs) 

@@ -3,15 +3,13 @@
 
 import { useState, useEffect } from "react";
 import { RefreshCw, Mail, User, Shield, Calendar, Pencil } from "lucide-react";
-import axios from "axios";
+import api from "../../services/api";
 import toast from "react-hot-toast";
 
 import EditProfileModal    from "../common/ProfileComponents/EditProfileModal";
 import LifestyleSection   from "../common/ProfileComponents/LifestyleSection";
 import BadgeShieldDisplay from "../common/ProfileComponents/BadgeShieldDisplay";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 const UserProfile = () => {
     const [profile,   setProfile]   = useState({
@@ -22,7 +20,7 @@ const UserProfile = () => {
 
     const fetchProfile = async () => {
         try {
-            const res = await axios.get(`${API_URL}/user/profile`);
+            const res = await api.get("/user/profile");
             setProfile({
                 firstName: res.data.firstName,
                 lastName:  res.data.lastName,

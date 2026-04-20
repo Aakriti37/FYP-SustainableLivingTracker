@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import { MessageSquare, Trash2, Search } from "lucide-react";
 import toast from "react-hot-toast";
-import axios from "axios";
+import api from "../../services/api";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 type Post = {
     image: any;
@@ -22,7 +20,7 @@ const AdminPosts = () => {
 
     const fetchPosts = async () => {
         try {
-            const res = await axios.get(`${API_URL}/admin/posts`);
+            const res = await api.get("/admin/posts");
             setPosts(res.data);
         } catch (error: any) {
             toast.error("Failed to load posts");
@@ -35,10 +33,10 @@ const AdminPosts = () => {
         fetchPosts();
     }, []);
 
-    const handleDeletePost = async (id: string) => {
+    const handleDeletePost = async (_id: string) => {
         if (!window.confirm("Delete this post permanently?")) return;
         try {
-            await axios.delete(`${API_URL}/admin/posts/${id}`);
+            await api.delete("/admin/posts/${id}");
             toast.success("Post deleted");
             fetchPosts();
         } catch (error) {

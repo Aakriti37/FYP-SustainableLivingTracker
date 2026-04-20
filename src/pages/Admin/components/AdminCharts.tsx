@@ -8,10 +8,7 @@ import {
     XAxis, YAxis, CartesianGrid,
     Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
-import axios from "axios";
-
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
+import api from "../../../services/api";
 
 const tooltipStyle = {
     borderRadius: '12px',
@@ -25,7 +22,7 @@ const AdminCharts = () => {
     const [loading,   setLoading]   = useState(true);
 
     useEffect(() => {
-        axios.get(`${API_URL}/admin/analytics`)
+        api.get("/admin/analytics")
             .then(res => setAnalytics(res.data))
             .catch(err => console.error('Analytics error:', err))
             .finally(() => setLoading(false));

@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { X, Loader2 } from "lucide-react";
-import axios from "axios";
+import api from "../../../../services/api";
 import toast from "react-hot-toast";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 interface CreateHabitModalProps {
     onClose:   () => void;
@@ -21,7 +19,7 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        axios.get(`${API_URL}/goals`)
+        api.get("/goals")
             .then(res => setGoals(res.data.filter((g: any) => g.status !== 'completed')))
             .catch(() => {});
     }, []);
@@ -30,7 +28,7 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
         e.preventDefault();
         setLoading(true);
         try {
-            await axios.post(`${API_URL}/habits`, form);
+            await api.post("/habits", form);
             toast.success("Habit created!");
             onSuccess();
         } catch (error: unknown) {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Leaf, RefreshCw } from "lucide-react";
-import axios from "axios";
+import api from "../../services/api";
 import toast from "react-hot-toast";
 
 import CalculatorForm from "./components/carbon/CalculatorForm";
@@ -11,8 +11,6 @@ import HistoryList from "./components/carbon/HistoryList";
 
 import type { CarbonLog, CarbonStats } from "../../types/carbon.types";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 const CarbonCalculator = () => {
     const [latestLog, setLatestLog] = useState<CarbonLog | null>(null);
@@ -24,9 +22,9 @@ const CarbonCalculator = () => {
         setLoading(true);
         try {
             const [todayRes, historyRes, statsRes] = await Promise.all([
-                axios.get(`${API_URL}/carbon/today`),
-                axios.get(`${API_URL}/carbon/history`),
-                axios.get(`${API_URL}/carbon/stats`),
+                api.get("/carbon/today"),
+                api.get("/carbon/history"),
+                api.get("/carbon/stats"),
             ]);
             setLatestLog(todayRes.data);
             setHistory(historyRes.data);

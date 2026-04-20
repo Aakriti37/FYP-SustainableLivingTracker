@@ -2,10 +2,8 @@
 // Pure CSS shield badges — no images needed
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../../services/api";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 const BADGE_CONFIG: Record<string, {
     label:    string;
@@ -99,7 +97,7 @@ const BadgeShieldDisplay = ({ userId }: BadgeShieldDisplayProps) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`${API_URL}/notifications/badges`)
+        api.get("/notifications/badges")
             .then(res => setBadges(res.data))
             .catch(() => {})
             .finally(() => setLoading(false));

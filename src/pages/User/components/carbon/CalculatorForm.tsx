@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import { Car, Bus, Zap, Utensils, Flame, CalendarDays, Loader2, Leaf } from "lucide-react";
-import axios from "axios";
+import api from "../../../../services/api";
 import toast from "react-hot-toast";
 import type { CarbonFormData } from "../../../../types/carbon.types";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 // Styling helpers 
 const inputClass = `
@@ -77,7 +75,7 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
         e.preventDefault();
         setLoading(true);
         try {
-            await axios.post(`${API_URL}/carbon`, form);
+            await api.post("/carbon", form);
             toast.success(`Carbon footprint logged for ${form.period} period!`);
             setForm({
                 period:             'daily',

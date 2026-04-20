@@ -3,10 +3,8 @@
 import { useState } from "react";
 import { CheckCircle2, Clock, Plus, Target as TargetIcon, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
-import axios from "axios";
+import api from "../../../../services/api";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 export type Goal = {
     _id:        string;
@@ -31,7 +29,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
         e.preventDefault();
         if (!newGoalTitle || !newGoalDate) return;
         try {
-            await axios.post(`${API_URL}/goals`, { title: newGoalTitle, targetDate: newGoalDate });
+            await api.post("/goals", { title: newGoalTitle, targetDate: newGoalDate });
             toast.success("Goal added!");
             setNewGoalTitle("");
             setNewGoalDate("");
@@ -42,10 +40,10 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
         }
     };
 
-    const handleToggleStatus = async (id: string, currentStatus: string) => {
+    const handleToggleStatus = async (_id: string, currentStatus: string) => {
         const newStatus = currentStatus === "completed" ? "in-progress" : "completed";
         try {
-            await axios.patch(`${API_URL}/goals/${id}/status`, { status: newStatus });
+            await api.patch("/goals/${id}/status", { status: newStatus });
             toast.success(`Goal marked as ${newStatus}`);
             onGoalChange();
         } catch {
@@ -53,9 +51,9 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
         }
     };
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (_id: string) => {
         try {
-            await axios.delete(`${API_URL}/goals/${id}`);
+            await api.delete("/goals/${id}");
             toast.success("Goal deleted");
             onGoalChange();
         } catch {
@@ -165,7 +163,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                             <div className="flex items-center gap-3 flex-1 min-w-0">
                                 <button
                                     onClick={() => handleToggleStatus(goal._id, goal.status)}
-                                    className="transition-colors flex-shrink-0"
+                                    className="transition-colors shrink-0"
                                     style={{ color: isCompleted ? '#17921f' : '#c5e3a0' }}
                                     onMouseEnter={e => (e.currentTarget.style.color = '#508C12')}
                                     onMouseLeave={e => (e.currentTarget.style.color = isCompleted ? '#17921f' : '#c5e3a0')}
@@ -207,7 +205,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                             </div>
 
                             {/* Status badge + delete */}
-                            <div className="flex items-center gap-2 flex-shrink-0 ml-3">
+                            <div className="flex items-center gap-2 shrink-0 ml-3">
                                 <span
                                     className="text-xs font-bold px-2.5 py-1 rounded-full capitalize hidden sm:block"
                                     style={{

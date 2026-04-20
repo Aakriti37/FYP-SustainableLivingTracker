@@ -2,15 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { RefreshCw } from "lucide-react";
-import axios from "axios";
+import api from "../../services/api";
 import toast from "react-hot-toast";
 import AdminKPICards    from "./components/AdminKPICards";
 import AdminCharts      from "./components/AdminCharts";
 import RecentUsersTable from "./components/RecentUsersTable";
 import { useAuth } from "../../context/AuthContext";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 type Stats = {
     totalUsers:  number;
@@ -26,7 +24,7 @@ const AdminDashboard = () => {
     const { user } = useAuth();
 
     useEffect(() => {
-        axios.get(`${API_URL}/admin/stats`)
+        api.get("/admin/stats")
             .then(res => setStats(res.data))
             .catch(() => toast.error("Failed to load admin stats"))
             .finally(() => setLoading(false));

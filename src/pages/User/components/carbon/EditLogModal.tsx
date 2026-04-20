@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import { X, Save, Loader2 } from "lucide-react";
-import axios from "axios";
+import api from "../../../../services/api";
 import toast from "react-hot-toast";
 import type { CarbonLog, CarbonFormData } from "../../../../types/carbon.types";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 interface EditLogModalProps {
     log:     CarbonLog;
@@ -38,7 +36,7 @@ const EditLogModal = ({ log, onClose, onSaved }: EditLogModalProps) => {
     const handleSave = async () => {
         setLoading(true);
         try {
-            await axios.put(`${API_URL}/carbon/${log._id}`, form);
+            await api.put("/carbon/${log._id}", form);
             toast.success("Carbon log updated!");
             onSaved();
             onClose();

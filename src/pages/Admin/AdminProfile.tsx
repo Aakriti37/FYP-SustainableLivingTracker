@@ -2,15 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { RefreshCw } from "lucide-react";
-import axios from "axios";
+import api from "../../services/api";
 import toast from "react-hot-toast";
 
 import ProfileCard      from "../common/ProfileComponents/ProfileCard";
 import ProfileDetails   from "../common/ProfileComponents/ProfileDetails";
 import EditProfileModal from "../common/ProfileComponents/EditProfileModal";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 const AdminProfile = () => {
   const [profile, setProfile] = useState({
@@ -25,7 +23,7 @@ const AdminProfile = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(`${API_URL}/user/profile`);
+      const res = await api.get("/user/profile");
       setProfile({
         firstName: res.data.firstName,
         lastName:  res.data.lastName,

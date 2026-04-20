@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import api from "../../../../services/api";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 const BADGE_INFO: Record<string, { label: string; icon: string; desc: string; color: string }> = {
     eco_starter:      { label: 'Eco Starter',      icon: '🌱', desc: 'Completed your first goal',         color: '#17921f' },
     habit_builder:    { label: 'Habit Builder',    icon: '⚡', desc: 'Logged 5 habits',                   color: '#508C12' },

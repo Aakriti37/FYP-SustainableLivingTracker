@@ -295,7 +295,7 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
         </div>
 
         {/* Footer navigation */}
-        <div className="px-6 py-4 border-t flex gap-3 flex-shrink-0" style={{ borderColor: "#e8f5d0" }}>
+        <div className="px-6 py-4 border-t flex gap-3 shrink-0" style={{ borderColor: "#e8f5d0" }}>
           <button
             type="button"
             onClick={() => step > 1 ? setStep(s => s - 1) : onClose()}

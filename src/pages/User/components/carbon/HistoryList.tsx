@@ -2,13 +2,11 @@
 
 import { useState, useMemo } from "react";
 import { Pencil, Trash2, Car, Bus, Train, Zap, Utensils, Flame, Filter } from "lucide-react";
-import axios from "axios";
+import api from "../../../../services/api";
 import toast from "react-hot-toast";
 import type { CarbonLog } from "../../../../types/carbon.types";
 import EditLogModal from "./EditLogModal";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 interface HistoryListProps {
     history:   CarbonLog[];
@@ -50,7 +48,7 @@ const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
         if (!window.confirm('Are you sure you want to delete this carbon log?')) return;
         setDeletingId(id);
         try {
-            await axios.delete(`${API_URL}/carbon/${id}`);
+            await api.delete("/carbon/${id}");
             toast.success("Carbon log deleted.");
             onRefresh();
         } catch {

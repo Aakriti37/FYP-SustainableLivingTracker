@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import { X, Save, Loader2, Lock, User } from "lucide-react";
-import axios from "axios";
+import api from "../../../services/api";
 import toast from "react-hot-toast";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 interface EditProfileModalProps {
   firstName: string;
@@ -31,7 +29,7 @@ const EditProfileModal = ({ firstName, lastName, onClose, onSaved }: EditProfile
       if (newPassword.trim()) {
         payload.password = newPassword;
       }
-      await axios.put(`${API_URL}/user/profile`, payload);
+      await api.put("/user/profile", payload);
       toast.success("Profile updated successfully!");
       onSaved(form.firstName, form.lastName);
       onClose();

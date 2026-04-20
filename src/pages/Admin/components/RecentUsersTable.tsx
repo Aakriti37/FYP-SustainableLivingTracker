@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../../services/api";
 import { Filter } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL;
 
 type User = {
     _id: string;
@@ -20,7 +19,7 @@ const RecentUsersTable = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const res = await axios.get(`${API_URL}/admin/users`);
+                const res = await api.get("/admin/users");
                 // Assume sort by newest first and grab top 5
                 const sorted = res.data.sort((a: User, b: User) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 setRecentUsers(sorted.slice(0, 6));

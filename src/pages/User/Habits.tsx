@@ -3,15 +3,13 @@
 import { useState, useEffect } from "react";
 import { Plus, Zap, RefreshCw } from "lucide-react";
 import toast from "react-hot-toast";
-import axios from "axios";
+import api from "../../services/api";
 import HabitList        from "./components/habits/HabitList";
 import RecentActivity   from "./components/habits/RecentActivity";
 import CreateHabitModal from "./components/habits/CreateHabitModal";
 import type { Habit }    from "./components/habits/HabitList";
 import type { Activity } from "./components/habits/RecentActivity";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 const Habits = () => {
     const [habits,      setHabits]      = useState<Habit[]>([]);
@@ -22,8 +20,8 @@ const Habits = () => {
     const fetchAll = async () => {
         try {
             const [habitsRes, activitiesRes] = await Promise.all([
-                axios.get(`${API_URL}/habits`),
-                axios.get(`${API_URL}/habits/activities/recent`),
+                api.get("/habits"),
+                api.get("/habits/activities/recent"),
             ]);
             setHabits(habitsRes.data);
             setActivities(activitiesRes.data);
@@ -37,12 +35,12 @@ const Habits = () => {
     useEffect(() => {
         fetchAll();
         // Generate reminders on page load
-        axios.post(`${API_URL}/notifications/generate-reminders`).catch(() => {});
+        api.post("/notifications/generate-reminders").catch(() => {});
     }, []);
 
-    const handleDeleteHabit = async (id: string) => {
+    const handleDeleteHabit = async (_id: string) => {
         try {
-            await axios.delete(`${API_URL}/habits/${id}`);
+            await api.delete("/habits/${id}");
             toast.success("Habit deleted");
             fetchAll();
         } catch {
@@ -52,7 +50,7 @@ const Habits = () => {
 
     const handleLogActivity = async (id: string) => {
         try {
-            const res = await axios.post(`${API_URL}/habits/${id}/log`);
+            const res = await api.post("/habits/${id}/log");
             toast.success(`Logged! +${res.data.activity.pointsEarned} Points`);
             // Optimistic update
             setHabits(prev =>

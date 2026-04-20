@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { Leaf, Search, Car, Bus, Zap, Flame } from "lucide-react";
-import axios from "axios";
+import api from "../../services/api";
 import toast from "react-hot-toast";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 type CarbonLog = {
     _id:                string;
@@ -39,7 +37,7 @@ const AdminCarbonLogs = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        axios.get(`${API_URL}/admin/carbon-logs`)
+        api.get("/admin/carbon-logs")
             .then(res => setLogs(res.data))
             .catch(() => toast.error("Failed to load carbon logs"))
             .finally(() => setLoading(false));

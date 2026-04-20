@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Users, Trash2, Search } from "lucide-react";
 import toast from "react-hot-toast";
-import axios from "axios";
+import api from "../../services/api";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
+
 
 type User = {
     _id: string;
@@ -21,7 +20,7 @@ const AdminUsers = () => {
 
     const fetchUsers = async () => {
         try {
-            const res = await axios.get(`${API_URL}/admin/users`);
+            const res = await api.get("/admin/users");
             setUsers(res.data);
         } catch (error: any) {
             toast.error(error.response?.data?.message || "Failed to load users");
@@ -34,10 +33,10 @@ const AdminUsers = () => {
         fetchUsers();
     }, []);
 
-    const handleDeleteUser = async (id: string) => {
+    const handleDeleteUser = async (_id: string) => {
         if (!window.confirm("Are you sure you want to delete this user and all their data?")) return;
         try {
-            await axios.delete(`${API_URL}/admin/users/${id}`);
+            await api.delete("/admin/users/${id}");
             toast.success("User deleted successfully");
             fetchUsers();
         } catch (error) {

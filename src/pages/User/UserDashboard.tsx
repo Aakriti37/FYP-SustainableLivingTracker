@@ -4,14 +4,12 @@ import { useState, useEffect } from "react";
 import { RefreshCw, ArrowRight, Leaf } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import axios from "axios";
+import api from "../../services/api";
 
 import KPICards       from "./components/dashboard/KPICards";
 import DashboardCharts from "./components/dashboard/DashboardCharts";
 import GoalsSection   from "./components/dashboard/GoalsSection";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
 
 const UserDashboard = () => {
     const { user }   = useAuth();
@@ -29,10 +27,10 @@ const UserDashboard = () => {
         setLoading(true);
         try {
             const [goalsRes, habitsRes, carbonStatsRes, activityRes] = await Promise.all([
-                axios.get(`${API_URL}/goals`),
-                axios.get(`${API_URL}/habits`),
-                axios.get(`${API_URL}/carbon/stats`),
-                axios.get(`${API_URL}/habits/activities/recent`),
+                api.get("/goals"),
+                api.get("/habits"),
+                api.get("/carbon/stats"),
+                api.get("/habits/activities/recent"),
             ]);
 
             const habits     = habitsRes.data;
