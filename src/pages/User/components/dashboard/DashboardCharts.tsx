@@ -14,7 +14,7 @@ axios.defaults.withCredentials = true;
 const API_URL = import.meta.env.VITE_API_URL;
 
 // Color palette 
-const GREEN_COLORS = ['#17921f', '#508C12', '#5cbd36', '#a8d080', '#d4edaa'];
+// const GREEN_COLORS = ['#17921f', '#508C12', '#5cbd36', '#a8d080', '#d4edaa'];
 
 const chartCardStyle = {
     background: 'white',
@@ -50,9 +50,9 @@ const DashboardCharts = () => {
     useEffect(() => {
         const fetchAll = async () => {
             try {
-                const [carbonRes, habitsRes, goalsRes, activityRes] = await Promise.all([
+                const [carbonRes, goalsRes, activityRes] = await Promise.all([
                     axios.get(`${API_URL}/carbon/history`),
-                    axios.get(`${API_URL}/habits`),
+                    // axios.get(`${API_URL}/habits`),
                     axios.get(`${API_URL}/goals`),
                     axios.get(`${API_URL}/habits/activities/recent`),
                 ]);
@@ -82,9 +82,11 @@ const DashboardCharts = () => {
                 }
 
                 // 3. Habit completion rate 
-                const habits = habitsRes.data;
-                const completedToday = habits.filter((h: any) => h.completedToday).length;
-                const notCompleted   = habits.length - completedToday;
+                // const habits = habitsRes.data;
+                // const completedToday = habits.filter((h: any) => h.completedToday).length;
+                // const notCompleted   = habits.length - completedToday;
+
+                
 
                 // Activity logs → group by date for weekly bar chart
                 const last7Days = Array.from({ length: 7 }, (_, i) => {

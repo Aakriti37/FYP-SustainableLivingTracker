@@ -69,7 +69,7 @@ const HabitList = ({ habits, loading, onLogActivity, onDeleteHabit, onOpenModal 
                     </button>
                 </div>
             ) : (
-                <div className="bg-white rounded-3xl border overflow-hidden divide-y" style={{ borderColor: '#c5e3a0', divideColor: '#e8f5d0' }}>
+                <div className="bg-white rounded-3xl border overflow-hidden divide-y divide-[#e8f5d0]" style={{ borderColor: '#c5e3a0' }}>
                     {habits.map(habit => (
                         <div
                             key={habit._id}

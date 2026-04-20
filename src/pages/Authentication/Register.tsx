@@ -11,7 +11,7 @@ const Register = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     setError("");
 
@@ -33,7 +33,7 @@ const Register = () => {
         password,
       });
       navigate("/login"); // redirect to login after successful registration
-    } catch (err) {
+    } catch (err: any) {
       setError(err.response?.data?.message || "Registration failed");
     }
   };

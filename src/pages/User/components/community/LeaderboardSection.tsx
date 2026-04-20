@@ -1,50 +1,91 @@
+// pages/User/components/community/LeaderboardSection.tsx
+
 import { Trophy, Flame } from "lucide-react";
-import type { LeaderboardUser } from "../../Community";
+
+interface LeaderboardUser {
+    _id:          string;
+    name:         string;
+    totalPoints:  number;
+    totalStreak:  number;
+}
 
 interface LeaderboardSectionProps {
     leaderboard: LeaderboardUser[];
 }
 
-const LeaderboardSection = ({ leaderboard }: LeaderboardSectionProps) => {
-    return (
-        <div className="space-y-6">
-            <div className="bg-linear-to-b from-gray-900 to-gray-800 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
-                <div className="absolute top-[-30px] right-[-30px] opacity-10">
-                    <Trophy size={150} />
-                </div>
+const rankStyle = (index: number): React.CSSProperties => {
+    if (index === 0) return { background: '#d97706', color: 'white', boxShadow: '0 0 12px rgba(217,119,6,0.5)' };
+    if (index === 1) return { background: '#94a3b8', color: 'white' };
+    if (index === 2) return { background: '#92400e', color: 'white' };
+    return { background: '#f0f7e6', color: '#2d6a10' };
+};
 
-                <h3 className="text-xl font-bold flex items-center gap-2 mb-6 relative z-10 border-b border-gray-700 pb-4 text-amber-400">
-                    <Trophy size={22} className="text-amber-400" /> Leaderboard
-                </h3>
+const LeaderboardSection = ({ leaderboard }: LeaderboardSectionProps) => (
+    <div>
+        <div
+            className="rounded-3xl p-6 text-white shadow-xl relative overflow-hidden"
+            style={{ background: 'linear-gradient(180deg, #022202 0%, #0d3d0a 100%)' }}
+        >
+            {/* Background icon */}
+            <div className="absolute top-[-20px] right-[-20px] opacity-5">
+                <Trophy size={140} />
+            </div>
 
-                <div className="space-y-4 relative z-10">
-                    {leaderboard.length === 0 ? (
-                        <p className="text-gray-400 text-sm italic">No ranking available yet.</p>
-                    ) : (
-                        leaderboard.map((user, index) => (
-                            <div key={user._id} className="flex items-center gap-3 bg-white/5 hover:bg-white/10 p-3 rounded-2xl transition-colors">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${index === 0 ? 'bg-amber-400 text-amber-900 shadow-[0_0_15px_rgba(251,191,36,0.5)]' :
-                                    index === 1 ? 'bg-slate-300 text-slate-800' :
-                                        index === 2 ? 'bg-amber-700 text-amber-100' : 'bg-gray-700 text-gray-300'
-                                    }`}>
-                                    {index + 1}
-                                </div>
-                                <div className="flex-1 overflow-hidden">
-                                    <h5 className="font-semibold text-gray-200 truncate">{user.name}</h5>
-                                    <div className="flex items-center gap-2 text-xs text-gray-400">
-                                        <span className="flex items-center gap-0.5"><Flame size={12} className="text-orange-500" /> {user.totalStreak} streak</span>
-                                    </div>
-                                </div>
-                                <div className="font-black text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-lg">
-                                    {user.totalPoints}
+            {/* Title */}
+            <h3
+                className="text-lg font-bold flex items-center gap-2 mb-5 pb-4 border-b relative z-10"
+                style={{ color: '#d97706', borderColor: 'rgba(255,255,255,0.1)' }}
+            >
+                <Trophy size={20} style={{ color: '#d97706' }} /> Leaderboard
+            </h3>
+
+            {/* List */}
+            <div className="space-y-3 relative z-10">
+                {leaderboard.length === 0 ? (
+                    <p className="text-sm italic" style={{ color: 'rgba(168,208,128,0.6)' }}>
+                        No rankings yet — complete habits to earn points!
+                    </p>
+                ) : (
+                    leaderboard.map((user, index) => (
+                        <div
+                            key={user._id}
+                            className="flex items-center gap-3 p-3 rounded-2xl transition-colors"
+                            style={{ background: 'rgba(255,255,255,0.05)' }}
+                            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')}
+                            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.05)')}
+                        >
+                            {/* Rank badge */}
+                            <div
+                                className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0"
+                                style={rankStyle(index)}
+                            >
+                                {index + 1}
+                            </div>
+
+                            {/* Name + streak */}
+                            <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-sm truncate" style={{ color: '#d4edaa' }}>
+                                    {user.name}
+                                </p>
+                                <div className="flex items-center gap-1 text-xs" style={{ color: 'rgba(168,208,128,0.7)' }}>
+                                    <Flame size={11} style={{ color: '#ea580c' }} />
+                                    {user.totalStreak} streak
                                 </div>
                             </div>
-                        ))
-                    )}
-                </div>
+
+                            {/* Points */}
+                            <div
+                                className="font-black text-sm px-2.5 py-1 rounded-lg shrink-0"
+                                style={{ background: 'rgba(80,140,18,0.2)', color: '#5cbd36' }}
+                            >
+                                {user.totalPoints} pts
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
         </div>
-    );
-};
+    </div>
+);
 
 export default LeaderboardSection;

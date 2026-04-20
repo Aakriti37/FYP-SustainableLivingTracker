@@ -175,7 +175,7 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
 
         {/* Header */}
         <div
-          className="px-6 py-5 flex items-center justify-between flex-shrink-0"
+          className="px-6 py-5 flex items-center justify-between shrink-0"
           style={{ background: "linear-gradient(135deg, #022202, #2d6a10)" }}
         >
           <div className="flex items-center gap-3 text-white">
@@ -199,8 +199,8 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
         </div>
 
         {/* Step indicators */}
-        <div className="flex px-6 py-3 gap-1.5 flex-shrink-0 border-b" style={{ borderColor: "#e8f5d0" }}>
-          {steps.map((s, i) => (
+        <div className="flex px-6 py-3 gap-1.5 shrink-0 border-b" style={{ borderColor: "#e8f5d0" }}>
+          {steps.map((_, i) => (
             <div
               key={i}
               className="flex-1 h-1.5 rounded-full transition-all"

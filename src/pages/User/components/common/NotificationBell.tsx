@@ -199,7 +199,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
                                 </p>
                             </div>
                         ) : (
-                            <div className="divide-y" style={{ divideColor: '#e8f5d0' }}>
+                            <div className="divide-y divide-[#e8f5d0]">
                                 {notifications.map(notif => {
                                     const typeInfo = TYPE_ICONS[notif.type] ?? TYPE_ICONS.habit_reminder;
                                     return (

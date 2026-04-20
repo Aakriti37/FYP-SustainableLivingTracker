@@ -2,9 +2,9 @@
 // Top navbar for logged-in users
 // Includes landing page links (Home, Features, About, Contact) + app navigation
 
-import { Menu, Bell, LogOut } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { Home, Leaf, FileText, Target, Users, Settings, Sparkles, LayoutDashboard } from "lucide-react";
+import { Leaf, FileText, Target, Users, Settings, Sparkles, LayoutDashboard } from "lucide-react";
 // import logo from "../../assets/WhiteLogo.png";
 import { useAuth } from "../../context/AuthContext";
 import NotificationBell from "../../pages/User/components/common/NotificationBell";

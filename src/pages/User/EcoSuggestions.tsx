@@ -4,44 +4,27 @@ import { useState, useEffect } from "react";
 import { RefreshCw, Sparkles, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
 
-import StatsRow from "./components/ecoSuggestions/StatsRow";
+import StatsRow       from "./components/ecoSuggestions/StatsRow";
 import UserSummaryCard from "./components/ecoSuggestions/UserSummaryCard";
 import GenerateButton from "./components/ecoSuggestions/GenerateButton";
 import SuggestionsList from "./components/ecoSuggestions/SuggestionsList";
-import LifestyleForm from "./components/ecoSuggestions/LifestyleForm";
-import EcoChatbot from "./components/ecoSuggestions/EcoChatbot";
+import LifestyleForm  from "./components/ecoSuggestions/LifestyleForm";
+import EcoChatbot     from "./components/ecoSuggestions/EcoChatbot";
 
-import {
-  fetchHabits,
-  fetchGoals,
-  fetchCarbonLogs,
-  fetchActivityLogs,
-  generateEcoSuggestions,
-} from "../../services/ecoSuggestionService";
-
+import { fetchHabits, fetchGoals, fetchCarbonLogs, generateEcoSuggestions } from "../../services/ecoSuggestionService";
 import api from "../../services/api";
-
-import type {
-  Habit,
-  Goal,
-  CarbonLog,
-  ActivityLog,
-  EcoSuggestion,
-} from "../../types/ecoSuggestions.types";
+import type { Habit, Goal, CarbonLog, EcoSuggestion } from "../../types/ecoSuggestions.types";
 
 const EcoSuggestions = () => {
-  // ── User data ────────────────────────────────────────────────────────────
   const [habits,       setHabits]       = useState<Habit[]>([]);
   const [goals,        setGoals]        = useState<Goal[]>([]);
   const [carbonLogs,   setCarbonLogs]   = useState<CarbonLog[]>([]);
-  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
+  
   const [dataLoading,  setDataLoading]  = useState(true);
 
-  // ── Lifestyle profile ────────────────────────────────────────────────────
   const [hasLifestyle,     setHasLifestyle]     = useState(false);
   const [lifestyleLoading, setLifestyleLoading] = useState(true);
 
-  // ── AI suggestions ───────────────────────────────────────────────────────
   const [suggestions,   setSuggestions]   = useState<EcoSuggestion[]>([]);
   const [emissionLevel, setEmissionLevel] = useState<string | null>(null);
   const [confidence,    setConfidence]    = useState<number | null>(null);
@@ -49,34 +32,21 @@ const EcoSuggestions = () => {
   const [error,         setError]         = useState<string | null>(null);
   const [hasGenerated,  setHasGenerated]  = useState(false);
 
-  // ── Check lifestyle profile on mount ────────────────────────────────────
   useEffect(() => {
-    const checkLifestyle = async () => {
-      try {
-        const res = await api.get("/eco-suggestions/lifestyle");
-        setHasLifestyle(res.data.hasLifestyle);
-      } catch {
-        setHasLifestyle(false);
-      } finally {
-        setLifestyleLoading(false);
-      }
-    };
-    checkLifestyle();
+    api.get("/eco-suggestions/lifestyle")
+      .then(res => setHasLifestyle(res.data.hasLifestyle))
+      .catch(() => setHasLifestyle(false))
+      .finally(() => setLifestyleLoading(false));
   }, []);
 
-  // ── Fetch all user data ──────────────────────────────────────────────────
   const fetchAllData = async () => {
     try {
-      const [habitsRes, goalsRes, carbonRes, activityRes] = await Promise.all([
-        fetchHabits(),
-        fetchGoals(),
-        fetchCarbonLogs(),
-        fetchActivityLogs(),
+      const [habitsRes, goalsRes, carbonRes] = await Promise.all([
+        fetchHabits(), fetchGoals(), fetchCarbonLogs(), 
       ]);
       setHabits(habitsRes);
       setGoals(goalsRes);
       setCarbonLogs(carbonRes);
-      setActivityLogs(activityRes);
     } catch {
       toast.error("Failed to load your profile data.");
     } finally {
@@ -84,11 +54,8 @@ const EcoSuggestions = () => {
     }
   };
 
-  useEffect(() => {
-    fetchAllData();
-  }, []);
+  useEffect(() => { fetchAllData(); }, []);
 
-  // ── Generate suggestions ─────────────────────────────────────────────────
   const handleGenerate = async () => {
     setGenerating(true);
     setError(null);
@@ -96,7 +63,6 @@ const EcoSuggestions = () => {
     setHasGenerated(false);
     setEmissionLevel(null);
     setConfidence(null);
-
     try {
       const result = await generateEcoSuggestions();
       setSuggestions(result.suggestions);
@@ -113,93 +79,77 @@ const EcoSuggestions = () => {
     }
   };
 
-  // ── Lifestyle form completed ─────────────────────────────────────────────
-  const handleLifestyleComplete = () => {
-    setHasLifestyle(true);
-  };
-
-  // ── Loading state ────────────────────────────────────────────────────────
   if (lifestyleLoading) {
     return (
-      <div className="p-8 flex items-center justify-center min-h-64">
-        <RefreshCw size={24} className="animate-spin text-emerald-500" />
+      <div className="p-8 flex items-center justify-center min-h-64" style={{ background: '#f0f7e6' }}>
+        <RefreshCw size={24} className="animate-spin" style={{ color: '#508C12' }} />
       </div>
     );
   }
 
   return (
-    <div className="p-8 pb-28">
+    <div className="p-6 pb-28 min-h-screen" style={{ background: '#f0f7e6' }}>
       <div className="max-w-3xl mx-auto space-y-6">
 
-        {/* ── Page Header ── */}
-        <header className="flex justify-between items-end mb-2">
+        {/* Header */}
+        <header className="flex justify-between items-end pb-4 border-b" style={{ borderColor: '#c5e3a0' }}>
           <div>
-            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 pb-2 flex items-center gap-3">
-              <Sparkles size={32} className="text-emerald-500" />
-              Eco Suggestions
+            <h1 className="text-4xl font-extrabold pb-1 flex items-center gap-3" style={{ color: '#022202' }}>
+              <Sparkles size={32} style={{ color: '#508C12' }} /> Eco Suggestions
             </h1>
-            <p className="text-gray-500 font-medium">
+            <p className="font-medium" style={{ color: '#4a7c2f' }}>
               AI-powered tips personalised to your habits, goals and carbon footprint.
             </p>
           </div>
-          {dataLoading && <RefreshCw size={22} className="animate-spin text-emerald-500" />}
+          {dataLoading && <RefreshCw size={20} className="animate-spin" style={{ color: '#508C12' }} />}
         </header>
 
-        {/* ── Lifestyle Form (shown only if not completed yet) ── */}
-        {!hasLifestyle && (
-          <LifestyleForm onComplete={handleLifestyleComplete} />
-        )}
+        {/* Lifestyle form — shown only if not completed */}
+        {!hasLifestyle && <LifestyleForm onComplete={() => setHasLifestyle(true)} />}
 
-        {/* ── Main content (shown after lifestyle is completed) ── */}
         {hasLifestyle && (
           <>
             {/* Lifestyle completed badge */}
-            <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-xl w-fit">
-              <ShieldCheck size={16} className="text-emerald-500" />
-              <span className="text-sm font-medium text-emerald-700">
+            <div
+              className="flex items-center gap-2 px-4 py-2 rounded-xl w-fit border"
+              style={{ background: '#f0f7e6', borderColor: '#c5e3a0' }}
+            >
+              <ShieldCheck size={16} style={{ color: '#508C12' }} />
+              <span className="text-sm font-medium" style={{ color: '#2d6a10' }}>
                 Lifestyle profile complete — AI suggestions are personalised for you
               </span>
             </div>
 
-            {/* Stats Row */}
-            {!dataLoading && (
-              <StatsRow habits={habits} goals={goals} carbonLogs={carbonLogs} />
-            )}
+            {/* Stats row */}
+            {!dataLoading && <StatsRow habits={habits} goals={goals} carbonLogs={carbonLogs} />}
 
-            {/* User Summary Card */}
-            {!dataLoading && (
-              <UserSummaryCard habits={habits} goals={goals} carbonLogs={carbonLogs} />
-            )}
+            {/* Summary card */}
+            {!dataLoading && <UserSummaryCard habits={habits} goals={goals} carbonLogs={carbonLogs} />}
 
-            {/* Emission level badge (shown after generation) */}
+            {/* Emission level badge */}
             {emissionLevel && confidence && (
-              <div className={`flex items-center gap-3 px-5 py-3 rounded-2xl border font-semibold text-sm ${
-                emissionLevel === "High"
-                  ? "bg-red-50 border-red-100 text-red-700"
-                  : emissionLevel === "Medium"
-                  ? "bg-amber-50 border-amber-100 text-amber-700"
-                  : "bg-emerald-50 border-emerald-100 text-emerald-700"
-              }`}>
+              <div
+                className="flex items-center gap-3 px-5 py-3 rounded-2xl border font-semibold text-sm"
+                style={{
+                  background:  emissionLevel === 'High' ? '#fef2f2' : emissionLevel === 'Medium' ? '#fffbeb' : '#f0f7e6',
+                  borderColor: emissionLevel === 'High' ? '#fecaca' : emissionLevel === 'Medium' ? '#fde68a' : '#c5e3a0',
+                  color:       emissionLevel === 'High' ? '#dc2626' : emissionLevel === 'Medium' ? '#d97706' : '#17921f',
+                }}
+              >
                 <span className="text-2xl">
-                  {emissionLevel === "High" ? "🔴" : emissionLevel === "Medium" ? "🟡" : "🟢"}
+                  {emissionLevel === 'High' ? '🔴' : emissionLevel === 'Medium' ? '🟡' : '🟢'}
                 </span>
                 <div>
                   <p>Your emission level is <strong>{emissionLevel}</strong></p>
-                  <p className="text-xs font-normal opacity-70">
-                    Model confidence: {confidence}%
-                  </p>
+                  <p className="text-xs font-normal opacity-70">Model confidence: {confidence}%</p>
                 </div>
               </div>
             )}
 
-            {/* Generate Button */}
-            <GenerateButton
-              onClick={handleGenerate}
-              loading={generating}
-              hasGenerated={hasGenerated}
-            />
+            {/* Generate button */}
+            <GenerateButton onClick={handleGenerate} loading={generating} hasGenerated={hasGenerated} />
 
-            {/* Suggestions List */}
+            {/* Suggestions */}
             <SuggestionsList
               suggestions={suggestions}
               loading={generating}
@@ -211,7 +161,6 @@ const EcoSuggestions = () => {
         )}
       </div>
 
-      {/* ── Floating Chatbot ── */}
       <EcoChatbot />
     </div>
   );

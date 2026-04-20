@@ -5,91 +5,67 @@ import type { EcoSuggestion } from "../../../../types/ecoSuggestions.types";
 
 interface SuggestionCardProps {
   suggestion: EcoSuggestion;
-  index: number;
+  index:      number;
 }
 
-// Impact badge styles
-const impactConfig: Record<string, { style: string; icon: React.ReactNode }> = {
-  High: {
-    style: "bg-emerald-100 text-emerald-700 border border-emerald-200",
-    icon: <TrendingUp size={12} />,
-  },
-  Medium: {
-    style: "bg-amber-100 text-amber-700 border border-amber-200",
-    icon: <Minus size={12} />,
-  },
-  Low: {
-    style: "bg-sky-100 text-sky-700 border border-sky-200",
-    icon: <TrendingDown size={12} />,
-  },
+const impactConfig: Record<string, { bg: string; color: string; border: string; icon: React.ReactNode }> = {
+  High:   { bg: '#f0f7e6', color: '#17921f', border: '#c5e3a0', icon: <TrendingUp  size={12} /> },
+  Medium: { bg: '#fffbeb', color: '#d97706', border: '#fde68a', icon: <Minus        size={12} /> },
+  Low:    { bg: '#eff6ff', color: '#3b82f6', border: '#bfdbfe', icon: <TrendingDown size={12} /> },
 };
 
-// Category icon mapping using lucide-react icons
-const categoryConfig: Record<string, { icon: React.ReactNode; style: string }> = {
-  Transport: {
-    icon: <Car size={14} />,
-    style: "bg-blue-50 text-blue-600 border border-blue-100",
-  },
-  Energy: {
-    icon: <Zap size={14} />,
-    style: "bg-yellow-50 text-yellow-600 border border-yellow-100",
-  },
-  Diet: {
-    icon: <Salad size={14} />,
-    style: "bg-green-50 text-green-600 border border-green-100",
-  },
-  Lifestyle: {
-    icon: <Leaf size={14} />,
-    style: "bg-teal-50 text-teal-600 border border-teal-100",
-  },
-};
-
-// Icon circle background per category
-const iconBgConfig: Record<string, string> = {
-  Transport: "bg-blue-50 border-blue-100",
-  Energy: "bg-yellow-50 border-yellow-100",
-  Diet: "bg-green-50 border-green-100",
-  Lifestyle: "bg-teal-50 border-teal-100",
+const categoryConfig: Record<string, { icon: React.ReactNode; bg: string; color: string; border: string }> = {
+  Transport: { icon: <Car    size={14} />, bg: '#eff6ff', color: '#3b82f6', border: '#bfdbfe' },
+  Energy:    { icon: <Zap    size={14} />, bg: '#fffbeb', color: '#d97706', border: '#fde68a' },
+  Diet:      { icon: <Salad  size={14} />, bg: '#f0f7e6', color: '#17921f', border: '#c5e3a0' },
+  Lifestyle: { icon: <Leaf   size={14} />, bg: '#f0fdf4', color: '#508C12', border: '#bbf7d0' },
 };
 
 const SuggestionCard = ({ suggestion, index }: SuggestionCardProps) => {
-  const impact = impactConfig[suggestion.impact] ?? impactConfig.Medium;
+  const impact   = impactConfig[suggestion.impact]   ?? impactConfig.Medium;
   const category = categoryConfig[suggestion.category] ?? categoryConfig.Lifestyle;
-  const iconBg = iconBgConfig[suggestion.category] ?? "bg-emerald-50 border-emerald-100";
 
   return (
     <div
-      className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-start gap-4 hover:shadow-md hover:border-emerald-200 transition-all duration-300 group"
-      style={{ animationDelay: `${index * 100}ms` }}
+      className="rounded-2xl p-5 border flex items-start gap-4 transition-all duration-300 group hover:shadow-md"
+      style={{
+        background:   'white',
+        borderColor:  '#c5e3a0',
+        animationDelay: `${index * 100}ms`,
+      }}
+      onMouseEnter={e => (e.currentTarget.style.borderColor = '#508C12')}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = '#c5e3a0')}
     >
-      {/* Icon circle — shows the suggestion's emoji from Gemini */}
+      {/* Emoji icon */}
       <div
-        className={`shrink-0 w-12 h-12 rounded-xl border flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300 ${iconBg}`}
+        className="shrink-0 w-12 h-12 rounded-xl border flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300"
+        style={{ background: '#f0f7e6', borderColor: '#c5e3a0' }}
       >
         {suggestion.icon}
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <h3 className="font-bold text-gray-800 text-base mb-1 leading-snug">
+        <h3 className="font-bold text-base mb-1 leading-snug" style={{ color: '#022202' }}>
           {suggestion.title}
         </h3>
-        <p className="text-sm text-gray-500 leading-relaxed mb-3">
+        <p className="text-sm leading-relaxed mb-3" style={{ color: '#4a7c2f' }}>
           {suggestion.description}
         </p>
 
         {/* Badges */}
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Impact badge with lucide icon */}
-          <span className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${impact.style}`}>
-            {impact.icon}
-            {suggestion.impact} Impact
+          <span
+            className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border"
+            style={{ background: impact.bg, color: impact.color, borderColor: impact.border }}
+          >
+            {impact.icon} {suggestion.impact} Impact
           </span>
-
-          {/* Category badge with lucide icon */}
-          <span className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${category.style}`}>
-            {category.icon}
-            {suggestion.category}
+          <span
+            className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border"
+            style={{ background: category.bg, color: category.color, borderColor: category.border }}
+          >
+            {category.icon} {suggestion.category}
           </span>
         </div>
       </div>

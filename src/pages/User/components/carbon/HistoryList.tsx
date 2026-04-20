@@ -83,7 +83,7 @@ const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
                 </div>
 
                 {/* List */}
-                <div className="divide-y overflow-y-auto" style={{ maxHeight: '500px', divideColor: '#e8f5d0' }}>
+                <div className="divide-y divide-[#e8f5d0] overflow-y-auto" style={{ maxHeight: '500px' }}>
                     {loading ? (
                         <div className="flex items-center justify-center py-16">
                             <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin"
@@ -168,7 +168,7 @@ const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
                                     </div>
 
                                     {/* Right — CO2 + actions */}
-                                    <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                                    <div className="flex flex-col items-end gap-2 shrink-0">
                                         <div className="text-right">
                                             <p className="text-xl font-black" style={{ color: getCO2Color(log.totalCO2) }}>
                                                 {log.totalCO2.toFixed(1)}

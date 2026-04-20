@@ -1,7 +1,7 @@
 // pages/User/components/Carbon/CalculatorForm.tsx
 
 import { useState } from "react";
-import { Car, Bus, Train, Zap, Utensils, Flame, CalendarDays, Loader2, Leaf } from "lucide-react";
+import { Car, Bus, Zap, Utensils, Flame, CalendarDays, Loader2, Leaf } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import type { CarbonFormData } from "../../../../types/carbon.types";

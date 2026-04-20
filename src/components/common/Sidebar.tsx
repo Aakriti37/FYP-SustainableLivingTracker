@@ -4,7 +4,6 @@
 
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
-    Home,
     Users,
     Settings,
     LogOut,

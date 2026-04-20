@@ -29,7 +29,7 @@ const RecentActivity = ({ activities }: RecentActivityProps) => {
                         <p className="text-xs mt-1 opacity-70">Complete a habit to see it here!</p>
                     </div>
                 ) : (
-                    <div className="divide-y" style={{ divideColor: '#e8f5d0' }}>
+                    <div className="divide-y divide-[#e8f5d0]">
                         {activities.slice(0, 10).map(log => (
                             <div
                                 key={log._id}

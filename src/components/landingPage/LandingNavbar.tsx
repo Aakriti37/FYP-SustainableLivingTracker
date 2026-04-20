@@ -5,7 +5,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Menu, X, LayoutDashboard, LogOut } from "lucide-react";
-import logo from "../../assets/GreenLogo.png";
+// import logo from "../../assets/GreenLogo.png";
 import { useAuth } from "../../context/AuthContext";
 
 const LandingNavbar = () => {
