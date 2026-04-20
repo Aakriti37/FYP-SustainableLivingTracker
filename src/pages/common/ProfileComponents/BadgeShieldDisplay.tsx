@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Leaf, Zap, Flame, Trophy, Globe, Crown, Medal } from "lucide-react";
 import api from "../../../services/api";
 
