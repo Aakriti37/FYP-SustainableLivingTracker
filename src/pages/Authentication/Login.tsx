@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
+import { Eye, EyeOff } from "lucide-react";
 
 
 
@@ -13,6 +14,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { refreshUser } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
 
   // Handle normal login
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,7 +70,7 @@ const Login = () => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700">Password</label>
             <input
               type="password"
@@ -77,6 +79,34 @@ const Login = () => {
               className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="********"
             />
+          </div> */}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+
+            <div className="relative mt-1">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 pr-10"
+                placeholder="********"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? (
+                  <EyeOff size={18} />
+                ) : (
+                  <Eye size={18} />
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center justify-between">
@@ -107,20 +137,6 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Google Login Button */}
-        {/* <div className="mt-4 flex justify-center">
-          <button
-            onClick={handleGoogleLogin}
-            className="flex items-center text-black px-4 py-2 rounded-md cursor-pointer transition"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-              alt="Google"
-              className="w-5 h-5 mr-2"
-            />
-            Login with Google
-          </button>
-        </div> */}
 
         <p className="mt-4 text-center text-sm text-gray-600">
           Don’t have an account?{" "}
