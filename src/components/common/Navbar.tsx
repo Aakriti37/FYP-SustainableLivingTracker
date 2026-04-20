@@ -2,12 +2,13 @@
 // Top navbar for logged-in users
 // Includes landing page links (Home, Features, About, Contact) + app navigation
 
-import { Menu, LogOut } from "lucide-react";
+import { Menu, LogOut, X } from "lucide-react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Leaf, FileText, Target, Users, Settings, Sparkles, LayoutDashboard } from "lucide-react";
 // import logo from "../../assets/WhiteLogo.png";
 import { useAuth } from "../../context/AuthContext";
 import NotificationBell from "../../pages/User/components/common/NotificationBell";
+import { useState } from "react";
 
 interface NavbarProps {
     toggleSidebar: () => void;
@@ -38,6 +39,8 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
     const { user, logout } = useAuth();
     const isUser = role === "user";
 
+    const [isOpen, setIsOpen] = useState(false);
+
     const handleLogout = () => {
         logout();
         navigate("/");
@@ -45,7 +48,7 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
 
     return (
         <header
-            className="h-16 flex items-center justify-between px-4 sticky top-0 z-20 shadow-sm"
+            className="relative h-16 flex items-center justify-between px-4 top-0 z-20 shadow-sm"
             style={{
                 background: isUser
                     ? 'linear-gradient(to right, #022202, #17921f)'
@@ -55,6 +58,16 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
         >
             {/* ── Left side ── */}
             <div className="flex items-center gap-3 overflow-x-auto">
+
+                {/* Mobile hamburger (ALL USERS) */}
+                <button
+                    className="xl:hidden p-2 rounded-lg"
+                    style={{ color: isUser ? "white" : "#022202" }}
+                    onClick={() => setIsOpen(!isOpen)}
+                >
+                    {isOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+
 
                 {/* Admin — hamburger menu */}
                 {!isUser && (
@@ -155,6 +168,9 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
                 )}
             </div>
 
+
+
+
             {/* ── Right side ── */}
             <div className="flex items-center gap-2 shrink-0">
 
@@ -171,19 +187,6 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
                 {/* Notification bell */}
                 <NotificationBell isUser={isUser} />
 
-
-                {/* <button
-                    className="p-2 rounded-full transition-colors relative"
-                    style={{ color: isUser ? 'rgba(212,237,170,0.85)' : '#508C12' }}
-                    onMouseEnter={e => (e.currentTarget.style.background = isUser ? 'rgba(255,255,255,0.1)' : '#f0f7e6')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                >
-                    <Bell size={20} />
-                    <span
-                        className="absolute top-1 right-1 w-2 h-2 rounded-full border-2 border-white"
-                        style={{ background: '#ef4444' }}
-                    />
-                </button> */}
 
                 {/* Logout */}
                 <button
@@ -205,6 +208,72 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
                     <span className="hidden sm:inline">Logout</span>
                 </button>
             </div>
+
+
+
+            {isOpen && (
+                <div
+                    className="xl:hidden fixed top-16 left-0 w-full z-50 shadow-lg flex flex-col gap-2 p-4"
+                    style={{
+                        background: isUser
+                            ? "linear-gradient(to right, #022202, #17921f)"
+                            : "white",
+                    }}
+                >
+                    {/* Landing Links */}
+                    {isUser && landingLinks.map(link => (
+                        <a
+                            key={link.href}
+                            href={link.href}
+                            onClick={() => setIsOpen(false)}
+                            className="px-3 py-2 rounded-md text-sm font-medium"
+                            style={{ color: isUser ? "white" : "#022202" }}
+                        >
+                            {link.label}
+                        </a>
+                    ))}
+
+                    {/* App Links */}
+                    {isUser && userAppLinks.map(link => {
+                        const Icon = link.icon;
+                        return (
+                            <NavLink
+                                key={link.path}
+                                to={link.path}
+                                onClick={() => setIsOpen(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-semibold"
+                                style={{ color: "white" }}
+                            >
+                                <Icon size={16} />
+                                {link.label}
+                            </NavLink>
+                        );
+                    })}
+
+                    {/* Admin */}
+                    {!isUser && (
+                        <span className="px-3 py-2 font-bold text-sm">
+                            Admin Panel
+                        </span>
+                    )}
+
+                    {/* Logout */}
+                    <button
+                        onClick={() => {
+                            handleLogout();
+                            setIsOpen(false);
+                        }}
+                        className="px-3 py-2 rounded-md text-sm font-bold text-left"
+                        style={{ color: "#ffdddd" }}
+                    >
+                        Logout
+                    </button>
+                </div>
+            )}
+
+
+
+
         </header>
     );
 };
