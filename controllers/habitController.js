@@ -9,10 +9,10 @@ const Badge        = require('../models/Badge');
 // Helper: award badge if not already earned 
 const awardBadgeIfNew = async (userId, badgeType, badgeTitle, badgeMessage, io) => {
     try {
-        const existing = await Badge.findOne({ userId, badgeType });
+        const existing = await Badge.findOne({ userID: userId, badgeType });
         if (existing) return;
 
-        await Badge.create({ userId, badgeType });
+        await Badge.create({ userID: userId, badgeType });
 
         const notification = await Notification.create({
             userId,

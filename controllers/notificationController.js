@@ -65,7 +65,7 @@ exports.deleteNotification = async (req, res) => {
 // GET /api/notifications/badges — get user badges
 exports.getBadges = async (req, res) => {
     try {
-        const badges = await Badge.find({ userId: req.user.id }).sort({ earnedAt: -1 });
+        const badges = await Badge.find({ userID: req.user.id }).sort({ earnedAt: -1 });
         res.json(badges);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching badges', error: error.message });

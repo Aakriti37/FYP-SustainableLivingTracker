@@ -23,7 +23,7 @@ const badgeSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // One badge type per user
-badgeSchema.index({ userId: 1, badgeType: 1}, { unique: true });
+badgeSchema.index({ userID: 1, badgeType: 1}, { unique: true });
 
 module.exports = mongoose.model('Badge', badgeSchema);
 
