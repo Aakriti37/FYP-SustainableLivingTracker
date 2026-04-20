@@ -40,7 +40,7 @@ const Habits = () => {
 
     const handleDeleteHabit = async (_id: string) => {
         try {
-            await api.delete("/habits/${id}");
+            await api.delete(`/habits/${_id}`);
             toast.success("Habit deleted");
             fetchAll();
         } catch {
@@ -50,7 +50,7 @@ const Habits = () => {
 
     const handleLogActivity = async (id: string) => {
         try {
-            const res = await api.post("/habits/${id}/log");
+            const res = await api.post(`/habits/${id}/log`);
             toast.success(`Logged! +${res.data.activity.pointsEarned} Points`);
             // Optimistic update
             setHabits(prev =>
