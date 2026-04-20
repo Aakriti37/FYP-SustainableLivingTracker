@@ -3,11 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Bell, Check, Trash2, X, Target, Zap, Award, AlertTriangle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useAuth } from "../../../../context/AuthContext";
+import api from "../../../../services/api";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
+// axios.defaults.withCredentials = true;
+// const API_URL = import.meta.env.VITE_API_URL;
 
 interface Notification {
     _id:       string;
@@ -40,7 +40,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
         if (!user) return;
         setLoading(true);
         try {
-            const res = await axios.get(`${API_URL}/notifications`);
+            const res = await api.get("/notifications");
             setNotifications(res.data.notifications || []);
             setUnreadCount(res.data.unreadCount || 0);
         } catch (err) {
@@ -81,7 +81,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
 
     const handleMarkAllRead = async () => {
         try {
-            await axios.patch(`${API_URL}/notifications/read-all`);
+            await api.patch("/notifications/read-all");
             setUnreadCount(0);
             setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
         } catch (err) {
@@ -92,7 +92,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
     const handleDelete = async (id: string, e: React.MouseEvent) => {
         e.stopPropagation();
         try {
-            await axios.delete(`${API_URL}/notifications/${id}`);
+            await api.delete("/notifications/${id}");
             setNotifications(prev => prev.filter(n => n._id !== id));
             setUnreadCount(prev => {
                 const wasUnread = notifications.find(n => n._id === id && !n.isRead);
@@ -106,7 +106,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
     const handleNotificationClick = async (notif: Notification) => {
         if (!notif.isRead) {
             try {
-                await axios.patch(`${API_URL}/notifications/${notif._id}/read`);
+                await api.patch("/notifications/${notif._id}/read");
                 setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
                 setUnreadCount(prev => Math.max(0, prev - 1));
             } catch { /* silent */ }

@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react";
 import { Target, Plus, Zap, RefreshCw } from "lucide-react";
 import toast from "react-hot-toast";
-import axios from "axios";
+import api from "../../services/api";
 import GoalCard     from "./components/goals/GoalCard";
 import GoalForm     from "./components/goals/GoalForm";
 import BadgeDisplay from "./components/goals/BadgeDisplay";
 
-axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.VITE_API_URL;
+// axios.defaults.withCredentials = true;
+// const API_URL = import.meta.env.VITE_API_URL;
 
 type Goal = {
     _id:        string;
@@ -29,7 +29,7 @@ const Goals = () => {
     const fetchGoals = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`${API_URL}/goals`);
+            const res = await api.get("/goals");
             setGoals(res.data);
         } catch {
             toast.error("Failed to load goals");
@@ -41,14 +41,14 @@ const Goals = () => {
     useEffect(() => {
         fetchGoals();
         // Generate reminders on page load
-        axios.post(`${API_URL}/notifications/generate-reminders`).catch(() => {});
+        api.post("/notifications/generate-reminders").catch(() => {});
     }, []);
 
     const handleAddGoal = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!title || !date) return;
         try {
-            await axios.post(`${API_URL}/goals`, { title, targetDate: date });
+            await api.post("/goals", { title, targetDate: date });
             toast.success("Goal added!");
             setTitle('');
             setDate('');
@@ -59,10 +59,10 @@ const Goals = () => {
         }
     };
 
-    const handleToggleStatus = async (id: string, currentStatus: string) => {
+    const handleToggleStatus = async (_id: string, currentStatus: string) => {
         const newStatus = currentStatus === 'completed' ? 'in-progress' : 'completed';
         try {
-            await axios.patch(`${API_URL}/goals/${id}/status`, { status: newStatus });
+            await api.patch("/goals/${id}/status", { status: newStatus });
             if (newStatus === 'completed') toast.success("Goal completed! Check your badges!");
             else toast.success(`Goal marked as in-progress`);
             fetchGoals();
@@ -71,9 +71,9 @@ const Goals = () => {
         }
     };
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (_id: string) => {
         try {
-            await axios.delete(`${API_URL}/goals/${id}`);
+            await api.delete("/goals/${id}");
             toast.success("Goal deleted");
             fetchGoals();
         } catch {

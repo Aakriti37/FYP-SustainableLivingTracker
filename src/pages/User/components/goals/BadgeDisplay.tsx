@@ -1,7 +1,7 @@
 // pages/User/components/goals/BadgeDisplay.tsx
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../../../services/api";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -18,7 +18,7 @@ const BadgeDisplay = () => {
     const [badges, setBadges] = useState<any[]>([]);
 
     useEffect(() => {
-        axios.get(`${API_URL}/notifications/badges`)
+        api.get("/notifications/badges")
             .then(res => setBadges(res.data))
             .catch(err => console.error('Failed to fetch badges', err));
     }, []);
