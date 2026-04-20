@@ -70,7 +70,7 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
 
 
                 {/* Admin — hamburger menu */}
-                {!isUser && (
+                {/* {!isUser && (
                     <button
                         onClick={toggleSidebar}
                         className="p-2 rounded-lg transition-colors shrink-0"
@@ -80,7 +80,7 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
                     >
                         <Menu size={24} />
                     </button>
-                )}
+                )} */}
 
                 {/* User — Logo + landing links + app nav */}
                 {isUser && (

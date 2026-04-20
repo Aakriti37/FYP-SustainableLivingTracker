@@ -134,16 +134,6 @@ const Sidebar = ({ isOpen = true }: SidebarProps) => {
                         Landing Page
                     </p>
 
-                    {/* <Link
-                        to="/"
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold mb-1 transition-all"
-                        style={{ color: 'rgba(212,237,170,0.85)' }}
-                        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.08)')}
-                        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                    >
-                        <Home size={18} />
-                        Landing Page
-                    </Link> */}
 
                     {landingLinks.map(link => (
                         <a
