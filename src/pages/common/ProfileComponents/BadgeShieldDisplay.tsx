@@ -126,12 +126,12 @@ const BadgeShieldDisplay = ({ userId }: BadgeShieldDisplayProps) => {
                                     <div style={{
                                         width:          80,
                                         height:         92,
-                                        background:     '#e8f5d0',
+                                        background:     '#d1d5db',
                                         clipPath:       'polygon(50% 0%, 100% 15%, 100% 60%, 50% 100%, 0% 60%, 0% 15%)',
                                         display:        'flex',
                                         alignItems:     'center',
                                         justifyContent: 'center',
-                                        filter:         'grayscale(1)',
+                                        opacity:        0.4,
                                     }}>
                                         {cfg.icon}
                                     </div>
