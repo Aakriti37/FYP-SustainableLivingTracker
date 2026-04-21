@@ -1,6 +1,6 @@
 # ml-service/train_model.py
 
-# Run this ONCE to train and save your XGBoost model
+# Run this ONCE to train and save XGBoost model
 # Command: python train_model.py
 # Output: eco_model.json + model_artifacts.pkl
 

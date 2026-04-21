@@ -15,7 +15,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# ── Load model and artifacts on startup ───────────────────────
+# Load model and artifacts on startup 
 print("Loading XGBoost model...")
 model = xgb.XGBClassifier()
 model.load_model("eco_model.json")
@@ -33,10 +33,10 @@ q33              = artifacts["q33"]
 q66              = artifacts["q66"]
 
 EMISSION_LABELS = {0: "Low", 1: "Medium", 2: "High"}
-print("✅ Model loaded! Flask running on http://localhost:5001")
+print("Model loaded! Flask running on http://localhost:5001")
 
 
-# ── Helper: parse list fields ─────────────────────────────────
+# Helper: parse list fields
 def parse_list(val):
     if isinstance(val, list):
         return val
@@ -46,7 +46,7 @@ def parse_list(val):
         return []
 
 
-# ── Helper: preprocess user input ────────────────────────────
+# Helper: preprocess user input
 def preprocess(data: dict) -> pd.DataFrame:
     # Default Vehicle Type if missing
     if not data.get("Vehicle Type"):
@@ -76,14 +76,15 @@ def preprocess(data: dict) -> pd.DataFrame:
     return df_in
 
 
-# ── Route: health check ───────────────────────────────────────
+# Route: health check 
 @app.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "ok", "message": "ML service is running"})
 
 
-# ── Route: predict emission level ─────────────────────────────
+# Route: predict emission level 
 @app.route("/predict", methods=["POST"])
+
 def predict():
     """
     POST /predict
@@ -91,8 +92,10 @@ def predict():
     Returns emission_level and confidence ONLY
     (Groq in Node.js controller handles suggestion generation)
     """
+
     try:
         data = request.get_json()
+        
         if not data:
             return jsonify({"success": False, "message": "No data provided"}), 400
 
@@ -113,6 +116,7 @@ def predict():
 
     except Exception as e:
         print(f"Prediction error: {e}")
+        
         return jsonify({
             "success": False,
             "message": "Failed to predict emission level.",

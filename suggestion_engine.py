@@ -135,29 +135,37 @@ def _priority_categories(user_data: dict) -> list:
     # Transport score
     if user_data.get("Transport", "").lower() == "private":
         scores["Transport"] += 2
+    
     if user_data.get("Vehicle Monthly Distance Km", 0) > 500:
         scores["Transport"] += 2
+    
     air = user_data.get("Frequency of Travelling by Air", "").lower()
+    
     if "frequently" in air or "very" in air:
         scores["Transport"] += 3
 
 
     # Diet score
     diet = user_data.get("Diet", "").lower()
+    
     if diet == "omnivore":
         scores["Diet"] += 3
     elif diet == "pescatarian":
         scores["Diet"] += 2
+    
     if user_data.get("Monthly Grocery Bill", 0) > 300:
         scores["Diet"] += 1
 
 
     # Energy score
     heating = user_data.get("Heating Energy Source", "").lower()
+    
     if heating in ["coal", "wood"]:
         scores["Energy"] += 3
+    
     if user_data.get("How Long TV PC Daily Hour", 0) > 5:
         scores["Energy"] += 2
+    
     if user_data.get("Energy efficiency", "").lower() == "no":
         scores["Energy"] += 2
 
@@ -165,8 +173,10 @@ def _priority_categories(user_data: dict) -> list:
     # Lifestyle score
     if user_data.get("Recycling_count", 0) < 2:
         scores["Lifestyle"] += 2
+    
     if user_data.get("How Many New Clothes Monthly", 0) > 5:
         scores["Lifestyle"] += 2
+    
     if user_data.get("Waste Bag Weekly Count", 0) > 3:
         scores["Lifestyle"] += 1
 
@@ -190,6 +200,7 @@ def get_suggestions(user_data: dict, emission_level: str) -> list:
     categories = _priority_categories(user_data)
 
     suggestions = []
+    
     for i, category in enumerate(categories[:4]):
         bank = SUGGESTIONS[category]
 
