@@ -26,13 +26,17 @@ const EditProfileModal = ({ firstName, lastName, onClose, onSaved }: EditProfile
         firstName: form.firstName,
         lastName:  form.lastName,
       };
+
       if (newPassword.trim()) {
         payload.password = newPassword;
       }
+
       await api.put("/user/profile", payload);
       toast.success("Profile updated successfully!");
+
       onSaved(form.firstName, form.lastName);
       onClose();
+
     } catch {
       toast.error("Failed to update profile.");
     } finally {
@@ -55,24 +59,31 @@ const EditProfileModal = ({ firstName, lastName, onClose, onSaved }: EditProfile
           className="px-6 py-5 flex items-center justify-between"
           style={{ background: "linear-gradient(135deg, #022202, #2d6a10)" }}
         >
+          
           <div className="flex items-center gap-3 text-white">
+            
             <div className="w-9 h-9 rounded-xl flex items-center justify-center"
               style={{ background: "rgba(255,255,255,0.15)" }}>
               <User size={18} />
             </div>
+
             <div>
               <h3 className="font-bold text-base leading-none">Edit Profile</h3>
+              
               <p className="text-xs mt-0.5" style={{ color: "#a8d080" }}>
                 Update your personal information
               </p>
             </div>
+
           </div>
+
           <button
             onClick={onClose}
             className="text-white/70 hover:text-white hover:bg-white/10 p-1.5 rounded-lg transition-colors"
           >
             <X size={18} />
           </button>
+
         </div>
 
         {/* Modal body */}
@@ -80,10 +91,12 @@ const EditProfileModal = ({ firstName, lastName, onClose, onSaved }: EditProfile
 
           {/* First + Last name */}
           <div className="grid grid-cols-2 gap-4">
+            
             <div>
               <label className="block text-sm font-semibold mb-1.5" style={{ color: "#022202" }}>
                 First Name
               </label>
+
               <input
                 type="text"
                 required
@@ -95,10 +108,12 @@ const EditProfileModal = ({ firstName, lastName, onClose, onSaved }: EditProfile
                 onBlur={e  => (e.target.style.borderColor = "#c5e3a0")}
               />
             </div>
+
             <div>
               <label className="block text-sm font-semibold mb-1.5" style={{ color: "#022202" }}>
                 Last Name
               </label>
+
               <input
                 type="text"
                 required
@@ -110,14 +125,17 @@ const EditProfileModal = ({ firstName, lastName, onClose, onSaved }: EditProfile
                 onBlur={e  => (e.target.style.borderColor = "#c5e3a0")}
               />
             </div>
+
           </div>
 
           {/* Change password */}
           <div className="pt-4 border-t" style={{ borderColor: "#e8f5d0" }}>
+            
             <h4 className="text-sm font-bold flex items-center gap-2 mb-3" style={{ color: "#022202" }}>
               <Lock size={15} style={{ color: "#508C12" }} />
               Change Password
             </h4>
+
             <input
               type="password"
               placeholder="Leave blank to keep current password"
@@ -140,6 +158,7 @@ const EditProfileModal = ({ firstName, lastName, onClose, onSaved }: EditProfile
             >
               Cancel
             </button>
+
             <button
               type="submit"
               disabled={loading}
@@ -154,6 +173,7 @@ const EditProfileModal = ({ firstName, lastName, onClose, onSaved }: EditProfile
                 <><Save size={16} /> Save Changes</>
               )}
             </button>
+            
           </div>
         </form>
       </div>

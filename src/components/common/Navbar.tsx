@@ -1,11 +1,10 @@
 // components/common/Navbar.tsx
 // Top navbar for logged-in users
-// Includes landing page links (Home, Features, About, Contact) + app navigation
+// Includes landing page links (Home, Features, About) + app navigation
 
 import { Menu, LogOut, X } from "lucide-react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Leaf, FileText, Target, Users, Settings, Sparkles, LayoutDashboard } from "lucide-react";
-// import logo from "../../assets/WhiteLogo.png";
 import { useAuth } from "../../context/AuthContext";
 import NotificationBell from "../../pages/User/components/common/NotificationBell";
 import { useState } from "react";
@@ -30,7 +29,6 @@ const landingLinks = [
     { href: "#home",     label: "Home"     },
     { href: "#features", label: "Features" },
     { href: "#about",    label: "About"    },
-    // { href: "#contact",  label: "Contact"  },
 ];
 
 const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
@@ -56,7 +54,7 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
                 borderBottom: isUser ? 'none' : '1px solid #e5e7eb',
             }}
         >
-            {/* ── Left side ── */}
+            {/* Left side */}
             <div className="flex items-center gap-3 overflow-x-auto">
 
                 {/* Mobile hamburger (ALL USERS) */}
@@ -70,7 +68,7 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
 
 
                 {/* Admin — hamburger menu */}
-                {/* {!isUser && (
+                {!isUser && (
                     <button
                         onClick={toggleSidebar}
                         className="p-2 rounded-lg transition-colors shrink-0"
@@ -80,19 +78,13 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
                     >
                         <Menu size={24} />
                     </button>
-                )} */}
+                )}
 
                 {/* User — Logo + landing links + app nav */}
                 {isUser && (
                     <div className="flex items-center gap-2 shrink-0">
                         {/* Logo → landing page */}
                         <Link to="/" className="flex items-center group shrink-0">
-                            {/* <img
-                                src={logo}
-                                alt="SLT Logo"
-                                className="h-10 w-auto object-contain opacity-90 group-hover:opacity-100 transition-opacity"
-                            /> */}
-
                             <p className="text-white text-center text-sm font-bold">Sustainable Living<br />Tracker</p>
                         </Link>
 
@@ -129,6 +121,7 @@ const Navbar = ({ toggleSidebar, role }: NavbarProps) => {
                             {userAppLinks.map(link => {
                                 const Icon     = link.icon;
                                 const isActive = location.pathname.startsWith(link.path);
+                                
                                 return (
                                     <NavLink
                                         key={link.path}

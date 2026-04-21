@@ -28,6 +28,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
     const handleAddGoal = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newGoalTitle || !newGoalDate) return;
+        
         try {
             await api.post("/goals", { title: newGoalTitle, targetDate: newGoalDate });
             toast.success("Goal added!");
@@ -42,6 +43,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
 
     const handleToggleStatus = async (_id: string, currentStatus: string) => {
         const newStatus = currentStatus === "completed" ? "in-progress" : "completed";
+        
         try {
             await api.patch(`/goals/${_id}/status`, { status: newStatus });
             toast.success(`Goal marked as ${newStatus}`);
@@ -54,6 +56,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
     const handleDelete = async (_id: string) => {
         try {
             await api.delete(`/goals/${_id}`);
+            
             toast.success("Goal deleted");
             onGoalChange();
         } catch {
@@ -70,6 +73,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                     <TargetIcon size={20} style={{ color: '#508C12' }} />
                     Eco Goals
                 </h2>
+
                 <button
                     onClick={() => setIsAdding(!isAdding)}
                     className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all"
@@ -89,6 +93,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                             <label className="block text-sm font-semibold mb-1.5" style={{ color: '#022202' }}>
                                 Goal Title
                             </label>
+
                             <input
                                 required
                                 type="text"
@@ -101,10 +106,12 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                                 onBlur={e   => (e.target.style.borderColor = '#c5e3a0')}
                             />
                         </div>
+
                         <div>
                             <label className="block text-sm font-semibold mb-1.5" style={{ color: '#022202' }}>
                                 Target Date
                             </label>
+
                             <input
                                 required
                                 type="date"
@@ -116,7 +123,9 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                                 onBlur={e   => (e.target.style.borderColor = '#c5e3a0')}
                             />
                         </div>
+
                     </div>
+
                     <div className="flex justify-end gap-3">
                         <button
                             type="button"
@@ -126,6 +135,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                         >
                             Cancel
                         </button>
+
                         <button
                             onClick={handleAddGoal}
                             className="px-5 py-2 text-sm font-bold text-white rounded-xl transition-all"
@@ -135,6 +145,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                         >
                             Save Goal
                         </button>
+
                     </div>
                 </div>
             )}
@@ -144,7 +155,9 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                 {goals.length === 0 && !loading && (
                     <div className="text-center py-10" style={{ color: '#4a7c2f' }}>
                         <TargetIcon size={44} className="mx-auto mb-3 opacity-30" style={{ color: '#508C12' }} />
+                        
                         <p className="font-medium">No goals set yet.</p>
+                        
                         <p className="text-sm mt-1 opacity-70">Click New Goal to get started!</p>
                     </div>
                 )}
@@ -170,6 +183,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                                 >
                                     <CheckCircle2 size={26} />
                                 </button>
+
                                 <div className="min-w-0">
                                     <h3
                                         className="font-bold text-base truncate"
@@ -181,12 +195,14 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                                     >
                                         {goal.title}
                                     </h3>
+
                                     <p className="text-xs flex items-center gap-1 mt-0.5" style={{ color: '#4a7c2f' }}>
                                         <Clock size={12} />
                                         Target: {new Date(goal.targetDate).toLocaleDateString(undefined, {
                                             year: 'numeric', month: 'short', day: 'numeric'
                                         })}
                                     </p>
+
                                     {/* Progress bar */}
                                     {goal.progress !== undefined && !isCompleted && (
                                         <div className="mt-2 flex items-center gap-2">
@@ -196,6 +212,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                                                     style={{ width: `${goal.progress}%`, background: '#508C12' }}
                                                 />
                                             </div>
+
                                             <span className="text-xs font-semibold" style={{ color: '#4a7c2f' }}>
                                                 {goal.progress}%
                                             </span>
@@ -215,6 +232,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                                 >
                                     {goal.status.replace('-', ' ')}
                                 </span>
+
                                 <button
                                     onClick={() => handleDelete(goal._id)}
                                     className="p-1.5 rounded-lg transition-colors"
@@ -224,6 +242,7 @@ const GoalsSection = ({ goals, loading, onGoalChange }: GoalsSectionProps) => {
                                 >
                                     <Trash2 size={15} />
                                 </button>
+                                
                             </div>
                         </div>
                     );

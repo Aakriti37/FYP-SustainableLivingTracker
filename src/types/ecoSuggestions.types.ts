@@ -1,8 +1,8 @@
 // types/ecoSuggestions.types.ts
-// TypeScript interfaces matching your Mongoose models
+// TypeScript interfaces matching Mongoose models
 // This file is FRONTEND ONLY — gives type safety across all components
 
-// ── Matches your Habit mongoose model ────────────────────────────────────────
+// Matches Habit mongoose model
 export interface Habit {
   _id: string;
   name: string;
@@ -14,7 +14,7 @@ export interface Habit {
   completedToday?: boolean;
 }
 
-// ── Matches your Goal mongoose model ─────────────────────────────────────────
+// Matches Goal mongoose model 
 export interface Goal {
   _id: string;
   title: string;
@@ -23,7 +23,7 @@ export interface Goal {
   progress?: number;
 }
 
-// ── Matches your CarbonLog mongoose model ────────────────────────────────────
+// Matches CarbonLog mongoose model 
 export interface CarbonLog {
   _id: string;
   date: string;
@@ -35,7 +35,7 @@ export interface CarbonLog {
   totalCO2: number;
 }
 
-// ── Matches your ActivityLog mongoose model ───────────────────────────────────
+// Matches ActivityLog mongoose model
 export interface ActivityLog {
   _id: string;
   habitId: string;
@@ -43,7 +43,7 @@ export interface ActivityLog {
   pointsEarned: number;
 }
 
-// ── AI Suggestion shape returned by your backend ──────────────────────────────
+// AI Suggestion shape returned by backend 
 export interface EcoSuggestion {
   id: number;
   icon: string;

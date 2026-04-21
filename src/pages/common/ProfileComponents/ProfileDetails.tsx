@@ -24,9 +24,11 @@ const ProfileDetails = ({ firstName, lastName, email, role, onEdit }: ProfileDet
 
       {/* Header */}
       <div className="flex items-center justify-between mb-6 pb-4 border-b" style={{ borderColor: "#e8f5d0" }}>
+        
         <h3 className="text-xl font-bold" style={{ color: "#022202" }}>
           Personal Information
         </h3>
+
         <button
           onClick={onEdit}
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:shadow-md"
@@ -40,6 +42,7 @@ const ProfileDetails = ({ firstName, lastName, email, role, onEdit }: ProfileDet
           <Pencil size={15} />
           Edit Profile
         </button>
+
       </div>
 
       {/* Fields */}
@@ -56,10 +59,12 @@ const ProfileDetails = ({ firstName, lastName, email, role, onEdit }: ProfileDet
             >
               {field.icon}
             </div>
+
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#4a7c2f" }}>
                 {field.label}
               </p>
+              
               <p className="font-semibold mt-0.5 capitalize" style={{ color: "#022202" }}>
                 {field.value || "—"}
               </p>

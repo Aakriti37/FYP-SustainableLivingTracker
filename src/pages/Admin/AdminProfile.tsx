@@ -63,9 +63,11 @@ const AdminProfile = () => {
           <h1 className="text-4xl font-extrabold pb-1 text-gray-800">
             Admin Profile
           </h1>
+
           <p className="font-medium text-gray-500">
             Manage your personal information and security settings.
           </p>
+          
         </header>
 
         {/* Top grid */}

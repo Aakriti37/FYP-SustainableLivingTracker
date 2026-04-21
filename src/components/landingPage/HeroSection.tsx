@@ -29,6 +29,7 @@ const HeroSection = () => {
       style={{ backgroundImage: `url(${BgImage})` }}
     >
       <div className="relative z-10 flex items-center h-full px-8 lg:px-20">
+        
         <div className="max-w-lg text-white">
           <h1 className="text-4xl lg:text-5xl font-bold mb-6">
             Track Your Sustainable Lifestyle

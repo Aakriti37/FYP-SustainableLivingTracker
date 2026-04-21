@@ -35,6 +35,7 @@ const AdminPosts = () => {
 
     const handleDeletePost = async (_id: string) => {
         if (!window.confirm("Delete this post permanently?")) return;
+        
         try {
             await api.delete(`/admin/posts/${_id}`);
             toast.success("Post deleted");
@@ -59,6 +60,7 @@ const AdminPosts = () => {
                         <h1 className="text-4xl font-extrabold text-slate-800 pb-2 flex items-center gap-3">
                             <MessageSquare className="text-purple-500" size={36} /> Community Posts
                         </h1>
+
                         <p className="text-gray-500 font-medium text-lg">Moderate user generated content.</p>
                     </div>
                 </header>
@@ -70,6 +72,7 @@ const AdminPosts = () => {
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Search size={18} className="text-gray-400" />
                             </div>
+
                             <input
                                 type="text"
                                 placeholder="Search posts or authors..."
@@ -78,6 +81,7 @@ const AdminPosts = () => {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
+
                         <div className="text-sm font-semibold text-gray-500">
                             Total Posts: <span className="text-purple-600 font-bold">{filteredPosts.length}</span>
                         </div>
@@ -105,6 +109,7 @@ const AdminPosts = () => {
                                         <tr key={post._id} className="hover:bg-slate-50 transition-colors">
                                             <td className="p-4">
                                                 <p className="font-bold text-gray-800">{post.userId?.firstName} {post.userId?.lastName}</p>
+                                                
                                                 <p className="text-xs text-gray-500">{post.userId?.email}</p>
                                             </td>
 

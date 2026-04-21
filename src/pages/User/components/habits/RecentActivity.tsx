@@ -25,7 +25,9 @@ const RecentActivity = ({ activities }: RecentActivityProps) => {
                 {activities.length === 0 ? (
                     <div className="p-8 text-center" style={{ color: '#4a7c2f' }}>
                         <Zap size={36} className="mx-auto mb-3 opacity-30" style={{ color: '#508C12' }} />
+                        
                         <p className="font-medium text-sm">No activity yet.</p>
+                        
                         <p className="text-xs mt-1 opacity-70">Complete a habit to see it here!</p>
                     </div>
                 ) : (
@@ -43,21 +45,25 @@ const RecentActivity = ({ activities }: RecentActivityProps) => {
                                 >
                                     <Check size={14} />
                                 </div>
+
                                 <div className="flex-1 min-w-0">
                                     <p className="font-semibold text-sm truncate" style={{ color: '#022202' }}>
                                         {log.habitId?.name || "Deleted Habit"}
                                     </p>
+
                                     <p className="text-xs" style={{ color: '#4a7c2f' }}>
                                         {new Date(log.date).toLocaleDateString()} at{' '}
                                         {new Date(log.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </p>
                                 </div>
+
                                 <div
                                     className="text-xs font-bold px-2.5 py-1 rounded-lg shrink-0"
                                     style={{ background: '#f0f7e6', color: '#508C12' }}
                                 >
                                     +{log.pointsEarned} pts
                                 </div>
+                                
                             </div>
                         ))}
                     </div>

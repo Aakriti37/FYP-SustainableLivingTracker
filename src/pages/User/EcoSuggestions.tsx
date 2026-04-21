@@ -44,6 +44,7 @@ const EcoSuggestions = () => {
       const [habitsRes, goalsRes, carbonRes] = await Promise.all([
         fetchHabits(), fetchGoals(), fetchCarbonLogs(), 
       ]);
+
       setHabits(habitsRes);
       setGoals(goalsRes);
       setCarbonLogs(carbonRes);
@@ -63,16 +64,21 @@ const EcoSuggestions = () => {
     setHasGenerated(false);
     setEmissionLevel(null);
     setConfidence(null);
+
     try {
       const result = await generateEcoSuggestions();
+      
       setSuggestions(result.suggestions);
       setEmissionLevel(result.emission_level);
       setConfidence(result.confidence);
       setHasGenerated(true);
+
       toast.success("Suggestions generated!");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Something went wrong.";
+      
       setError(message);
+      
       toast.error("Failed to generate suggestions.");
     } finally {
       setGenerating(false);
@@ -97,10 +103,12 @@ const EcoSuggestions = () => {
             <h1 className="text-4xl font-extrabold pb-1 flex items-center gap-3" style={{ color: '#022202' }}>
               <Sparkles size={32} style={{ color: '#508C12' }} /> Eco Suggestions
             </h1>
+
             <p className="font-medium" style={{ color: '#4a7c2f' }}>
               AI-powered tips personalised to your habits, goals and carbon footprint.
             </p>
           </div>
+
           {dataLoading && <RefreshCw size={20} className="animate-spin" style={{ color: '#508C12' }} />}
         </header>
 
@@ -115,6 +123,7 @@ const EcoSuggestions = () => {
               style={{ background: '#f0f7e6', borderColor: '#c5e3a0' }}
             >
               <ShieldCheck size={16} style={{ color: '#508C12' }} />
+              
               <span className="text-sm font-medium" style={{ color: '#2d6a10' }}>
                 Lifestyle profile complete — AI suggestions are personalised for you
               </span>
@@ -139,8 +148,10 @@ const EcoSuggestions = () => {
                 <span className="text-2xl">
                   {emissionLevel === 'High' ? '🔴' : emissionLevel === 'Medium' ? '🟡' : '🟢'}
                 </span>
+
                 <div>
                   <p>Your emission level is <strong>{emissionLevel}</strong></p>
+                  
                   <p className="text-xs font-normal opacity-70">Model confidence: {confidence}%</p>
                 </div>
               </div>

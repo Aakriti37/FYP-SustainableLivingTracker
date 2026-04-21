@@ -74,9 +74,11 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+
         try {
             await api.post("/carbon", form);
             toast.success(`Carbon footprint logged for ${form.period} period!`);
+            
             setForm({
                 period:             'daily',
                 privateTransportKm: 0,
@@ -88,7 +90,9 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                 cookingFuel:        'LPG',
                 cookingHoursPerDay: 1,
             });
+
             onSuccess();
+
         } catch (error: unknown) {
             const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
             toast.error(msg || "Failed to log carbon footprint.");
@@ -102,10 +106,12 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
 
             {/* Period selector */}
             <div className={sectionClass} style={{ borderColor: '#c5e3a0' }}>
+                
                 <label className={labelClass} style={{ color: '#022202' }}>
                     <CalendarDays size={16} className="inline mr-2" style={{ color: '#508C12' }} />
                     Logging Period
                 </label>
+
                 <div className="grid grid-cols-3 gap-2 mt-2">
                     {PERIOD_OPTIONS.map(opt => (
                         <button
@@ -120,6 +126,7 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                             }}
                         >
                             <p className="font-bold">{opt.label}</p>
+                            
                             <p className="text-xs opacity-80 mt-0.5 hidden sm:block">{opt.desc}</p>
                         </button>
                     ))}
@@ -129,19 +136,23 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
             {/* Transport */}
             <div className={sectionClass} style={{ borderColor: '#c5e3a0' }}>
                 <h3 className="font-bold text-base mb-4 flex items-center gap-2" style={{ color: '#022202' }}>
+                    
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#d4edaa' }}>
                         <Car size={16} style={{ color: '#2d6a10' }} />
                     </div>
+
                     Transport
                 </h3>
 
                 <div className="space-y-4">
                     {/* Private vehicle */}
                     <div className="grid grid-cols-2 gap-3">
+                        
                         <div>
                             <label className={labelClass} style={{ color: '#2d6a10' }}>
                                 Vehicle Type / Fuel
                             </label>
+
                             <select
                                 value={form.vehicleFuelType}
                                 onChange={e => update('vehicleFuelType', e.target.value)}
@@ -152,11 +163,14 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                                     <option key={o.value} value={o.value}>{o.label}</option>
                                 ))}
                             </select>
+
                         </div>
+
                         <div>
                             <label className={labelClass} style={{ color: '#2d6a10' }}>
                                 Private Transport Distance (km)
                             </label>
+
                             <input
                                 type="number"
                                 min="0"
@@ -168,6 +182,7 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                                 style={{ borderColor: '#c5e3a0', opacity: form.vehicleFuelType === 'none' ? 0.5 : 1 }}
                             />
                         </div>
+
                     </div>
 
                     {/* Public transport */}
@@ -176,6 +191,7 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                             <label className={labelClass} style={{ color: '#2d6a10' }}>
                                 <Bus size={13} className="inline mr-1" /> Bus Distance (km)
                             </label>
+
                             <input
                                 type="number"
                                 min="0"
@@ -196,16 +212,20 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
 
             {/* ── Energy ── */}
             <div className={sectionClass} style={{ borderColor: '#c5e3a0' }}>
+                
                 <h3 className="font-bold text-base mb-4 flex items-center gap-2" style={{ color: '#022202' }}>
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#d4edaa' }}>
                         <Zap size={16} style={{ color: '#2d6a10' }} />
                     </div>
+
                     Electricity Usage
                 </h3>
+
                 <div>
                     <label className={labelClass} style={{ color: '#2d6a10' }}>
                         Electricity consumed (kWh)
                     </label>
+
                     <input
                         type="number"
                         min="0"
@@ -216,10 +236,13 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                         className={inputClass}
                         style={{ borderColor: '#c5e3a0' }}
                     />
+
                     <p className="text-xs mt-1.5" style={{ color: '#4a7c2f' }}>
                         Nepal grid: 0.041 kg CO₂e/kWh (96% hydropower). Check your electricity meter or bill.
                     </p>
+
                 </div>
+
             </div>
 
             {/* ── Diet ── */}
@@ -228,8 +251,10 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#d4edaa' }}>
                         <Utensils size={16} style={{ color: '#2d6a10' }} />
                     </div>
+
                     Diet Type
                 </h3>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {DIET_OPTIONS.map(opt => (
                         <button
@@ -244,26 +269,33 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                             }}
                         >
                             <span>{opt.label}</span>
+                            
                             <span className="text-xs opacity-75">{opt.desc}</span>
                         </button>
                     ))}
                 </div>
+
                 {/* <p className="text-xs mt-2" style={{ color: '#4a7c2f' }}>
                     Source: Oxford University / Scarborough et al. (2014)
                 </p> */}
+
             </div>
 
-            {/* ── Cooking Fuel ── */}
+            {/* Cooking Fuel */}
             <div className={sectionClass} style={{ borderColor: '#c5e3a0' }}>
+                
                 <h3 className="font-bold text-base mb-4 flex items-center gap-2" style={{ color: '#022202' }}>
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#d4edaa' }}>
                         <Flame size={16} style={{ color: '#2d6a10' }} />
                     </div>
+
                     Cooking Fuel
                 </h3>
+
                 <div className="grid grid-cols-2 gap-3">
                     <div>
                         <label className={labelClass} style={{ color: '#2d6a10' }}>Fuel Type</label>
+                        
                         <select
                             value={form.cookingFuel}
                             onChange={e => update('cookingFuel', e.target.value)}
@@ -274,11 +306,14 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                                 <option key={o.value} value={o.value}>{o.label}</option>
                             ))}
                         </select>
+
                     </div>
+
                     <div>
                         <label className={labelClass} style={{ color: '#2d6a10' }}>
                             Hours cooked per day
                         </label>
+
                         <input
                             type="number"
                             min="0"
@@ -292,7 +327,9 @@ const CalculatorForm = ({ onSuccess }: CalculatorFormProps) => {
                             style={{ borderColor: '#c5e3a0', opacity: form.cookingFuel === 'None' ? 0.5 : 1 }}
                         />
                     </div>
+
                 </div>
+                
                 <p className="text-xs mt-1.5" style={{ color: '#4a7c2f' }}>
                     LPG: 1.492 kg CO₂e/kg, Wood: 1.83 kg CO₂e/kg
                 </p>

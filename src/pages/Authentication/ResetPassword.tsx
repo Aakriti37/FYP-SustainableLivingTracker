@@ -46,10 +46,13 @@ const ResetPassword = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-green-50">
+      
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        
         <h2 className="text-2xl font-bold text-center mb-2 text-green-700">
           Reset Password
         </h2>
+
         <p className="text-center text-gray-500 text-sm mb-6">
           Enter your new password below.
         </p>
@@ -57,8 +60,11 @@ const ResetPassword = () => {
         {error && <p className="text-red-500 mb-4 text-center text-sm">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          
           <div>
+            
             <label className="block text-sm font-medium text-gray-700">New Password</label>
+            
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -67,6 +73,7 @@ const ResetPassword = () => {
                 className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 pr-10"
                 placeholder="At least 6 characters"
               />
+
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -75,10 +82,12 @@ const ResetPassword = () => {
                 {showPassword ? "Hide" : "Show"}
               </button>
             </div>
+
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Confirm New Password</label>
+            
             <input
               type={showPassword ? "text" : "password"}
               value={confirmPassword}

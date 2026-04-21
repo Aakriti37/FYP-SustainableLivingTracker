@@ -11,6 +11,7 @@ interface ResultWidgetProps {
 const getEmissionStatus = (co2: number, period: string) => {
     // WHO / global average daily target: ~5 kg CO2e/day
     const daily = period === 'weekly' ? co2 / 7 : period === 'monthly' ? co2 / 30 : co2;
+    
     if (daily < 4)  return { label: 'Eco Warrior',    color: '#5cbd36', bg: 'rgba(92,189,54,0.15)'  };
     if (daily < 7)  return { label: 'Below Average',  color: '#559807', bg: 'rgba(85,152,7,0.15)'   };
     if (daily < 12) return { label: 'Above Average',  color: '#f59e0b', bg: 'rgba(245,158,11,0.15)' };
@@ -42,6 +43,7 @@ const ResultWidget = ({ todayLog, stats }: ResultWidgetProps) => {
                             <span className="text-5xl font-black" style={{ color: status?.color }}>
                                 {todayLog.totalCO2.toFixed(1)}
                             </span>
+
                             <span className="text-sm font-bold mb-1.5" style={{ color: '#a8d080' }}>
                                 kg CO₂e / {todayLog.period}
                             </span>
@@ -56,33 +58,17 @@ const ResultWidget = ({ todayLog, stats }: ResultWidgetProps) => {
                                 ? <CheckCircle size={13} />
                                 : <AlertCircle size={13} />
                             }
+
                             {status?.label}
                         </div>
 
-                        {/* Breakdown */}
-                        {/* <div className="grid grid-cols-2 gap-2">
-                            {[
-                                { label: 'Transport', value: todayLog.transportCO2 },
-                                { label: 'Energy',    value: todayLog.energyCO2    },
-                                { label: 'Diet',      value: todayLog.dietCO2      },
-                                { label: 'Cooking',   value: todayLog.cookingCO2   },
-                            ].map(item => (
-                                <div
-                                    key={item.label}
-                                    className="px-3 py-2 rounded-xl"
-                                    style={{ background: 'rgba(255,255,255,0.07)' }}
-                                >
-                                    <p className="text-xs" style={{ color: '#a8d080' }}>{item.label}</p>
-                                    <p className="font-bold text-sm text-white">{item.value.toFixed(2)} kg</p>
-                                </div>
-                            ))}
-                        </div> */}
                     </>
                 ) : (
                     <div className="py-4">
                         <p className="font-medium" style={{ color: '#a8d080' }}>
                             No carbon log yet.
                         </p>
+
                         <p className="text-sm mt-1" style={{ color: 'rgba(168,208,128,0.6)' }}>
                             Fill in the form and calculate your footprint!
                         </p>
@@ -106,7 +92,9 @@ const ResultWidget = ({ todayLog, stats }: ResultWidgetProps) => {
                             <div className="flex justify-center mb-1" style={{ color: '#508C12' }}>
                                 {stat.icon}
                             </div>
+
                             <p className="text-lg font-black" style={{ color: '#022202' }}>{stat.value}</p>
+                            
                             <p className="text-xs font-medium" style={{ color: '#4a7c2f' }}>{stat.label}</p>
                         </div>
                     ))}

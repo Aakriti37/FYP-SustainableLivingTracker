@@ -29,7 +29,9 @@ const PostCard = ({ post, currentUser }: PostCardProps) => {
 
     const handleAddComment = async (e: React.FormEvent) => {
         e.preventDefault();
+        
         if (!commentText.trim() || !currentUser) return;
+        
         try {
             await addComment(post._id, commentText);
             setCommentText('');
@@ -51,16 +53,19 @@ const PostCard = ({ post, currentUser }: PostCardProps) => {
 
             {/* ── Header ── */}
             <div className="flex items-center justify-between px-4 py-3">
+                
                 <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-offset-1 ring-emerald-400 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-emerald-400 to-teal-500 text-white font-bold text-sm">
                         {post.userId?.profilePicture
                             ? <img src={post.userId.profilePicture} alt="avatar" className="w-full h-full object-cover" />
                             : avatarLetter}
                     </div>
+
                     <div>
                         <p className="font-semibold text-sm text-gray-900 leading-tight">
                             {post.userId?.firstName} {post.userId?.lastName}
                         </p>
+
                         <p className="text-xs text-gray-400">
                             {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
                         </p>
@@ -73,6 +78,7 @@ const PostCard = ({ post, currentUser }: PostCardProps) => {
                             className="p-1 rounded-full hover:bg-gray-100 text-gray-500">
                             <MoreHorizontal size={20} />
                         </button>
+
                         {showMenu && (
                             <div className="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-lg border border-gray-100 z-20">
                                 <button onClick={handleDelete}
@@ -115,6 +121,7 @@ const PostCard = ({ post, currentUser }: PostCardProps) => {
                 >
                     <Heart size={20} className={hasLiked ? 'fill-red-500' : ''} />
                 </button>
+
                 <button
                     onClick={() => document.getElementById(`comment-input-${post._id}`)?.focus()}
                     className="p-2 rounded-full hover:bg-gray-100 text-gray-700"
@@ -139,12 +146,15 @@ const PostCard = ({ post, currentUser }: PostCardProps) => {
                             View all {post.comments.length} comments
                         </button>
                     )}
+
                     {displayedComments?.map(comment => (
                         <div key={comment._id} className="flex gap-2 text-xs">
                             <span className="font-semibold text-gray-900 flex-shrink-0">{comment.userId?.firstName}</span>
+                            
                             <span className="text-gray-600 break-words">{comment.text}</span>
                         </div>
                     ))}
+
                 </div>
             )}
 
@@ -155,6 +165,7 @@ const PostCard = ({ post, currentUser }: PostCardProps) => {
                         ? <img src={currentUser.profilePicture} alt="me" className="w-full h-full object-cover" />
                         : (currentUser?.firstName?.[0]?.toUpperCase() || 'U')}
                 </div>
+
                 <form onSubmit={handleAddComment} className="flex-1 flex items-center gap-2">
                     <input
                         id={`comment-input-${post._id}`}
@@ -164,11 +175,13 @@ const PostCard = ({ post, currentUser }: PostCardProps) => {
                         placeholder="Add a comment…"
                         className="flex-1 text-xs bg-transparent outline-none placeholder-gray-400 text-gray-800"
                     />
+
                     {commentText.trim() && (
                         <button type="submit" className="text-emerald-500 hover:text-emerald-600">
                             <Send size={15} />
                         </button>
                     )}
+                    
                 </form>
             </div>
         </article>

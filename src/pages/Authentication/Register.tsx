@@ -46,15 +46,23 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-green-50">
+      
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        
         <h2 className="text-2xl font-bold text-center mb-6 text-green-700">
           Create Your Account
         </h2>
+
         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+        
+        
         <form onSubmit={handleSubmit} className="space-y-4">
+          
           <div className="flex gap-4">
+            
             <div className="flex-1">
               <label className="block text-sm font-medium text-gray-700">First Name</label>
+              
               <input
                 type="text"
                 value={firstName}
@@ -63,8 +71,10 @@ const Register = () => {
                 placeholder="Enter your first name"
               />
             </div>
+
             <div className="flex-1">
               <label className="block text-sm font-medium text-gray-700">Last Name</label>
+              
               <input
                 type="text"
                 value={lastName}
@@ -73,9 +83,12 @@ const Register = () => {
                 placeholder="Enter your last name"
               />
             </div>
+
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700">Email</label>
+            
             <input
               type="email"
               value={email}
@@ -146,6 +159,7 @@ const Register = () => {
             Register
           </button>
         </form>
+
         <p className="mt-4 text-center text-sm text-gray-600">
           Already have an account?{" "}
           <span
@@ -155,6 +169,7 @@ const Register = () => {
             Login
           </span>
         </p>
+        
       </div>
     </div>
   );

@@ -32,46 +32,47 @@ const App = () => {
         <BrowserRouter>
 
           <Routes>
-          <Route path='/' element={<LandingPage />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path='/' element={<LandingPage />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-          {/* User Routes with MainLayout */}
-          <Route
-            element={
-              <ProtectedRoute allowedRoles={["user"]}>
-                <MainLayout role="user" />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="/dashboard" element={<UserDashboard />} />
-            <Route path="/carbon" element={<CarbonCalculator />} />
-            <Route path="/habits" element={<Habits />} />
-            <Route path="/goals" element={<Goals />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/eco-suggestions" element={<EcoSuggestions />} />
-          </Route>
+            {/* User Routes with MainLayout */}
+            <Route
+              element={
+                <ProtectedRoute allowedRoles={["user"]}>
+                  <MainLayout role="user" />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/dashboard" element={<UserDashboard />} />
+              <Route path="/carbon" element={<CarbonCalculator />} />
+              <Route path="/habits" element={<Habits />} />
+              <Route path="/goals" element={<Goals />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/profile" element={<UserProfile />} />
+              <Route path="/eco-suggestions" element={<EcoSuggestions />} />
+            </Route>
 
-          {/* Admin Routes with MainLayout */}
-          <Route
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <MainLayout role="admin" />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/users" element={<AdminUsers />} />
-            <Route path="/admin/posts" element={<AdminPosts />} />
-            <Route path="/admin/carbon-logs" element={<AdminCarbonLogs />} />
-            <Route path="/admin/profile" element={<AdminProfile />} />
-          </Route>
+            {/* Admin Routes with MainLayout */}
+            <Route
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <MainLayout role="admin" />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/posts" element={<AdminPosts />} />
+              <Route path="/admin/carbon-logs" element={<AdminCarbonLogs />} />
+              <Route path="/admin/profile" element={<AdminProfile />} />
+            </Route>
 
-        </Routes>
-      </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
+
       </SocketProvider>
     </AuthProvider>
   )

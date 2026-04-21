@@ -58,6 +58,7 @@ const AdminCarbonLogs = () => {
                     <h1 className="text-3xl font-extrabold text-gray-800 flex items-center gap-3">
                         <Leaf size={30} style={{ color: '#17921f' }} /> Carbon Logs
                     </h1>
+
                     <p className="text-gray-500 font-medium mt-1">All user carbon footprint records.</p>
                 </header>
 
@@ -66,6 +67,7 @@ const AdminCarbonLogs = () => {
                     <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                         <div className="relative w-72">
                             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            
                             <input
                                 type="text"
                                 placeholder="Search by user..."
@@ -75,6 +77,7 @@ const AdminCarbonLogs = () => {
                                 style={{ focusRingColor: '#17921f' } as React.CSSProperties}
                             />
                         </div>
+
                         <span className="text-sm font-semibold text-gray-500">
                             {filtered.length} records
                         </span>
@@ -98,6 +101,7 @@ const AdminCarbonLogs = () => {
                                         <th className="p-4 font-semibold border-b border-gray-100">Total CO₂</th>
                                     </tr>
                                 </thead>
+
                                 <tbody className="divide-y divide-gray-50">
                                     {filtered.map(log => (
                                         <tr key={log._id} className="hover:bg-gray-50 transition-colors">
@@ -105,17 +109,21 @@ const AdminCarbonLogs = () => {
                                                 <p className="font-bold text-gray-800 text-sm">
                                                     {log.userId?.firstName} {log.userId?.lastName}
                                                 </p>
+
                                                 <p className="text-xs text-gray-400">{log.userId?.email}</p>
                                             </td>
+
                                             <td className="p-4 text-sm text-gray-500">
                                                 {new Date(log.date).toLocaleDateString()}
                                             </td>
+
                                             <td className="p-4">
                                                 <span className="text-xs font-bold px-2.5 py-1 rounded-full capitalize"
                                                     style={{ background: '#f0f7e6', color: '#17921f' }}>
                                                     {log.period}
                                                 </span>
                                             </td>
+
                                             <td className="p-4">
                                                 <div className="flex flex-col gap-0.5 text-xs text-gray-500">
                                                     {log.privateTransportKm > 0 && (
@@ -132,21 +140,27 @@ const AdminCarbonLogs = () => {
                                                         {log.transportCO2.toFixed(2)} kg
                                                     </span>
                                                 </div>
+
                                             </td>
+
                                             <td className="p-4">
                                                 <div className="flex flex-col gap-0.5 text-xs text-gray-500">
                                                     <span className="flex items-center gap-1">
                                                         <Zap size={10} /> {log.electricityKwh} kWh
                                                     </span>
+
                                                     <span className="flex items-center gap-1">
                                                         <Flame size={10} /> {log.cookingFuel}
                                                     </span>
+
                                                     <span className="font-semibold" style={{ color: '#17921f' }}>
                                                         {(log.energyCO2 + log.cookingCO2).toFixed(2)} kg
                                                     </span>
                                                 </div>
                                             </td>
+
                                             <td className="p-4 text-xs text-gray-500 capitalize">{log.diet}</td>
+                                            
                                             <td className="p-4">
                                                 <span
                                                     className="text-lg font-black"
@@ -154,6 +168,7 @@ const AdminCarbonLogs = () => {
                                                 >
                                                     {log.totalCO2.toFixed(1)}
                                                 </span>
+                                                
                                                 <span className="text-xs text-gray-400 ml-1">kg</span>
                                             </td>
                                         </tr>

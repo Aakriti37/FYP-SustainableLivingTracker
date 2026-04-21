@@ -24,6 +24,7 @@ const GenerateButton = ({ onClick, loading, hasGenerated }: GenerateButtonProps)
         <><Sparkles size={20} /> {hasGenerated ? "Regenerate Suggestions" : "Generate Eco Suggestions"}</>
       )}
     </button>
+    
   </div>
 );
 

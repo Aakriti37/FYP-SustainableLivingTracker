@@ -18,6 +18,7 @@ const labelClass = "block text-sm font-semibold mb-1.5";
 
 const EditLogModal = ({ log, onClose, onSaved }: EditLogModalProps) => {
     const [loading, setLoading] = useState(false);
+    
     const [form, setForm] = useState<CarbonFormData>({
         period:             log.period,
         privateTransportKm: log.privateTransportKm,
@@ -38,6 +39,7 @@ const EditLogModal = ({ log, onClose, onSaved }: EditLogModalProps) => {
         try {
             await api.put(`/carbon/${log._id}`, form);
             toast.success("Carbon log updated!");
+            
             onSaved();
             onClose();
         } catch {
@@ -62,10 +64,12 @@ const EditLogModal = ({ log, onClose, onSaved }: EditLogModalProps) => {
                 >
                     <div>
                         <h3 className="font-bold text-white text-base">Edit Carbon Log</h3>
+                        
                         <p className="text-xs mt-0.5" style={{ color: '#a8d080' }}>
                             {new Date(log.date).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                         </p>
                     </div>
+
                     <button onClick={onClose} className="text-white/70 hover:text-white p-1.5 rounded-lg transition-colors">
                         <X size={18} />
                     </button>
@@ -77,20 +81,25 @@ const EditLogModal = ({ log, onClose, onSaved }: EditLogModalProps) => {
                     {/* Period */}
                     <div>
                         <label className={labelClass} style={{ color: '#022202' }}>Period</label>
+                        
                         <select value={form.period} onChange={e => update('period', e.target.value)}
                             className={inputClass} style={{ borderColor: '#c5e3a0' }}>
                             <option value="daily">Daily</option>
                             <option value="weekly">Weekly</option>
                             <option value="monthly">Monthly</option>
                         </select>
+
                     </div>
 
                     {/* Transport */}
                     <div className="p-4 rounded-2xl space-y-3" style={{ background: '#f0f7e6' }}>
                         <p className="font-bold text-sm" style={{ color: '#022202' }}>Transport</p>
+                        
                         <div className="grid grid-cols-2 gap-3">
+                            
                             <div>
                                 <label className={labelClass} style={{ color: '#2d6a10' }}>Vehicle Fuel</label>
+                                
                                 <select value={form.vehicleFuelType} onChange={e => update('vehicleFuelType', e.target.value)}
                                     className={inputClass} style={{ borderColor: '#c5e3a0' }}>
                                     <option value="none">No vehicle</option>
@@ -101,20 +110,26 @@ const EditLogModal = ({ log, onClose, onSaved }: EditLogModalProps) => {
                                     <option value="motorcycle">Motorcycle</option>
                                 </select>
                             </div>
+
                             <div>
                                 <label className={labelClass} style={{ color: '#2d6a10' }}>Vehicle km</label>
+                                
                                 <input type="number" min="0" value={form.privateTransportKm || ''}
                                     onChange={e => update('privateTransportKm', Number(e.target.value))}
                                     className={inputClass} style={{ borderColor: '#c5e3a0' }} />
                             </div>
+
                             <div>
                                 <label className={labelClass} style={{ color: '#2d6a10' }}>Bus km</label>
+                                
                                 <input type="number" min="0" value={form.busKm || ''}
                                     onChange={e => update('busKm', Number(e.target.value))}
                                     className={inputClass} style={{ borderColor: '#c5e3a0' }} />
                             </div>
+
                             <div>
                                 <label className={labelClass} style={{ color: '#2d6a10' }}>Train km</label>
+                                
                                 <input type="number" min="0" value={form.trainKm || ''}
                                     onChange={e => update('trainKm', Number(e.target.value))}
                                     className={inputClass} style={{ borderColor: '#c5e3a0' }} />
@@ -125,6 +140,7 @@ const EditLogModal = ({ log, onClose, onSaved }: EditLogModalProps) => {
                     {/* Energy */}
                     <div>
                         <label className={labelClass} style={{ color: '#022202' }}>Electricity (kWh)</label>
+                        
                         <input type="number" min="0" step="0.1" value={form.electricityKwh || ''}
                             onChange={e => update('electricityKwh', Number(e.target.value))}
                             className={inputClass} style={{ borderColor: '#c5e3a0' }} />
@@ -133,6 +149,7 @@ const EditLogModal = ({ log, onClose, onSaved }: EditLogModalProps) => {
                     {/* Diet */}
                     <div>
                         <label className={labelClass} style={{ color: '#022202' }}>Diet Type</label>
+                        
                         <select value={form.diet} onChange={e => update('diet', e.target.value)}
                             className={inputClass} style={{ borderColor: '#c5e3a0' }}>
                             <option value="vegan">Vegan</option>
@@ -141,12 +158,14 @@ const EditLogModal = ({ log, onClose, onSaved }: EditLogModalProps) => {
                             <option value="balanced">Balanced</option>
                             <option value="meat-heavy">Meat Heavy</option>
                         </select>
+
                     </div>
 
                     {/* Cooking */}
                     <div className="grid grid-cols-2 gap-3">
                         <div>
                             <label className={labelClass} style={{ color: '#022202' }}>Cooking Fuel</label>
+                            
                             <select value={form.cookingFuel} onChange={e => update('cookingFuel', e.target.value)}
                                 className={inputClass} style={{ borderColor: '#c5e3a0' }}>
                                 <option value="LPG">LPG Gas</option>
@@ -156,8 +175,10 @@ const EditLogModal = ({ log, onClose, onSaved }: EditLogModalProps) => {
                                 <option value="None">None</option>
                             </select>
                         </div>
+
                         <div>
                             <label className={labelClass} style={{ color: '#022202' }}>Cooking hrs/day</label>
+                            
                             <input type="number" min="0" max="24" step="0.5" value={form.cookingHoursPerDay || ''}
                                 onChange={e => update('cookingHoursPerDay', Number(e.target.value))}
                                 className={inputClass} style={{ borderColor: '#c5e3a0' }} />
@@ -172,6 +193,7 @@ const EditLogModal = ({ log, onClose, onSaved }: EditLogModalProps) => {
                         style={{ borderColor: '#c5e3a0', color: '#4a7c2f' }}>
                         Cancel
                     </button>
+
                     <button onClick={handleSave} disabled={loading}
                         className="flex-1 py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 transition-all disabled:opacity-60"
                         style={{ background: '#508C12' }}
@@ -182,6 +204,7 @@ const EditLogModal = ({ log, onClose, onSaved }: EditLogModalProps) => {
                             : <><Save size={16} /> Save Changes</>
                         }
                     </button>
+                    
                 </div>
             </div>
         </div>

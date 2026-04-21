@@ -31,7 +31,9 @@ const AdminKPICards = ({ stats }: AdminKPICardsProps) => (
                     className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow group"
                 >
                     <div className="flex items-center justify-between mb-3">
+                        
                         <p className="text-sm font-semibold text-gray-500">{card.label}</p>
+                        
                         <div
                             className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors group-hover:scale-110"
                             style={{ background: card.bg, color: card.color }}
@@ -39,6 +41,7 @@ const AdminKPICards = ({ stats }: AdminKPICardsProps) => (
                             <Icon size={18} />
                         </div>
                     </div>
+
                     <div className="text-3xl font-black text-gray-800">{value ?? 0}</div>
                     {card.key === 'totalCO2Log' && (
                         <span className="text-xs text-gray-400 ml-1">kg</span>
@@ -52,10 +55,12 @@ const AdminKPICards = ({ stats }: AdminKPICardsProps) => (
             <div className="flex items-center justify-between">
                 <div>
                     <p className="text-sm font-semibold text-gray-500 mb-1">Total CO₂ Logged (All Users)</p>
+                    
                     <div className="text-3xl font-black" style={{ color: '#17921f' }}>
                         {stats?.totalCO2Log ?? 0} <span className="text-base font-semibold text-gray-400">kg CO₂e</span>
                     </div>
                 </div>
+
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: '#f0f7e6', color: '#17921f' }}>
                     <Leaf size={24} />
                 </div>

@@ -11,9 +11,6 @@ import {
 
 import api from "../../../../services/api";
 
-// Color palette 
-// const GREEN_COLORS = ['#17921f', '#508C12', '#5cbd36', '#a8d080', '#d4edaa'];
-
 const chartCardStyle = {
     background: 'white',
     borderRadius: '1.5rem',
@@ -141,22 +138,32 @@ const DashboardCharts = () => {
             <div style={chartCardStyle}>
                 <div className="mb-5">
                     <h3 className="text-lg font-bold" style={{ color: '#022202' }}>Carbon Footprint Trend</h3>
+                    
                     <p className="text-sm" style={{ color: '#4a7c2f' }}>Your CO₂ emissions from recent logs (kg)</p>
                 </div>
+
                 {carbonTrend.length > 0 ? (
                     <div className="h-56">
+                        
                         <ResponsiveContainer width="100%" height="100%">
+                            
                             <AreaChart data={carbonTrend} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                                
                                 <defs>
                                     <linearGradient id="co2Gradient" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%"  stopColor="#17921f" stopOpacity={0.3} />
                                         <stop offset="95%" stopColor="#17921f" stopOpacity={0}   />
                                     </linearGradient>
                                 </defs>
+
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e8f5d0" />
+                                
                                 <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#4a7c2f' }} dy={8} />
+                                
                                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#4a7c2f' }} />
+                                
                                 <Tooltip contentStyle={tooltipStyle} itemStyle={{ color: '#17921f', fontWeight: 'bold' }} />
+                                
                                 <Area
                                     type="monotone"
                                     dataKey="co2"
@@ -169,6 +176,7 @@ const DashboardCharts = () => {
                                     activeDot={{ r: 6, fill: '#022202' }}
                                 />
                             </AreaChart>
+
                         </ResponsiveContainer>
                     </div>
                 ) : (
@@ -180,8 +188,10 @@ const DashboardCharts = () => {
             <div style={chartCardStyle}>
                 <div className="mb-5">
                     <h3 className="text-lg font-bold" style={{ color: '#022202' }}>CO₂ Breakdown</h3>
+                    
                     <p className="text-sm" style={{ color: '#4a7c2f' }}>Average CO₂ by category (kg per log)</p>
                 </div>
+
                 {breakdownData.length > 0 && breakdownData.some(d => d.value > 0) ? (
                     <div className="h-56">
                         <ResponsiveContainer width="100%" height="100%">
@@ -199,16 +209,20 @@ const DashboardCharts = () => {
                                         <Cell key={index} fill={entry.color} />
                                     ))}
                                 </Pie>
+
                                 <PieTooltip
                                     contentStyle={tooltipStyle}
                                     formatter={(value) => [`${value} kg`, '']}
                                 />
+
                                 <PieLegend
                                     iconType="circle"
                                     iconSize={10}
                                     wrapperStyle={{ fontSize: '12px', color: '#4a7c2f' }}
                                 />
+
                             </PieChart>
+
                         </ResponsiveContainer>
                     </div>
                 ) : (
@@ -220,24 +234,35 @@ const DashboardCharts = () => {
             <div style={chartCardStyle}>
                 <div className="mb-5">
                     <h3 className="text-lg font-bold" style={{ color: '#022202' }}>Habit Activity</h3>
+                    
                     <p className="text-sm" style={{ color: '#4a7c2f' }}>Habits logged and points earned this week</p>
                 </div>
+
                 {activityData.some(d => d.habits > 0) ? (
                     <div className="h-56">
                         <ResponsiveContainer width="100%" height="100%">
+                            
                             <BarChart data={activityData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e8f5d0" />
+                                
                                 <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#4a7c2f' }} dy={8} />
+                                
                                 <YAxis yAxisId="left"  orientation="left"  axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#4a7c2f' }} />
+                                
                                 <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#4a7c2f' }} />
+                                
                                 <Tooltip
                                     cursor={{ fill: '#f0f7e6' }}
                                     contentStyle={tooltipStyle}
                                 />
+                                
                                 <PieLegend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '12px', color: '#4a7c2f' }} />
+                                
                                 <Bar yAxisId="left"  dataKey="habits" name="Habits Logged" fill="#17921f" radius={[4, 4, 0, 0]} maxBarSize={36} />
+                                
                                 <Bar yAxisId="right" dataKey="points" name="Points Earned" fill="#5cbd36" radius={[4, 4, 0, 0]} maxBarSize={36} />
                             </BarChart>
+
                         </ResponsiveContainer>
                     </div>
                 ) : (
@@ -249,11 +274,14 @@ const DashboardCharts = () => {
             <div style={chartCardStyle}>
                 <div className="mb-5">
                     <h3 className="text-lg font-bold" style={{ color: '#022202' }}>Goals Progress</h3>
+                    
                     <p className="text-sm" style={{ color: '#4a7c2f' }}>Overview of your eco goals status</p>
                 </div>
+
                 {goalsData.some(d => d.value > 0) ? (
                     <div className="h-56">
                         <ResponsiveContainer width="100%" height="100%">
+                            
                             <PieChart>
                                 <Pie
                                     data={goalsData.filter(d => d.value > 0)}
@@ -269,13 +297,16 @@ const DashboardCharts = () => {
                                         <Cell key={index} fill={entry.color} />
                                     ))}
                                 </Pie>
+
                                 <PieTooltip contentStyle={tooltipStyle} />
+                                
                                 <PieLegend
                                     iconType="circle"
                                     iconSize={10}
                                     wrapperStyle={{ fontSize: '12px', color: '#4a7c2f' }}
                                 />
                             </PieChart>
+                            
                         </ResponsiveContainer>
                     </div>
                 ) : (

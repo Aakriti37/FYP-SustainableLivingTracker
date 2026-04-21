@@ -1,10 +1,9 @@
 // services/ecoSuggestionService.ts
-// FRONTEND ONLY — HTTP requests to your backend via axios
 
 import api from "./api";
 import type { Habit, Goal, CarbonLog, ActivityLog, EcoSuggestion } from "../types/ecoSuggestions.types";
 
-// ── Data fetchers (used for stats + summary card) ─────────────────────────────
+// Data fetchers (used for stats + summary card) 
 
 export const fetchHabits = async (): Promise<Habit[]> => {
   const response = await api.get("/habits");
@@ -26,7 +25,7 @@ export const fetchActivityLogs = async (): Promise<ActivityLog[]> => {
   return response.data;
 };
 
-// ── Generate suggestions via your backend → ML service ───────────────────────
+// Generate suggestions via backend → ML service 
 export const generateEcoSuggestions = async (): Promise<{
   suggestions:    EcoSuggestion[];
   emission_level: string;

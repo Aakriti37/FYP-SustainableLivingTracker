@@ -51,11 +51,13 @@ const Habits = () => {
     const handleLogActivity = async (id: string) => {
         try {
             const res = await api.post(`/habits/${id}/log`);
+            
             toast.success(`Logged! +${res.data.activity.pointsEarned} Points`);
             // Optimistic update
             setHabits(prev =>
                 prev.map(h => h._id === id ? { ...h, completedToday: true, streak: h.streak + 1 } : h)
             );
+
             fetchAll();
         } catch (error: unknown) {
             const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
@@ -74,12 +76,15 @@ const Habits = () => {
                             <Zap size={34} style={{ color: '#508C12' }} />
                             Habit Tracker
                         </h1>
+
                         <p className="font-medium" style={{ color: '#4a7c2f' }}>
                             Build eco-friendly habits, one day at a time.
                         </p>
                     </div>
+
                     <div className="flex items-center gap-3">
                         {loading && <RefreshCw size={18} className="animate-spin" style={{ color: '#508C12' }} />}
+                        
                         <button
                             onClick={() => setIsModalOpen(true)}
                             className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-white text-sm transition-all"
@@ -90,6 +95,7 @@ const Habits = () => {
                             <Plus size={18} /> New Habit
                         </button>
                     </div>
+
                 </header>
 
                 {/* Content grid */}
@@ -101,6 +107,7 @@ const Habits = () => {
                         onDeleteHabit={handleDeleteHabit}
                         onOpenModal={() => setIsModalOpen(true)}
                     />
+                    
                     <RecentActivity activities={activities} />
                 </div>
             </div>

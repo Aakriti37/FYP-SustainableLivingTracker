@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../context/AuthContext";
 import api from "../../../../services/api";
 
-// axios.defaults.withCredentials = true;
-// const API_URL = import.meta.env.VITE_API_URL;
 
 interface Notification {
     _id:       string;
@@ -39,8 +37,10 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
     const fetchNotifications = async () => {
         if (!user) return;
         setLoading(true);
+
         try {
             const res = await api.get("/notifications");
+            
             setNotifications(res.data.notifications || []);
             setUnreadCount(res.data.unreadCount || 0);
         } catch (err) {
@@ -75,6 +75,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
                 setIsOpen(false);
             }
         };
+
         document.addEventListener('mousedown', handler);
         return () => document.removeEventListener('mousedown', handler);
     }, []);
@@ -111,6 +112,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
                 setUnreadCount(prev => Math.max(0, prev - 1));
             } catch { /* silent */ }
         }
+
         if (notif.link) navigate(notif.link);
         setIsOpen(false);
     };
@@ -128,6 +130,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >
                 <Bell size={20} />
+                
                 {unreadCount > 0 && (
                     <span
                         className="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] rounded-full text-white flex items-center justify-center font-bold border-2 border-white"
@@ -153,6 +156,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
                             <h3 className="font-bold text-sm" style={{ color: '#022202' }}>
                                 Notifications
                             </h3>
+
                             {unreadCount > 0 && (
                                 <span
                                     className="px-2 py-0.5 rounded-full text-xs font-bold"
@@ -162,6 +166,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
                                 </span>
                             )}
                         </div>
+
                         <div className="flex items-center gap-2">
                             {unreadCount > 0 && (
                                 <button
@@ -172,6 +177,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
                                     Mark all read
                                 </button>
                             )}
+
                             <button
                                 onClick={() => setIsOpen(false)}
                                 className="p-1 rounded transition-colors"
@@ -191,17 +197,21 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
                         ) : notifications.length === 0 ? (
                             <div className="py-10 text-center">
                                 <Bell size={28} className="mx-auto mb-2 opacity-20" style={{ color: '#508C12' }} />
+                                
                                 <p className="text-sm font-medium" style={{ color: '#4a7c2f' }}>
                                     No notifications yet
                                 </p>
+
                                 <p className="text-xs mt-1 opacity-60" style={{ color: '#4a7c2f' }}>
                                     Complete habits and goals to get notified!
                                 </p>
+
                             </div>
                         ) : (
                             <div className="divide-y divide-[#e8f5d0]">
                                 {notifications.map(notif => {
                                     const typeInfo = TYPE_ICONS[notif.type] ?? TYPE_ICONS.habit_reminder;
+                                    
                                     return (
                                         <div
                                             key={notif._id}
@@ -224,9 +234,11 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
                                                 <p className="text-sm font-bold leading-snug" style={{ color: '#022202' }}>
                                                     {notif.title}
                                                 </p>
+
                                                 <p className="text-xs mt-0.5 leading-snug" style={{ color: '#4a7c2f' }}>
                                                     {notif.message}
                                                 </p>
+
                                                 <p className="text-xs mt-1 opacity-50" style={{ color: '#4a7c2f' }}>
                                                     {new Date(notif.createdAt).toLocaleDateString(undefined, {
                                                         month: 'short', day: 'numeric',
@@ -243,6 +255,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
                                                         style={{ background: '#508C12' }}
                                                     />
                                                 )}
+
                                                 <button
                                                     onClick={e => handleDelete(notif._id, e)}
                                                     className="p-1 rounded transition-colors opacity-40 hover:opacity-100"
@@ -250,6 +263,7 @@ const NotificationBell = ({ isUser }: { isUser: boolean }) => {
                                                 >
                                                     <Trash2 size={12} />
                                                 </button>
+                                                
                                             </div>
                                         </div>
                                     );

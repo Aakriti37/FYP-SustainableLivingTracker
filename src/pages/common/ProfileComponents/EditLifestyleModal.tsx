@@ -57,6 +57,7 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
   const toggleArray = (field: "recycling" | "cookingWith", value: string) =>
     setForm(prev => {
       const arr = prev[field] as string[];
+
       return {
         ...prev,
         [field]: arr.includes(value)
@@ -67,6 +68,7 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
 
   const handleSave = async () => {
     setLoading(true);
+
     try {
       await api.post("/eco-suggestions/lifestyle", form);
       toast.success("Lifestyle profile updated!");
@@ -84,13 +86,18 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
   const SelectRow = ({
     label, field, options,
   }: { label: string; field: string; options: { value: string; label: string }[] }) => (
+    
     <div>
+      
       <label className="block text-sm font-semibold mb-2" style={{ color: "#022202" }}>
         {label}
       </label>
+
       <div className="flex flex-wrap gap-2">
         {options.map(opt => {
+          
           const selected = (form as Record<string, unknown>)[field] === opt.value;
+          
           return (
             <button
               key={opt.value}
@@ -106,21 +113,29 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
               {opt.label}
             </button>
           );
+
         })}
+
       </div>
+
     </div>
   );
 
   const NumberRow = ({
     label, field, min, max, unit,
   }: { label: string; field: string; min: number; max: number; unit: string }) => (
+    
     <div>
+      
       <label className="block text-sm font-semibold mb-1" style={{ color: "#022202" }}>
         {label}
+        
         <span className="ml-2 font-bold" style={{ color: "#508C12" }}>
           {(form as Record<string, unknown>)[field] as number} {unit}
         </span>
+
       </label>
+
       <input
         type="range" min={min} max={max}
         value={(form as Record<string, unknown>)[field] as number}
@@ -128,23 +143,31 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
         className="w-full"
         style={{ accentColor: "#508C12" }}
       />
+
       <div className="flex justify-between text-xs mt-1" style={{ color: "#4a7c2f" }}>
         <span>{min} {unit}</span><span>{max} {unit}</span>
       </div>
+
     </div>
   );
 
   const CheckboxGroup = ({
     label, field, options,
   }: { label: string; field: "recycling" | "cookingWith"; options: string[] }) => (
+    
     <div>
+      
       <label className="block text-sm font-semibold mb-2" style={{ color: "#022202" }}>
         {label}
       </label>
+
       <div className="flex flex-wrap gap-2">
         {options.map(opt => {
+          
           const selected = (form[field] as string[]).includes(opt);
+          
           return (
+            
             <button
               key={opt}
               type="button"
@@ -162,6 +185,7 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
           );
         })}
       </div>
+
     </div>
   );
 
@@ -178,34 +202,44 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
           className="px-6 py-5 flex items-center justify-between shrink-0"
           style={{ background: "linear-gradient(135deg, #022202, #2d6a10)" }}
         >
+          
           <div className="flex items-center gap-3 text-white">
+            
             <div className="w-9 h-9 rounded-xl flex items-center justify-center"
               style={{ background: "rgba(255,255,255,0.15)" }}>
               <Leaf size={18} />
             </div>
+
             <div>
               <h3 className="font-bold text-base leading-none">Edit Lifestyle Profile</h3>
+              
               <p className="text-xs mt-0.5" style={{ color: "#a8d080" }}>
                 Step {step} of {steps.length} — {steps[step - 1]}
               </p>
+
             </div>
+
           </div>
+
           <button
             onClick={onClose}
             className="text-white/70 hover:text-white hover:bg-white/10 p-1.5 rounded-lg transition-colors"
           >
             <X size={18} />
           </button>
+
         </div>
 
         {/* Step indicators */}
         <div className="flex px-6 py-3 gap-1.5 shrink-0 border-b" style={{ borderColor: "#e8f5d0" }}>
           {steps.map((_, i) => (
+            
             <div
               key={i}
               className="flex-1 h-1.5 rounded-full transition-all"
               style={{ background: step > i ? "#508C12" : "#e8f5d0" }}
             />
+
           ))}
         </div>
 
@@ -216,6 +250,7 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
             <>
               <SelectRow label="Gender" field="sex"
                 options={[{ value: "male", label: "Male" }, { value: "female", label: "Female" }]} />
+              
               <SelectRow label="Body Type" field="bodyType"
                 options={[
                   { value: "underweight", label: "Underweight" },
@@ -223,6 +258,7 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
                   { value: "overweight",  label: "Overweight"  },
                   { value: "obese",       label: "Obese"       },
                 ]} />
+
               <SelectRow label="Shower Frequency" field="showerFrequency"
                 options={[
                   { value: "daily",           label: "Daily"           },
@@ -230,6 +266,7 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
                   { value: "more frequently", label: "More frequently" },
                   { value: "less frequently", label: "Less frequently" },
                 ]} />
+
               <SelectRow label="Social Activity" field="socialActivity"
                 options={[
                   { value: "never",     label: "Never"     },
@@ -248,6 +285,7 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
                   { value: "frequently",      label: "Frequently"      },
                   { value: "very frequently", label: "Very frequently" },
                 ]} />
+
               <SelectRow label="Vehicle Type" field="vehicleType"
                 options={[
                   { value: "none",     label: "No vehicle" },
@@ -257,8 +295,10 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
                   { value: "lpg",      label: "LPG"        },
                   { value: "electric", label: "Electric"   },
                 ]} />
+
               <NumberRow label="Monthly Grocery Bill" field="monthlyGroceryBill"
                 min={50} max={1000} unit="$" />
+
             </>
           )}
 
@@ -270,10 +310,14 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
                   { value: "Sometimes", label: "Sometimes" },
                   { value: "Yes",       label: "Yes"       },
                 ]} />
+
               <NumberRow label="Daily TV / PC Usage"   field="tvPcHoursDaily"     min={0} max={24} unit="hrs" />
+              
               <NumberRow label="Daily Internet Usage"  field="internetHoursDaily" min={0} max={24} unit="hrs" />
+              
               <CheckboxGroup label="What do you cook with?" field="cookingWith"
                 options={["Stove", "Oven", "Microwave", "Grill", "Airfryer"]} />
+
             </>
           )}
 
@@ -286,16 +330,21 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
                   { value: "large",       label: "Large"       },
                   { value: "extra large", label: "Extra large" },
                 ]} />
+
               <NumberRow label="Waste Bags Per Week"    field="wasteBagWeeklyCount" min={1} max={10} unit="bags"  />
+              
               <NumberRow label="New Clothes Per Month"  field="newClothesMonthly"   min={0} max={30} unit="items" />
+              
               <CheckboxGroup label="What do you recycle?" field="recycling"
                 options={["Paper", "Plastic", "Glass", "Metal"]} />
+
             </>
           )}
         </div>
 
         {/* Footer navigation */}
         <div className="px-6 py-4 border-t flex gap-3 shrink-0" style={{ borderColor: "#e8f5d0" }}>
+          
           <button
             type="button"
             onClick={() => step > 1 ? setStep(s => s - 1) : onClose()}
@@ -303,6 +352,7 @@ const EditLifestyleModal = ({ lifestyle, onClose, onSaved }: EditLifestyleModalP
             style={{ borderColor: "#c5e3a0", color: "#4a7c2f" }}
           >
             <ChevronLeft size={16} />
+            
             {step === 1 ? "Cancel" : "Back"}
           </button>
 

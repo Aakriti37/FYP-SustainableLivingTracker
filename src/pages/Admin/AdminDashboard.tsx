@@ -40,10 +40,12 @@ const AdminDashboard = () => {
                         <h1 className="text-3xl font-extrabold text-gray-800">
                             Welcome back, <span style={{ color: '#17921f' }}>{user?.firstName || 'Admin'}</span>
                         </h1>
+
                         <p className="text-gray-500 font-medium mt-1">
                             Here's what's happening on your platform today.
                         </p>
                     </div>
+                    
                     {loading && <RefreshCw size={20} className="animate-spin text-gray-400" />}
                 </header>
 

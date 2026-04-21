@@ -8,8 +8,6 @@ import GoalCard     from "./components/goals/GoalCard";
 import GoalForm     from "./components/goals/GoalForm";
 import BadgeDisplay from "./components/goals/BadgeDisplay";
 
-// axios.defaults.withCredentials = true;
-// const API_URL = import.meta.env.VITE_API_URL;
 
 type Goal = {
     _id:        string;
@@ -28,6 +26,7 @@ const Goals = () => {
 
     const fetchGoals = async () => {
         setLoading(true);
+        
         try {
             const res = await api.get("/goals");
             setGoals(res.data);
@@ -46,10 +45,13 @@ const Goals = () => {
 
     const handleAddGoal = async (e: React.FormEvent) => {
         e.preventDefault();
+        
         if (!title || !date) return;
+        
         try {
             await api.post("/goals", { title, targetDate: date });
             toast.success("Goal added!");
+            
             setTitle('');
             setDate('');
             setIsAdding(false);
@@ -61,10 +63,13 @@ const Goals = () => {
 
     const handleToggleStatus = async (_id: string, currentStatus: string) => {
         const newStatus = currentStatus === 'completed' ? 'in-progress' : 'completed';
+        
         try {
             await api.patch(`/goals/${_id}/status`, { status: newStatus });
+            
             if (newStatus === 'completed') toast.success("Goal completed! Check your badges!");
             else toast.success(`Goal marked as in-progress`);
+            
             fetchGoals();
         } catch {
             toast.error("Failed to update goal");
@@ -96,12 +101,15 @@ const Goals = () => {
                             <Target size={34} style={{ color: '#508C12' }} />
                             Eco Goals
                         </h1>
+
                         <p className="font-medium" style={{ color: '#4a7c2f' }}>
                             Set milestones and track your long-term environmental impact.
                         </p>
                     </div>
+
                     <div className="flex items-center gap-3">
                         {loading && <RefreshCw size={18} className="animate-spin" style={{ color: '#508C12' }} />}
+                        
                         <button
                             onClick={() => setIsAdding(!isAdding)}
                             className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-white text-sm transition-all"
@@ -122,8 +130,10 @@ const Goals = () => {
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#f0f7e6' }}>
                         <Zap size={20} style={{ color: '#508C12' }} />
                     </div>
+
                     <div>
                         <p className="font-bold text-sm" style={{ color: '#022202' }}>Daily Habits Fuel Your Goals</p>
+                        
                         <p className="text-sm" style={{ color: '#4a7c2f' }}>
                             Progress is calculated based on how consistently you complete linked habits before the target date.
                         </p>
@@ -149,11 +159,16 @@ const Goals = () => {
                             <div key={i} className="rounded-3xl h-64 border" style={{ background: '#f0f7e6', borderColor: '#c5e3a0' }} />
                         ))}
                     </div>
+
                 ) : goals.length === 0 ? (
                     <div className="text-center py-20 bg-white rounded-3xl border" style={{ borderColor: '#c5e3a0' }}>
+                        
                         <Target size={56} className="mx-auto mb-4 opacity-20" style={{ color: '#508C12' }} />
+                        
                         <h3 className="text-xl font-bold mb-2" style={{ color: '#022202' }}>No goals yet</h3>
+                        
                         <p className="mb-4" style={{ color: '#4a7c2f' }}>Set your first eco goal and start making an impact.</p>
+                        
                         <button
                             onClick={() => setIsAdding(true)}
                             className="font-bold underline"
@@ -161,6 +176,7 @@ const Goals = () => {
                         >
                             Create your first goal
                         </button>
+
                     </div>
                 ) : (
                     <div className="space-y-8">
@@ -170,13 +186,16 @@ const Goals = () => {
                             <div>
                                 <h2 className="text-sm font-bold uppercase tracking-widest mb-3 flex items-center gap-2" style={{ color: '#4a7c2f' }}>
                                     <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#508C12' }} />
+                                    
                                     In Progress ({inProgress.length})
                                 </h2>
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                                     {inProgress.map(goal => (
                                         <GoalCard key={goal._id} goal={goal} onToggleStatus={handleToggleStatus} onDelete={handleDelete} />
                                     ))}
                                 </div>
+
                             </div>
                         )}
 
@@ -187,6 +206,7 @@ const Goals = () => {
                                     <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#17921f' }} />
                                     Completed ({completed.length})
                                 </h2>
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                                     {completed.map(goal => (
                                         <GoalCard key={goal._id} goal={goal} onToggleStatus={handleToggleStatus} onDelete={handleDelete} />
@@ -202,6 +222,7 @@ const Goals = () => {
                                     <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#ef4444' }} />
                                     Missed ({failed.length})
                                 </h2>
+                                
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                                     {failed.map(goal => (
                                         <GoalCard key={goal._id} goal={goal} onToggleStatus={handleToggleStatus} onDelete={handleDelete} />

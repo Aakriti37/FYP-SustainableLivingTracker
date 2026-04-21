@@ -1,6 +1,5 @@
 // components/common/Sidebar.tsx
 // Admin sidebar only — clean admin links + landing page section links
-// User links removed completely
 
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
@@ -12,7 +11,6 @@ import {
     ChevronRight,
     Leaf,
 } from "lucide-react";
-// import logo from "../../assets/WhiteLogo.png";
 import { useAuth } from "../../context/AuthContext";
 
 interface SidebarProps {
@@ -32,7 +30,6 @@ const landingLinks = [
     { href: "#home",     label: "Home"     },
     { href: "#features", label: "Features" },
     { href: "#about",    label: "About"    },
-    // { href: "#contact",  label: "Contact"  },
 ];
 
 const Sidebar = ({ isOpen = true }: SidebarProps) => {
@@ -63,6 +60,7 @@ const Sidebar = ({ isOpen = true }: SidebarProps) => {
             {/* ── Admin info ── */}
             {user && (
                 <div className="px-5 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                    
                     <div
                         className="flex items-center gap-3 px-3 py-2 rounded-xl"
                         style={{ background: 'rgba(255,255,255,0.08)' }}
@@ -73,10 +71,13 @@ const Sidebar = ({ isOpen = true }: SidebarProps) => {
                         >
                             {(user.firstName || user.email)[0].toUpperCase()}
                         </div>
+
+
                         <div className="min-w-0">
                             <p className="text-sm font-bold text-white truncate">
                                 {user.firstName || user.email.split("@")[0]}
                             </p>
+
                             <p className="text-xs capitalize" style={{ color: '#a8d080' }}>
                                 {user.role}
                             </p>
@@ -93,6 +94,7 @@ const Sidebar = ({ isOpen = true }: SidebarProps) => {
 
                 {adminLinks.map(link => {
                     const Icon = link.icon;
+                    
                     return (
                         <NavLink
                             key={link.path}
@@ -123,6 +125,7 @@ const Sidebar = ({ isOpen = true }: SidebarProps) => {
                                 <Icon size={18} />
                                 {link.label}
                             </span>
+                            
                             <ChevronRight size={14} className="opacity-50" />
                         </NavLink>
                     );

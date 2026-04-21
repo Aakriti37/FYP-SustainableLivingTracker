@@ -27,6 +27,7 @@ const Community = () => {
                     api.get('/community/leaderboard').catch(() => null),
                     api.get('/user/profile').catch(() => null),
                 ]);
+
                 if (lbRes?.data)   setLeaderboard(lbRes.data);
                 if (userRes?.data) setCurrentUser(userRes.data);
             } catch (error) {
@@ -38,9 +39,11 @@ const Community = () => {
 
     useEffect(() => {
         if (!socket) return;
+        
         socket.on('new_post',    (newPost: Post)     => setPosts(prev => prev.some(p => p._id === newPost._id) ? prev : [newPost, ...prev]));
         socket.on('update_post', (updated: Post)     => setPosts(prev => prev.map(p => p._id === updated._id ? updated : p)));
         socket.on('delete_post', (postId: string)    => setPosts(prev => prev.filter(p => p._id !== postId)));
+        
         return () => { socket.off('new_post'); socket.off('update_post'); socket.off('delete_post'); };
     }, [socket]);
 
@@ -55,8 +58,10 @@ const Community = () => {
                     <header className="flex items-center justify-between mb-6 pb-4 border-b" style={{ borderColor: '#c5e3a0' }}>
                         <div className="flex items-center gap-2">
                             <Leaf size={22} style={{ color: '#508C12' }} />
+                            
                             <h1 className="text-xl font-bold" style={{ color: '#022202' }}>Eco Community</h1>
                         </div>
+
                         <button
                             onClick={() => setIsCreateModalOpen(true)}
                             className="flex items-center gap-2 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all shadow-sm"
@@ -66,16 +71,20 @@ const Community = () => {
                         >
                             <PlusSquare size={16} /> New Post
                         </button>
+
                     </header>
 
                     {/* Posts list */}
                     {posts.length === 0 ? (
                         <div className="bg-white border rounded-2xl p-10 text-center" style={{ borderColor: '#c5e3a0' }}>
                             <Leaf size={36} className="mx-auto mb-3 opacity-30" style={{ color: '#508C12' }} />
+                            
                             <h2 className="font-semibold text-lg mb-1" style={{ color: '#022202' }}>No posts yet</h2>
+                            
                             <p className="text-sm mb-5" style={{ color: '#4a7c2f' }}>
                                 Be the first to share something!
                             </p>
+
                             <button
                                 onClick={() => setIsCreateModalOpen(true)}
                                 className="font-bold underline"
@@ -95,6 +104,7 @@ const Community = () => {
                 <div className="hidden lg:block w-[300px] shrink-0 sticky top-8">
                     <LeaderboardSection leaderboard={leaderboard} />
                 </div>
+                
             </div>
 
             <CreatePost

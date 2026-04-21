@@ -31,16 +31,20 @@ const EcoChatbot = () => {
 
   const sendMessage = async (text: string) => {
     if (!text.trim() || loading) return;
+    
     const userMessage: Message = { role: "user", content: text };
     const updatedHistory = [...messages, userMessage];
+    
     setMessages(updatedHistory);
     setInput("");
     setLoading(true);
+    
     try {
       const response = await api.post("/eco-suggestions/chat", {
         message: text,
         conversationHistory: messages.slice(1),
       });
+
       setMessages(prev => [...prev, { role: "assistant", content: response.data.reply }]);
     } catch {
       setMessages(prev => [...prev, { role: "assistant", content: "Sorry, I'm having trouble responding right now. Please try again." }]);
@@ -78,11 +82,15 @@ const EcoChatbot = () => {
               <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.15)' }}>
                 <Leaf size={16} />
               </div>
+
               <div>
                 <p className="font-bold text-sm leading-none">EcoBot</p>
+                
                 <p className="text-xs mt-0.5" style={{ color: '#a8d080' }}>Eco Sustainability Assistant</p>
               </div>
+
             </div>
+
             <button onClick={() => setIsOpen(false)} className="text-white/70 hover:text-white p-1 rounded-lg transition-colors">
               <X size={18} />
             </button>
@@ -90,13 +98,17 @@ const EcoChatbot = () => {
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3" style={{ background: '#f9fef5' }}>
+            
             {messages.map((msg, i) => (
+              
               <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                
                 {msg.role === "assistant" && (
                   <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-1 mr-2" style={{ background: '#d4edaa' }}>
                     <Leaf size={12} style={{ color: '#2d6a10' }} />
                   </div>
                 )}
+
                 <div
                   className="max-w-[80%] px-3 py-2 rounded-2xl text-sm leading-relaxed"
                   style={msg.role === "user"
@@ -106,18 +118,23 @@ const EcoChatbot = () => {
                 >
                   {msg.content}
                 </div>
+
               </div>
             ))}
+
+
             {loading && (
               <div className="flex justify-start">
                 <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-1 mr-2" style={{ background: '#d4edaa' }}>
                   <Leaf size={12} style={{ color: '#2d6a10' }} />
                 </div>
+
                 <div className="px-4 py-3 rounded-2xl" style={{ background: 'white', border: '1px solid #c5e3a0' }}>
                   <Loader2 size={16} className="animate-spin" style={{ color: '#508C12' }} />
                 </div>
               </div>
             )}
+
             <div ref={bottomRef} />
           </div>
 
@@ -153,6 +170,7 @@ const EcoChatbot = () => {
               onFocus={e  => (e.target.style.borderColor = '#508C12')}
               onBlur={e   => (e.target.style.borderColor = '#c5e3a0')}
             />
+
             <button
               onClick={() => sendMessage(input)}
               disabled={loading || !input.trim()}
@@ -163,6 +181,7 @@ const EcoChatbot = () => {
             >
               <Send size={15} />
             </button>
+            
           </div>
         </div>
       )}

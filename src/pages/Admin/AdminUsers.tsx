@@ -35,6 +35,7 @@ const AdminUsers = () => {
 
     const handleDeleteUser = async (_id: string) => {
         if (!window.confirm("Are you sure you want to delete this user and all their data?")) return;
+        
         try {
             await api.delete(`/admin/users/${_id}`);
             toast.success("User deleted successfully");
@@ -58,6 +59,7 @@ const AdminUsers = () => {
                         <h1 className="text-4xl font-extrabold text-slate-800 pb-2 flex items-center gap-3">
                             <Users className="text-blue-500" size={36} /> User Management
                         </h1>
+
                         <p className="text-gray-500 font-medium text-lg">Monitor and manage registered users.</p>
                     </div>
                 </header>
@@ -70,6 +72,7 @@ const AdminUsers = () => {
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Search size={18} className="text-gray-400" />
                             </div>
+
                             <input
                                 type="text"
                                 placeholder="Search users..."
@@ -78,6 +81,7 @@ const AdminUsers = () => {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
+
                         <div className="text-sm font-semibold text-gray-500">
                             Total Users: <span className="text-blue-600 font-bold">{filteredUsers.length}</span>
                         </div>
@@ -99,16 +103,20 @@ const AdminUsers = () => {
                                         <th className="p-4 font-semibold border-b border-gray-100 text-right">Actions</th>
                                     </tr>
                                 </thead>
+
                                 <tbody className="divide-y divide-gray-100">
                                     {filteredUsers.map((user) => (
                                         <tr key={user._id} className="hover:bg-slate-50 transition-colors">
                                             <td className="p-4 font-bold text-gray-800">
                                                 {user.firstName} {user.lastName}
                                             </td>
+
                                             <td className="p-4 text-gray-600">{user.email}</td>
+                                            
                                             <td className="p-4 text-gray-500 text-sm">
                                                 {new Date(user.createdAt).toLocaleDateString()}
                                             </td>
+
                                             <td className="p-4 text-right">
                                                 <button
                                                     onClick={() => handleDeleteUser(user._id)}
@@ -118,9 +126,11 @@ const AdminUsers = () => {
                                                     <Trash2 size={18} />
                                                 </button>
                                             </td>
+
                                         </tr>
                                     ))}
                                 </tbody>
+                                
                             </table>
                         )}
                     </div>

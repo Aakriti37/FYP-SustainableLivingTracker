@@ -49,6 +49,7 @@ const SuggestionCard = ({ suggestion, index }: SuggestionCardProps) => {
         <h3 className="font-bold text-base mb-1 leading-snug" style={{ color: '#022202' }}>
           {suggestion.title}
         </h3>
+
         <p className="text-sm leading-relaxed mb-3" style={{ color: '#4a7c2f' }}>
           {suggestion.description}
         </p>
@@ -61,12 +62,14 @@ const SuggestionCard = ({ suggestion, index }: SuggestionCardProps) => {
           >
             {impact.icon} {suggestion.impact} Impact
           </span>
+
           <span
             className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border"
             style={{ background: category.bg, color: category.color, borderColor: category.border }}
           >
             {category.icon} {suggestion.category}
           </span>
+          
         </div>
       </div>
     </div>

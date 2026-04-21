@@ -36,8 +36,11 @@ const CreatePost = ({ isOpen, onClose, currentUser }: CreatePostProps) => {
     const handleFileSelect = (file: File) => {
         if (!file.type.startsWith('image/')) { toast.error('Please select an image file'); return; }
         if (file.size > 10 * 1024 * 1024)   { toast.error('Image must be under 10MB');    return; }
+        
         setSelectedFile(file);
+        
         const reader = new FileReader();
+        
         reader.onloadend = () => setPreviewUrl(reader.result as string);
         reader.readAsDataURL(file);
     };
@@ -45,6 +48,7 @@ const CreatePost = ({ isOpen, onClose, currentUser }: CreatePostProps) => {
     const clearImage = () => {
         setSelectedFile(null);
         setPreviewUrl(null);
+        
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
@@ -52,18 +56,25 @@ const CreatePost = ({ isOpen, onClose, currentUser }: CreatePostProps) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
         if (!content.trim() && !selectedFile) { toast.error('Add some text or an image'); return; }
+        
         setIsSubmitting(true);
+        
         try {
             let imageUrl = '';
+            
             if (selectedFile) {
                 const formData = new FormData();
                 formData.append('image', selectedFile);
+                
                 const uploadRes = await api.post('/upload/image', formData);
+                
                 if (uploadRes.data?.success && uploadRes.data?.url) imageUrl = uploadRes.data.url;
                 else throw new Error('Image upload failed');
             }
             await createPost({ content: content.trim() || undefined, image: imageUrl || undefined });
+            
             toast.success('Posted!');
             handleClose();
         } catch (error: any) {
@@ -87,6 +98,7 @@ const CreatePost = ({ isOpen, onClose, currentUser }: CreatePostProps) => {
                 {/* Header */}
                 <div className="relative flex items-center justify-center py-3 border-b" style={{ borderColor: '#e8f5d0' }}>
                     <h2 className="font-semibold text-sm" style={{ color: '#022202' }}>Create post</h2>
+                    
                     <button
                         onClick={handleClose}
                         className="absolute right-3 p-1.5 rounded-full transition-colors"
@@ -103,6 +115,7 @@ const CreatePost = ({ isOpen, onClose, currentUser }: CreatePostProps) => {
                     <div className="p-4 flex-1 overflow-y-auto">
                         {/* User row */}
                         <div className="flex items-center gap-3 mb-4">
+                            
                             <div
                                 className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center text-white font-bold text-sm overflow-hidden"
                                 style={{ background: 'linear-gradient(135deg, #022202, #17921f)' }}
@@ -111,6 +124,7 @@ const CreatePost = ({ isOpen, onClose, currentUser }: CreatePostProps) => {
                                     ? <img src={currentUser.profilePicture} alt="me" className="w-full h-full object-cover" />
                                     : avatarLetter}
                             </div>
+
                             <p className="font-semibold text-sm" style={{ color: '#022202' }}>
                                 {currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : 'You'}
                             </p>
@@ -135,6 +149,7 @@ const CreatePost = ({ isOpen, onClose, currentUser }: CreatePostProps) => {
                                     style={{ background: 'rgba(2,34,2,0.7)' }}>
                                     <X size={14} />
                                 </button>
+
                                 <img src={previewUrl} alt="Preview" className="w-full object-cover" style={{ maxHeight: '300px' }} />
                             </div>
                         ) : (
@@ -150,6 +165,7 @@ const CreatePost = ({ isOpen, onClose, currentUser }: CreatePostProps) => {
                                 <p className="text-xs" style={{ color: '#4a7c2f' }}>
                                     Drag & drop or <span className="font-semibold" style={{ color: '#508C12' }}>browse</span> to add a photo
                                 </p>
+
                                 <p className="text-xs mt-1 opacity-60" style={{ color: '#4a7c2f' }}>PNG, JPG, WEBP up to 10MB</p>
                             </div>
                         )}
@@ -158,18 +174,22 @@ const CreatePost = ({ isOpen, onClose, currentUser }: CreatePostProps) => {
                     {/* Footer */}
                     <div className="px-4 py-3 border-t flex items-center justify-between" style={{ borderColor: '#e8f5d0', background: '#f9fef5' }}>
                         <div className="flex items-center gap-1">
+                            
                             <input type="file" accept="image/*" className="hidden" ref={fileInputRef}
                                 onChange={e => { const f = e.target.files?.[0]; if (f) handleFileSelect(f); }} />
+                            
                             <button type="button" onClick={() => fileInputRef.current?.click()}
                                 className="p-2 rounded-lg transition-colors" style={{ color: '#508C12' }}
                                 onMouseEnter={e => (e.currentTarget.style.background = '#f0f7e6')}
                                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
                                 <Image size={20} />
                             </button>
+
                             <button type="button" className="p-2 rounded-lg transition-colors" style={{ color: '#c5e3a0' }}>
                                 <Smile size={20} />
                             </button>
                         </div>
+                        
                         <button
                             type="submit"
                             disabled={!canPost}

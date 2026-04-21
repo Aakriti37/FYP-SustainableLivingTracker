@@ -67,8 +67,10 @@ const LeaderboardSection = ({ leaderboard }: LeaderboardSectionProps) => (
                                 <p className="font-semibold text-sm truncate" style={{ color: '#d4edaa' }}>
                                     {user.name}
                                 </p>
+
                                 <div className="flex items-center gap-1 text-xs" style={{ color: 'rgba(168,208,128,0.7)' }}>
                                     <Flame size={11} style={{ color: '#ea580c' }} />
+                                    
                                     {user.totalStreak} streak
                                 </div>
                             </div>

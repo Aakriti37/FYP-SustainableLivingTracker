@@ -28,10 +28,13 @@ const BadgeDisplay = () => {
             <h3 className="font-bold text-lg mb-4 flex items-center gap-2" style={{ color: '#022202' }}>
                 🏅 Your Badges
             </h3>
+
             <div className="flex flex-wrap gap-3">
                 {badges.map(badge => {
                     const info = BADGE_INFO[badge.badgeType];
+                    
                     if (!info) return null;
+                    
                     return (
                         <div
                             key={badge._id}
@@ -40,6 +43,7 @@ const BadgeDisplay = () => {
                             title={info.desc}
                         >
                             <span className="text-xl">{info.icon}</span>
+                            
                             <div>
                                 <p className="text-sm font-bold" style={{ color: info.color }}>{info.label}</p>
                                 <p className="text-xs" style={{ color: '#4a7c2f' }}>{info.desc}</p>

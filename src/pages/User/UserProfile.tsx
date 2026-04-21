@@ -58,6 +58,7 @@ const UserProfile = () => {
                 {/* Header */}
                 <header className="mb-6 pb-4 border-b" style={{ borderColor: '#c5e3a0' }}>
                     <h1 className="text-4xl font-extrabold" style={{ color: '#022202' }}>My Profile</h1>
+                    
                     <p className="font-medium mt-1" style={{ color: '#4a7c2f' }}>
                         Manage your personal information and lifestyle profile.
                     </p>
@@ -87,10 +88,12 @@ const UserProfile = () => {
                                 >
                                     {initials || '??'}
                                 </div>
+
                                 <div className="-mt-2">
                                     <h2 className="text-2xl font-extrabold" style={{ color: '#022202' }}>
                                         {profile.firstName} {profile.lastName}
                                     </h2>
+
                                     <span
                                         className="inline-block text-xs font-bold px-3 py-1 rounded-full capitalize mt-1"
                                         style={{ background: '#f0f7e6', color: '#508C12' }}
@@ -151,6 +154,7 @@ const UserProfile = () => {
                                     >
                                         {field.icon}
                                     </div>
+
                                     <div className="min-w-0">
                                         <p
                                             className="text-xs font-semibold uppercase tracking-wider"
@@ -158,12 +162,14 @@ const UserProfile = () => {
                                         >
                                             {field.label}
                                         </p>
+
                                         <p
                                             className="font-semibold mt-0.5 capitalize truncate"
                                             style={{ color: '#022202' }}
                                         >
                                             {field.value || '—'}
                                         </p>
+                                        
                                     </div>
                                 </div>
                             ))}

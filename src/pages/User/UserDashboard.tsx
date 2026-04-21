@@ -67,10 +67,12 @@ const UserDashboard = () => {
                             <Leaf size={34} style={{ color: '#508C12' }} />
                             Overview
                         </h1>
+
                         <p className="font-medium" style={{ color: '#4a7c2f' }}>
                             Welcome back{user?.firstName ? `, ${user.firstName}` : ''}! Here's your eco-progress at a glance.
                         </p>
                     </div>
+
                     {loading && <RefreshCw size={22} className="animate-spin" style={{ color: '#508C12' }} />}
                 </header>
 
@@ -91,17 +93,21 @@ const UserDashboard = () => {
                     >
                         <div className="absolute top-0 right-0 w-64 h-64 rounded-full -translate-y-1/2 translate-x-1/4 opacity-10"
                             style={{ background: 'white' }} />
+                        
                         <div className="z-10 text-center md:text-left mb-4 md:mb-0">
                             <h3 className="text-2xl font-bold mb-1">Get AI Eco Suggestions</h3>
+                            
                             <p className="text-sm opacity-80" style={{ color: '#a8d080' }}>
                                 Our AI analyses your habits, goals and carbon data to give you personalised eco tips.
                             </p>
                         </div>
+
                         <div
                             className="z-10 flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all group-hover:scale-105"
                             style={{ background: 'rgba(255,255,255,0.15)' }}
                         >
                             View Suggestions
+                            
                             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                         </div>
                     </div>

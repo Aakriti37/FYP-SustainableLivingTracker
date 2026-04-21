@@ -61,14 +61,18 @@ const Shield = ({ badgeType, earnedAt, size = 'md' }: ShieldProps) => {
                     background: 'rgba(255,255,255,0.12)',
                     clipPath:   'polygon(50% 0%, 100% 20%, 100% 65%, 50% 100%, 0% 65%, 0% 20%)',
                 }} />
+
                 <div style={{ zIndex: 1 }}>{cfg.icon}</div>
             </div>
+
             <div className="text-center">
                 <p className="text-xs font-bold" style={{ color: cfg.bgFrom }}>{cfg.label}</p>
+                
                 <p className="text-xs opacity-60" style={{ color: '#4a7c2f', fontSize: '10px' }}>
                     {new Date(earnedAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}
                 </p>
             </div>
+
         </div>
     );
 };
@@ -92,10 +96,13 @@ const BadgeShieldDisplay = ({ userId }: BadgeShieldDisplayProps) => {
 
     return (
         <div className="bg-white rounded-3xl p-6 shadow-sm border mt-6" style={{ borderColor: '#c5e3a0' }}>
+            
             <div className="flex items-center gap-2 mb-2">
                 <Medal size={20} style={{ color: '#508C12' }} />
+                
                 <h3 className="font-bold text-lg" style={{ color: '#022202' }}>Earned Badges</h3>
             </div>
+
             <p className="text-xs mb-6" style={{ color: '#4a7c2f' }}>
                 Complete goals and habits to earn more badges!
             </p>
@@ -103,6 +110,7 @@ const BadgeShieldDisplay = ({ userId }: BadgeShieldDisplayProps) => {
             {badges.length === 0 ? (
                 <div className="text-center py-8" style={{ color: '#4a7c2f' }}>
                     <p className="text-sm font-medium opacity-60">No badges yet.</p>
+                    
                     <p className="text-xs mt-1 opacity-40">Complete your first goal to earn your first badge!</p>
                 </div>
             ) : (
@@ -115,14 +123,18 @@ const BadgeShieldDisplay = ({ userId }: BadgeShieldDisplayProps) => {
 
             {badges.length < Object.keys(BADGE_CONFIG).length && (
                 <div className="mt-6 pt-4 border-t" style={{ borderColor: '#e8f5d0' }}>
+                    
                     <p className="text-xs font-semibold mb-4 uppercase tracking-wider" style={{ color: '#4a7c2f' }}>
                         Badges to unlock
                     </p>
+
                     <div className="flex flex-wrap gap-4">
                         {Object.entries(BADGE_CONFIG)
                             .filter(([type]) => !badges.some(b => b.badgeType === type))
                             .map(([type, cfg]) => (
+                                
                                 <div key={type} className="flex flex-col items-center gap-1 opacity-30" title={cfg.desc}>
+                                    
                                     <div style={{
                                         width:          80,
                                         height:         92,
@@ -135,9 +147,11 @@ const BadgeShieldDisplay = ({ userId }: BadgeShieldDisplayProps) => {
                                     }}>
                                         {cfg.icon}
                                     </div>
+
                                     <p className="text-xs font-medium text-center" style={{ color: '#4a7c2f', maxWidth: 80 }}>
                                         {cfg.label}
                                     </p>
+                                    
                                 </div>
                             ))
                         }

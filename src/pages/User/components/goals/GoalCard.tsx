@@ -10,6 +10,7 @@ interface GoalCardProps {
         status:     string;
         progress?:  number;
     };
+
     onToggleStatus: (id: string, status: string) => void;
     onDelete:       (id: string) => void;
 }
@@ -50,6 +51,7 @@ const GoalCard = ({ goal, onToggleStatus, onDelete }: GoalCardProps) => {
                         : <Target size={22} style={{ color: '#508C12' }} />
                     }
                 </div>
+
                 <button
                     onClick={() => onDelete(goal._id)}
                     className="p-1.5 rounded-lg transition-colors"
@@ -59,6 +61,7 @@ const GoalCard = ({ goal, onToggleStatus, onDelete }: GoalCardProps) => {
                 >
                     <Trash2 size={15} />
                 </button>
+
             </div>
 
             {/* Title */}
@@ -72,6 +75,7 @@ const GoalCard = ({ goal, onToggleStatus, onDelete }: GoalCardProps) => {
             {/* Date + days left */}
             <div className="flex items-center gap-2 mb-4 text-sm">
                 <Clock size={14} style={{ color: '#4a7c2f' }} />
+                
                 <span style={{ color: '#4a7c2f' }}>
                     {isCompleted
                         ? 'Completed'
@@ -82,12 +86,14 @@ const GoalCard = ({ goal, onToggleStatus, onDelete }: GoalCardProps) => {
                         : `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left`
                     }
                 </span>
+
                 <span
                     className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium"
                     style={{ background: '#f0f7e6', color: '#4a7c2f' }}
                 >
                     {new Date(goal.targetDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                 </span>
+
             </div>
 
             {/* Progress bar */}
@@ -96,6 +102,7 @@ const GoalCard = ({ goal, onToggleStatus, onDelete }: GoalCardProps) => {
                     <span style={{ color: '#4a7c2f' }}>Progress</span>
                     <span style={{ color: '#508C12' }}>{progress}%</span>
                 </div>
+
                 <div className="h-2 w-full rounded-full overflow-hidden mb-4" style={{ background: '#e8f5d0' }}>
                     <div
                         className="h-full rounded-full transition-all duration-700"
@@ -120,6 +127,7 @@ const GoalCard = ({ goal, onToggleStatus, onDelete }: GoalCardProps) => {
                         onMouseLeave={e => (e.currentTarget.style.background = isCompleted ? '#f0f7e6' : 'white')}
                     >
                         <CheckCircle2 size={16} />
+                        
                         {isCompleted ? 'Mark as In-Progress' : 'Mark as Completed'}
                     </button>
                 )}

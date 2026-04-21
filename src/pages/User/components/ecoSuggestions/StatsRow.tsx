@@ -29,8 +29,11 @@ const StatsRow = ({ habits, goals, carbonLogs }: StatsRowProps) => {
           style={{ background: 'white', borderColor: '#c5e3a0' }}
         >
           <div className="mb-1" style={{ color: stat.color }}>{stat.icon}</div>
+          
           <div className="text-2xl font-black" style={{ color: stat.color }}>{stat.value}</div>
+          
           <div className="text-xs font-medium mt-0.5" style={{ color: '#4a7c2f' }}>{stat.label}</div>
+        
         </div>
       ))}
     </div>

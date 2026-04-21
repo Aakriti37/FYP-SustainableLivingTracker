@@ -20,12 +20,14 @@ const CarbonCalculator = () => {
 
     const fetchAllData = async () => {
         setLoading(true);
+        
         try {
             const [todayRes, historyRes, statsRes] = await Promise.all([
                 api.get("/carbon/today"),
                 api.get("/carbon/history"),
                 api.get("/carbon/stats"),
             ]);
+
             setLatestLog(todayRes.data);
             setHistory(historyRes.data);
             setStats(statsRes.data);
@@ -55,10 +57,12 @@ const CarbonCalculator = () => {
                             <Leaf size={36} style={{ color: '#508C12' }} />
                             Carbon Calculator
                         </h1>
+
                         <p className="font-medium" style={{ color: '#4a7c2f' }}>
                             Track and calculate your carbon footprint using real emission factors.
                         </p>
                     </div>
+
                     {loading && <RefreshCw size={22} className="animate-spin" style={{ color: '#508C12' }} />}
                 </header>
 
@@ -70,12 +74,14 @@ const CarbonCalculator = () => {
                         <h2 className="text-xl font-bold mb-5" style={{ color: '#022202' }}>
                             Log Your Carbon Footprint
                         </h2>
+
                         <CalculatorForm onSuccess={fetchAllData} />
                     </div>
 
                     {/* Right — Results + History */}
                     <div className="space-y-6">
                         <ResultWidget todayLog={latestLog} stats={stats} />
+                        
                         <HistoryList history={history} loading={loading} onRefresh={fetchAllData} />
                     </div>
                 </div>

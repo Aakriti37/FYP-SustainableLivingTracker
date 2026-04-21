@@ -36,20 +36,27 @@ const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
 
     const filteredHistory = useMemo(() => {
         if (filter === 'all') return history;
+        
         const now  = new Date();
         const days = filter === 'week' ? 7 : 30;
+        
         return history.filter(log => {
             const diff = (now.getTime() - new Date(log.date).getTime()) / (1000 * 60 * 60 * 24);
             return diff <= days;
         });
+
     }, [history, filter]);
 
     const handleDelete = async (id: string) => {
+        
         if (!window.confirm('Are you sure you want to delete this carbon log?')) return;
+        
         setDeletingId(id);
+        
         try {
             await api.delete(`/carbon/${id}`);
             toast.success("Carbon log deleted.");
+            
             onRefresh();
         } catch {
             toast.error("Failed to delete log.");
@@ -65,8 +72,10 @@ const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
                 {/* Header */}
                 <div className="flex justify-between items-center px-6 py-4 border-b" style={{ borderColor: '#e8f5d0' }}>
                     <h3 className="text-lg font-bold" style={{ color: '#022202' }}>Carbon History</h3>
+                    
                     <div className="flex items-center gap-2">
                         <Filter size={14} style={{ color: '#508C12' }} />
+                        
                         <select
                             value={filter}
                             onChange={e => setFilter(e.target.value as FilterType)}
@@ -77,6 +86,7 @@ const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
                             <option value="week">Past Week</option>
                             <option value="month">Past Month</option>
                         </select>
+
                     </div>
                 </div>
 
@@ -87,6 +97,7 @@ const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
                             <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin"
                                 style={{ borderColor: '#c5e3a0', borderTopColor: '#508C12' }} />
                         </div>
+
                     ) : filteredHistory.length === 0 ? (
                         <div className="text-center py-16" style={{ color: '#4a7c2f' }}>
                             <p className="font-medium">No logs found for this period.</p>
@@ -104,12 +115,14 @@ const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
 
                                     {/* Left — date + details */}
                                     <div className="flex-1 min-w-0">
+                                        
                                         <div className="flex items-center gap-2 mb-2 flex-wrap">
                                             <p className="font-bold text-sm" style={{ color: '#022202' }}>
                                                 {new Date(log.date).toLocaleDateString(undefined, {
                                                     weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
                                                 })}
                                             </p>
+
                                             <span
                                                 className="px-2 py-0.5 rounded-full text-xs font-bold capitalize"
                                                 style={getPeriodBadgeStyle(log.period)}
@@ -125,24 +138,29 @@ const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
                                                     <Car size={11} /> {log.privateTransportKm} km ({log.vehicleFuelType})
                                                 </span>
                                             )}
+
                                             {log.busKm > 0 && (
                                                 <span className="flex items-center gap-1">
                                                     <Bus size={11} /> {log.busKm} km bus
                                                 </span>
                                             )}
+
                                             {log.trainKm > 0 && (
                                                 <span className="flex items-center gap-1">
                                                     <Train size={11} /> {log.trainKm} km train
                                                 </span>
                                             )}
+
                                             {log.electricityKwh > 0 && (
                                                 <span className="flex items-center gap-1">
                                                     <Zap size={11} /> {log.electricityKwh} kWh
                                                 </span>
                                             )}
+
                                             <span className="flex items-center gap-1">
                                                 <Utensils size={11} /> {log.diet}
                                             </span>
+
                                             {log.cookingFuel !== 'None' && (
                                                 <span className="flex items-center gap-1">
                                                     <Flame size={11} /> {log.cookingFuel}
@@ -171,8 +189,10 @@ const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
                                             <p className="text-xl font-black" style={{ color: getCO2Color(log.totalCO2) }}>
                                                 {log.totalCO2.toFixed(1)}
                                             </p>
+                                            
                                             <p className="text-xs font-semibold" style={{ color: '#4a7c2f' }}>kg CO₂e</p>
                                         </div>
+
                                         <div className="flex gap-1.5">
                                             <button
                                                 onClick={() => setEditLog(log)}
@@ -184,6 +204,7 @@ const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
                                             >
                                                 <Pencil size={14} />
                                             </button>
+
                                             <button
                                                 onClick={() => handleDelete(log._id)}
                                                 disabled={deletingId === log._id}
@@ -195,6 +216,7 @@ const HistoryList = ({ history, loading, onRefresh }: HistoryListProps) => {
                                             >
                                                 <Trash2 size={14} />
                                             </button>
+                                            
                                         </div>
                                     </div>
                                 </div>

@@ -24,8 +24,10 @@ const UserSummaryCard = ({ habits, goals, carbonLogs }: UserSummaryCardProps) =>
         {/* Active Habits */}
         <div>
           <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: '#4a7c2f' }}>Active Habits</p>
+          
           {activeHabits.length > 0 ? (
             <div className="flex flex-wrap gap-2">
+              
               {activeHabits.map(h => (
                 <span
                   key={h._id}
@@ -33,13 +35,16 @@ const UserSummaryCard = ({ habits, goals, carbonLogs }: UserSummaryCardProps) =>
                   style={{ background: '#f0f7e6', color: '#2d6a10', borderColor: '#c5e3a0' }}
                 >
                   {h.name}
+                  
                   {h.streak > 0 && (
                     <span className="flex items-center gap-0.5 ml-1 font-bold" style={{ color: '#ea580c' }}>
                       <Flame size={11} /> {h.streak}
                     </span>
                   )}
+
                 </span>
               ))}
+
             </div>
           ) : <p className="text-sm" style={{ color: '#4a7c2f', opacity: 0.6 }}>No active habits yet.</p>}
         </div>
@@ -48,6 +53,7 @@ const UserSummaryCard = ({ habits, goals, carbonLogs }: UserSummaryCardProps) =>
         <div>
           <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: '#4a7c2f' }}>Current Goals</p>
           {inProgressGoals.length > 0 ? (
+            
             <div className="flex flex-wrap gap-2">
               {inProgressGoals.map(g => (
                 <span
@@ -58,7 +64,9 @@ const UserSummaryCard = ({ habits, goals, carbonLogs }: UserSummaryCardProps) =>
                   {g.title}
                 </span>
               ))}
+
             </div>
+
           ) : <p className="text-sm" style={{ color: '#4a7c2f', opacity: 0.6 }}>No active goals yet.</p>}
         </div>
 
@@ -66,6 +74,7 @@ const UserSummaryCard = ({ habits, goals, carbonLogs }: UserSummaryCardProps) =>
         {latestLog ? (
           <div>
             <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: '#4a7c2f' }}>Latest Carbon Data</p>
+            
             <div className="flex flex-wrap gap-2">
               {[
                 { icon: <Car size={12} />,           label: `${latestLog.transport ?? 0} km private`   },
@@ -82,8 +91,11 @@ const UserSummaryCard = ({ habits, goals, carbonLogs }: UserSummaryCardProps) =>
                   {item.icon} {item.label}
                 </span>
               ))}
+
             </div>
+
           </div>
+          
         ) : <p className="text-sm" style={{ color: '#4a7c2f', opacity: 0.6 }}>No carbon data logged yet.</p>}
       </div>
     </div>

@@ -27,6 +27,7 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+
         try {
             await api.post("/habits", form);
             toast.success("Habit created!");
@@ -53,6 +54,7 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                     style={{ background: 'linear-gradient(135deg, #022202, #2d6a10)' }}
                 >
                     <h2 className="font-bold text-white text-lg">Create New Habit</h2>
+                    
                     <button
                         onClick={onClose}
                         className="text-white/70 hover:text-white p-1.5 rounded-lg transition-colors"
@@ -67,6 +69,7 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                         <label className="block text-sm font-semibold mb-1.5" style={{ color: '#022202' }}>
                             Habit Name
                         </label>
+
                         <input
                             required
                             type="text"
@@ -84,6 +87,7 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                         <label className="block text-sm font-semibold mb-1.5" style={{ color: '#022202' }}>
                             Description <span style={{ color: '#4a7c2f', fontWeight: 400 }}>(optional)</span>
                         </label>
+
                         <textarea
                             rows={3}
                             placeholder="Optional details about this habit..."
@@ -100,6 +104,7 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                         <label className="block text-sm font-semibold mb-1.5" style={{ color: '#022202' }}>
                             Frequency
                         </label>
+
                         <select
                             value={form.frequency}
                             onChange={e => setForm({ ...form, frequency: e.target.value })}
@@ -110,12 +115,14 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                             <option value="weekly">Weekly</option>
                             <option value="monthly">Monthly</option>
                         </select>
+
                     </div>
 
                     <div>
                         <label className="block text-sm font-semibold mb-1.5" style={{ color: '#022202' }}>
                             Link to Goal <span style={{ color: '#4a7c2f', fontWeight: 400 }}>(optional)</span>
                         </label>
+
                         <select
                             value={form.goalId}
                             onChange={e => setForm({ ...form, goalId: e.target.value })}
@@ -123,6 +130,7 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                             style={{ borderColor: '#c5e3a0', color: '#022202' }}
                         >
                             <option value="">No Goal</option>
+                            
                             {goals.map(g => (
                                 <option key={g._id} value={g._id}>{g.title}</option>
                             ))}
@@ -138,6 +146,7 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                         >
                             Cancel
                         </button>
+
                         <button
                             type="submit"
                             disabled={loading}
@@ -148,6 +157,7 @@ const CreateHabitModal = ({ onClose, onSuccess }: CreateHabitModalProps) => {
                         >
                             {loading ? <><Loader2 size={16} className="animate-spin" /> Saving…</> : 'Save Habit'}
                         </button>
+                        
                     </div>
                 </form>
             </div>

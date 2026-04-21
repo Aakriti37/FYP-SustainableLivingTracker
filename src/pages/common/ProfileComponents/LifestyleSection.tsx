@@ -32,6 +32,7 @@ const LifestyleSection = () => {
   const fetchLifestyle = async () => {
     try {
       const res = await api.get("/eco-suggestions/lifestyle");
+
       setHasLifestyle(res.data.hasLifestyle);
       setLifestyle(res.data.lifestyle);
     } catch {
@@ -71,10 +72,13 @@ const LifestyleSection = () => {
 
         {/* Header */}
         <div className="flex items-center justify-between mb-6 pb-4 border-b" style={{ borderColor: "#e8f5d0" }}>
+          
           <h3 className="text-xl font-bold flex items-center gap-2" style={{ color: "#022202" }}>
             <Leaf size={20} style={{ color: "#508C12" }} />
+          
             Lifestyle Profile
           </h3>
+
           {hasLifestyle && (
             <button
               onClick={() => setModalOpen(true)}
@@ -84,6 +88,7 @@ const LifestyleSection = () => {
               onMouseLeave={e => (e.currentTarget.style.background = "#508C12")}
             >
               <Pencil size={15} />
+              
               Edit Lifestyle
             </button>
           )}
@@ -99,18 +104,22 @@ const LifestyleSection = () => {
         {/* Not filled yet */}
         {!loading && !hasLifestyle && (
           <div className="text-center py-10">
+            
             <div
               className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
               style={{ background: "#f0f7e6" }}
             >
               <Leaf size={32} style={{ color: "#508C12" }} />
             </div>
+
             <p className="font-semibold" style={{ color: "#022202" }}>
               No lifestyle profile yet
             </p>
+
             <p className="text-sm mt-1 mb-5" style={{ color: "#4a7c2f" }}>
               Complete your lifestyle profile on the Eco Suggestions page to get personalised suggestions.
             </p>
+
             <button
               onClick={() => setModalOpen(true)}
               className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all"
@@ -120,6 +129,7 @@ const LifestyleSection = () => {
             >
               Fill Lifestyle Profile
             </button>
+
           </div>
         )}
 
@@ -135,10 +145,13 @@ const LifestyleSection = () => {
                 <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#4a7c2f" }}>
                   {field.label}
                 </p>
+
                 <p className="text-sm font-bold mt-0.5 capitalize" style={{ color: "#022202" }}>
                   {field.value || "—"}
                 </p>
+
               </div>
+              
             ))}
           </div>
         )}

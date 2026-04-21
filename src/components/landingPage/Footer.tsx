@@ -24,6 +24,7 @@ export default function Footer() {
           {/* Middle - Quick Links */}
           <div className="md:text-center">
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+            
             <ul className="space-y-2 text-green-200 text-sm">
                 <li>
                     <a href="#home" className="hover:text-white transition">

@@ -35,10 +35,12 @@ const HabitList = ({ habits, loading, onLogActivity, onDeleteHabit, onOpenModal 
                     <p className="font-bold text-sm flex items-center gap-1.5" style={{ color: '#022202' }}>
                         <Zap size={15} style={{ color: '#508C12' }} /> Habits Fuel Goals
                     </p>
+
                     <p className="text-xs mt-0.5" style={{ color: '#4a7c2f' }}>
                         Every habit you complete contributes to your eco goals progress!
                     </p>
                 </div>
+
                 <Link
                     to="/goals"
                     className="flex items-center gap-1 text-sm font-bold px-3 py-1.5 rounded-xl border transition-all shrink-0"
@@ -53,13 +55,17 @@ const HabitList = ({ habits, loading, onLogActivity, onDeleteHabit, onOpenModal 
                 <div className="flex justify-center py-10">
                     <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#c5e3a0', borderTopColor: '#508C12' }} />
                 </div>
+
             ) : habits.length === 0 ? (
                 <div className="bg-white rounded-3xl p-10 text-center border" style={{ borderColor: '#c5e3a0' }}>
                     <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: '#f0f7e6' }}>
                         <Zap size={28} style={{ color: '#508C12' }} />
                     </div>
+
                     <h3 className="text-lg font-bold mb-2" style={{ color: '#022202' }}>No habits yet</h3>
+                    
                     <p className="text-sm mb-4" style={{ color: '#4a7c2f' }}>Start building your eco-friendly lifestyle today.</p>
+                    
                     <button
                         onClick={onOpenModal}
                         className="font-bold underline"
@@ -67,6 +73,7 @@ const HabitList = ({ habits, loading, onLogActivity, onDeleteHabit, onOpenModal 
                     >
                         Create your first habit
                     </button>
+
                 </div>
             ) : (
                 <div className="bg-white rounded-3xl border overflow-hidden divide-y divide-[#e8f5d0]" style={{ borderColor: '#c5e3a0' }}>
@@ -83,13 +90,16 @@ const HabitList = ({ habits, loading, onLogActivity, onDeleteHabit, onOpenModal 
                                     <h3 className="font-bold text-base" style={{ color: '#022202' }}>
                                         {habit.name}
                                     </h3>
+
                                     <span
                                         className="text-xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wide"
                                         style={{ background: '#f0f7e6', color: '#4a7c2f' }}
                                     >
                                         {habit.frequency}
                                     </span>
+
                                 </div>
+
                                 <p className="text-sm truncate" style={{ color: '#4a7c2f' }}>
                                     {habit.description || "No description."}
                                 </p>
@@ -103,6 +113,7 @@ const HabitList = ({ habits, loading, onLogActivity, onDeleteHabit, onOpenModal 
                                 >
                                     <Zap size={12} /> {habit.streak}
                                 </div>
+
                                 <div
                                     className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg"
                                     style={{ background: '#f0f7e6', color: '#508C12' }}
@@ -126,10 +137,12 @@ const HabitList = ({ habits, loading, onLogActivity, onDeleteHabit, onOpenModal 
                                         onClick={() => onLogActivity(habit._id)}
                                         className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold transition-all"
                                         style={{ background: '#f0f7e6', color: '#508C12' }}
+                                        
                                         onMouseEnter={e => {
                                             (e.currentTarget as HTMLElement).style.background = '#508C12';
                                             (e.currentTarget as HTMLElement).style.color = 'white';
                                         }}
+
                                         onMouseLeave={e => {
                                             (e.currentTarget as HTMLElement).style.background = '#f0f7e6';
                                             (e.currentTarget as HTMLElement).style.color = '#508C12';
@@ -137,6 +150,7 @@ const HabitList = ({ habits, loading, onLogActivity, onDeleteHabit, onOpenModal 
                                     >
                                         <Check size={15} /> Mark Done
                                     </button>
+                                    
                                 )}
                                 <button
                                     onClick={() => onDeleteHabit(habit._id)}
