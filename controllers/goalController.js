@@ -127,11 +127,13 @@ exports.createGoal = async (req, res) => {
 exports.updateGoalStatus = async (req, res) => {
     try {
         const { status } = req.body;
+        
         const goal = await Goal.findOneAndUpdate(
             { _id: req.params.id, userId: req.user.id },
             { status },
             { new: true }
         );
+
         if (!goal) return res.status(404).json({ message: 'Goal not found' });
 
         const io = req.app.get('io');
@@ -155,6 +157,7 @@ exports.updateGoalStatus = async (req, res) => {
             if (completedCount === 1) {
                 await awardBadgeIfNew(req.user.id, 'eco_starter', 'Eco Starter', 'You completed your first eco goal!', io);
             }
+
             if (completedCount >= 3) {
                 await awardBadgeIfNew(req.user.id, 'eco_champion', 'Eco Champion', 'Amazing! You completed 3 eco goals!', io);
             }
@@ -177,8 +180,10 @@ exports.updateGoalStatus = async (req, res) => {
 exports.deleteGoal = async (req, res) => {
     try {
         const goal = await Goal.findOneAndDelete({ _id: req.params.id, userId: req.user.id });
+        
         if (!goal) return res.status(404).json({ message: 'Goal not found' });
         res.json({ message: 'Goal deleted' });
+        
     } catch (error) {
         res.status(500).json({ message: 'Error deleting goal', error: error.message });
     }

@@ -13,6 +13,7 @@ exports.register = async (req, res) => {
         }
 
         const existingUser = await User.findOne({ email });
+        
         if (existingUser) {
             return res.status(400).json({ message: "Email already exists" });
         }
@@ -32,6 +33,7 @@ exports.register = async (req, res) => {
         await newUser.save();
 
         res.status(201).json({ message: "User registered successfully" });
+
     } catch (err) {
         console.error("Register error:", err);
         res.status(500).json({ message: "Server error" });
@@ -47,11 +49,15 @@ exports.login = async (req, res) => {
         }
 
         const user = await User.findOne({ email });
-        console.log("User found:", user);           // ← add this
+        
+        console.log("User found:", user);           
         console.log("Password entered:", password);
+        
         if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
+
         const isMatch = await bcrypt.compare(password, user.password);
+        
         if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
         const token = jwt.sign(
@@ -68,7 +74,6 @@ exports.login = async (req, res) => {
             maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000,
         });
 
-        // req.session.user = { id: user._id, email: user.email, role: user.role };
 
         res.json({
             message: "Login successful",
@@ -80,6 +85,7 @@ exports.login = async (req, res) => {
                 role: user.role,
             },
         });
+
     } catch (err) {
         console.error("Login error:", err);
         res.status(500).json({ message: "Server error" });
@@ -102,6 +108,7 @@ exports.forgotPassword = async (req, res) => {
         console.log("Email received:", email);
         const user = await User.findOne({ email });
         console.log("User found:", user);
+        
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -136,6 +143,7 @@ exports.forgotPassword = async (req, res) => {
         });
 
         res.status(200).json({ message: "Password reset email sent" });
+
     } catch (err) {
         console.error("Email sending error:", err);
         return res.status(500).json({ message: "Error sending email" });
@@ -181,6 +189,7 @@ exports.resetPassword = async (req, res) => {
         console.log("Update result:", result);
 
         res.status(200).json({ message: "Password reset successful" });
+        
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error" });

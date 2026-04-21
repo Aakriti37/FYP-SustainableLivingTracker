@@ -22,6 +22,7 @@ const notificationSchema = new mongoose.Schema({
     isRead: { type: Boolean, default: false },
     link: { type: String, default: null },          // eg: '/habits', '/goals'
     meta: { type: mongoose.Schema.Types.Mixed, default: {} },       // extra data
+    
 }, { timestamps: true });
 
 module.exports = mongoose.model('Notification', notificationSchema);

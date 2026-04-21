@@ -27,6 +27,7 @@ exports.getStats = async (req, res) => {
             totalGoals,
             totalCO2Log: parseFloat(totalCO2Log.toFixed(2)),
         });
+
     } catch (error) {
         res.status(500).json({ message: 'Error fetching stats', error: error.message });
     }
@@ -39,6 +40,7 @@ exports.getAnalytics = async (req, res) => {
     try {
         // 1. User growth — last 6 months 
         const userGrowth = [];
+        
         for (let i = 5; i >= 0; i--) {
             const date  = new Date();
             date.setMonth(date.getMonth() - i);
@@ -66,8 +68,10 @@ exports.getAnalytics = async (req, res) => {
         // Group by date
         // const co2ByDate: Record<string, number[]> = {};
         const co2ByDate = {};
+        
         recentLogs.forEach(log => {
             const day = new Date(log.date).toLocaleDateString('en', { month: 'short', day: 'numeric' });
+            
             if (!co2ByDate[day]) co2ByDate[day] = [];
             co2ByDate[day].push(log.totalCO2);
         });
@@ -101,6 +105,7 @@ exports.getAnalytics = async (req, res) => {
         ]);
 
         res.json({ userGrowth, co2Trend, activitySplit, topHabits });
+
     } catch (error) {
         res.status(500).json({ message: 'Error fetching analytics', error: error.message });
     }
@@ -126,6 +131,7 @@ exports.deleteUser = async (req, res) => {
         await Post.deleteMany({ userId: req.params.id });
         await CarbonLog.deleteMany({ userId: req.params.id });
         res.json({ message: 'User and their data deleted successfully' });
+
     } catch (error) {
         res.status(500).json({ message: 'Error deleting user', error: error.message });
     }
@@ -139,6 +145,7 @@ exports.getPosts = async (req, res) => {
             .populate('userId', 'firstName lastName email')
             .sort({ createdAt: -1 });
         res.json(posts);
+
     } catch (error) {
         res.status(500).json({ message: 'Error fetching posts', error: error.message });
     }
@@ -150,6 +157,7 @@ exports.deletePost = async (req, res) => {
     try {
         await Post.findByIdAndDelete(req.params.id);
         res.json({ message: 'Post deleted successfully' });
+
     } catch (error) {
         res.status(500).json({ message: 'Error deleting post', error: error.message });
     }
@@ -164,6 +172,7 @@ exports.getCarbonLogs = async (req, res) => {
             .sort({ date: -1 })
             .limit(100);
         res.json(logs);
+        
     } catch (error) {
         res.status(500).json({ message: 'Error fetching carbon logs', error: error.message });
     }

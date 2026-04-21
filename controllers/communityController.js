@@ -11,6 +11,7 @@ exports.getPosts = async (req, res) => {
             .sort({ createdAt: -1 })
             .limit(50);
         res.json(posts);
+
     } catch (error) {
         res.status(500).json({ message: 'Error fetching posts', error: error.message });
     }
@@ -66,11 +67,13 @@ exports.deletePost = async (req, res) => {
 exports.toggleLike = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
+        
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
         }
 
         const index = post.likes.indexOf(req.user.id);
+        
         if (index === -1) {
             // Like
             post.likes.push(req.user.id);
@@ -85,6 +88,7 @@ exports.toggleLike = async (req, res) => {
             .populate('comments.userId', 'firstName lastName profilePicture');
 
         const io = req.app.get('io');
+        
         if (io) {
             io.emit('update_post', updatedPost);
         }
@@ -98,11 +102,13 @@ exports.toggleLike = async (req, res) => {
 exports.addComment = async (req, res) => {
     try {
         const { text } = req.body;
+        
         if (!text || text.trim() === '') {
             return res.status(400).json({ message: 'Comment text is required' });
         }
 
         const post = await Post.findById(req.params.id);
+        
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
         }
@@ -115,6 +121,7 @@ exports.addComment = async (req, res) => {
             .populate('comments.userId', 'firstName lastName profilePicture');
 
         const io = req.app.get('io');
+        
         if (io) {
             io.emit('update_post', updatedPost);
         }
